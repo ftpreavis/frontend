@@ -31,22 +31,22 @@ function onKeyDown(e) {
 </script>
 
 <template>
-<!--	<Header></Header>-->
+	<Header></Header>
 	<div class="bg-[#436B9D] flex flex-col h-screen justify-center space-y-5">
-		<h1 class="text-9xl font-[Kanit] text-center font-bold text-white ">PONG</h1>
+		<h1 class="text-8xl lg:text-9xl font-[Kanit] text-center font-bold text-white ">| P0NG .</h1>
 		<div
-			class="bg-[#436B9D] relative h-[500px] w-[800px] border-4 overflow-hidden mx-auto"
+			class="bg-[#436B9D] relative h-[500px] w-[650px] lg:w-[800px] border-4 overflow-hidden mx-auto"
 			tabindex="0"
 			@keydown="onKeyDown"
 		>
-			<div class="absolute top-4 left-10 right-10 flex items-center justify-between text-white font-bold text-5xl font-[Kanit]">
+			<div class="absolute top-4 left-10 right-10 flex items-center justify-between text-white font-bold text-4xl lg:text-5xl font-[Kanit]">
 				<span>0</span>
 				<span>2</span>
 			</div>
 			<div class="absolute h-full border-l-2 border-white border-dashed left-1/2 transform -translate-x-1/2"></div>
 			<div class="absolute left-4 w-4 h-32 bg-white" :style="{ top: `${leftY}px` }"></div>
 			<div class="absolute right-4 w-4 h-32 bg-white" :style="{ top: `${rightY}px` }"></div>
-			<div class="absolute w-4 h-4 bg-white top-[250px] left-[200px]"></div>
+			<div class="absolute w-4 h-4 bg-white rounded-xl top-[250px] left-[200px]"></div>
 		</div>
 	</div>
 </template>
