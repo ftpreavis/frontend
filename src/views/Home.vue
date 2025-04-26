@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 
-import PongLogo from '/src/components/Logo.vue'
-import Header from '/src/components/Header.vue'
+import PongLogo from '../components/Logo.vue'
+import Header from '../components/Header.vue'
 
 const router = useRouter()
 

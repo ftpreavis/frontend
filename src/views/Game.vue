@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue'
-import Header from '/src/components/Header.vue'
+import Header from '../components/Header.vue'
 
 const leftY = ref(0)
 const rightY = ref(0)
@@ -13,7 +13,7 @@ onMounted(() => {
 	rightY.value = mid
 })
 
-function onKeyDown(e) {
+function onKeyDown(e:any) {
 	if (e.key === 'w' || e.key === 'W') {
 		leftY.value = Math.max(0, leftY.value - speed)
 	}
