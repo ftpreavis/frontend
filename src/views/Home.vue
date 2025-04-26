@@ -1,31 +1,32 @@
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
+import { computed} from 'vue' // ref
+import { useI18n } from 'vue-i18n'
 
-import PongLogo from '../components/Logo.vue'
-import Header from '../components/Header.vue'
+import pongImage from '../assets/pongGameImage.jpg'
+import PacManBanner from '../assets/PacManBanner.png'
 
-const router = useRouter()
+import GameCard from '@/components/GameCard.vue'
+import Header from '@/components/Header.vue'
 
-function chooseGameMode() {
-	router.push({name: 'Gamemode'})
-}
+// const router = useRouter()
+const { t } = useI18n()
+
+// function chooseGameMode() {
+// 	router.push({name: 'Gamemode'})
+// }
+
+const games = computed(() => [
+	{ id: 1, name: 'Pong', desc: t('pongGameDesc'), image: pongImage, tag: t('topTag') },
+	{ id: 2, name: 'PacMan', desc: t('pacManDesc'), image: PacManBanner, tag: t('newTag') },
+])
+
 </script>
+
 <template>
-	<div class="bg-[#436B9D] flex flex-col min-h-screen">
-		<Header></Header>
-		<div class="flex-grow flex justify-center items-center">
-			<div class="text-center space-y-4">
-				<h1 class="text-8xl text-white font-extrabold font-[Kanit]">| PONG .</h1>
-				<p class="text-white font-[Kanit] w-[300px] mx-auto text-lg">The game you’ve always dreamed of and undoubtedly Game of the Year.</p>
-				<button
-					@click="chooseGameMode"
-					class="font-[Kanit] text-lg text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-20 py-4 text-center me-2 mb-2"
-				>
-					PLAY
-				</button>
-			</div>
-<!--			<PongLogo></PongLogo>-->
-		</div>
+	<Header></Header>
+	<div class="flex flex-col w-11/12 m-auto space-y-5 mt-5">
+		<GameCard v-for="game in games" :key="game.id" :gameName="game.name" :imageUrl="game.image" :tag="game.tag" :desc="game.desc"></GameCard>
 	</div>
 </template>
 
