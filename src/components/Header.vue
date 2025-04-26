@@ -1,18 +1,23 @@
-<!-- src/components/GameHeader.vue -->
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import {
 	HomeIcon,
 	ChatBubbleOvalLeftEllipsisIcon,
-	PlayIcon,
 	Cog6ToothIcon
 
 } from '@heroicons/vue/24/outline'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
+const selectedLanguage = ref(locale.value);
+function changeLanguage() {
+	locale.value = selectedLanguage.value;
+	nextTick(() => {})
+}
 
 const router = useRouter()
 const isLoggedIn = ref(false)
-
 const go = (path: string) => {
 	router.push(path)
 }
@@ -20,7 +25,7 @@ const go = (path: string) => {
 
 <template>
 	<header
-		class="bg-gradient-to-r from-[#436B9D] to-[#3589D7] px-6 py-4 fixed w-full"
+		class="bg-gradient-to-r from-[#436B9D] to-[#3589D7] px-6 py-4 w-full"
 	>
 		<div class="flex justify-around">
 			<nav class="flex space-x-5">
@@ -39,19 +44,16 @@ const go = (path: string) => {
 					<ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6" />
 				</button>
 				<button
-					@click="go('/game')"
-					class="text-white hover:text-gray-200"
-					aria-label="Play"
-				>
-					<PlayIcon class="h-6 w-6" />
-				</button>
-				<button
 					@click="go('/setting')"
 					class="text-white hover:text-gray-200"
 					aria-label="Play"
 				>
 					<Cog6ToothIcon class="h-6 w-6" />
 				</button>
+				<select v-model="selectedLanguage" @change="changeLanguage">
+					<option value="en">EN</option>
+					<option value="fr">FR</option>
+				</select>
 			</nav>
 			<div class="flex items-center space-x-2">
 				<template v-if="!isLoggedIn">
