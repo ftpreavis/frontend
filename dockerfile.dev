@@ -2,12 +2,16 @@
 FROM node:18-alpine
 WORKDIR /app
 
-# Install your deps
+# 1) Copy package.json + lock and install into image
 COPY package*.json ./
 RUN npm ci
 
-# Copy source and start Vite
+# 2) Copy the rest of your source
 COPY . .
 
+# 3) Dev‐mode env & port
+ENV VITE_HOST=0.0.0.0
+ENV VITE_PORT=5173
+
 EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host", "${VITE_HOST}", "--port", "${VITE_PORT}"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
