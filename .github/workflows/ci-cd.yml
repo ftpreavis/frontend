@@ -8,6 +8,7 @@ on:
   push:
     branches: [ master ]
 
+# Targets ci-cd template
 jobs:
   frontend-ci-cd:
     uses: ftpreavis/.github/.github/workflows/frontend-ci-cd.yml@master
