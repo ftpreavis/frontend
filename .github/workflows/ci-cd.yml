@@ -5,5 +5,5 @@ on:
 
 jobs:
   frontend-ci-cd:
-    uses: ftpreavis/.github/.github/workflows/frontend-ci-cd-template.yml@master
+    uses: ftpreavis/.github/.github/workflows/frontend-ci-cd.yml@master
     secrets: inherit
