@@ -1,12 +1,12 @@
 name: Frontend CI/CD
 
-permissions:
-  contents: read
-  actions: write
-
 on:
   push:
     branches: [ master ]
+
+permissions:
+  contents: read
+  actions: write
 
 # Targets ci-cd template
 jobs:
