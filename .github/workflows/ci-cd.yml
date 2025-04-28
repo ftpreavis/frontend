@@ -2,7 +2,7 @@ name: Frontend CI/CD
 
 permissions:
   contents: read
-  actions: read
+  actions: write
 
 on:
   push:
