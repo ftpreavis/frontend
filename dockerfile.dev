@@ -1,0 +1,13 @@
+# frontend/Dockerfile.dev
+FROM node:18-alpine
+WORKDIR /app
+
+# Install your deps
+COPY package*.json ./
+RUN npm ci
+
+# Copy source and start Vite
+COPY . .
+
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "${VITE_HOST}", "--port", "${VITE_PORT}"]
