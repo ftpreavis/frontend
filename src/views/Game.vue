@@ -1,55 +1,137 @@
-<!--<script lang="ts" setup>-->
-<!--import {ref, onMounted} from 'vue'-->
-<!--import Header from '@/components/Header.vue'-->
+<script lang="ts" setup>
+import Header from '@/components/Header.vue'
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
-<!--const leftY = ref(0)-->
-<!--const rightY = ref(0)-->
-<!--const speed = 10-->
-<!--const boardHeight = 500-->
+const pongCanvas = ref<HTMLCanvasElement | null>(null)
+const ctx = ref(null)
+const paddleWidth = 10
+const paddleHeight = 100
+let player1Pos = 0
+let player2Pos = 0
+const playerSpeed = 15
+const canvasWidth = ref(0)
+const canvasHeight = ref(0)
+const gameState = reactive({
+	isPortrait: window.innerHeight > window.innerWidth
+})
 
-<!--onMounted(() => {-->
-<!--	// const mid = (boardHeight - 128) / 2-->
-<!--	leftY.value = mid-->
-<!--	rightY.value = mid-->
-<!--})-->
+const detectOrientation = () => {
+	gameState.isPortrait = window.innerHeight > window.innerWidth
+	updateCanvasDimensions()
+}
 
-<!--function onKeyDown(e) {-->
-<!--	if (e.key === 'w' || e.key === 'W') {-->
-<!--		leftY.value = Math.max(0, leftY.value - speed)-->
-<!--	}-->
-<!--	if (e.key === 's' || e.key === 'S') {-->
-<!--		leftY.value = Math.min(boardHeight - 128, leftY.value + speed)-->
-<!--	}-->
-<!--	if (e.key === 'ArrowUp') {-->
-<!--		rightY.value = Math.max(0, rightY.value - speed)-->
-<!--	}-->
-<!--	if (e.key === 'ArrowDown') {-->
-<!--		rightY.value = Math.min(boardHeight - 128, rightY.value + speed)-->
-<!--	}-->
-<!--}-->
+const updateCanvasDimensions = () => {
+	if (pongCanvas.value) {
+		const rect = pongCanvas.value.getBoundingClientRect()
+		canvasWidth.value = rect.width
+		canvasHeight.value = rect.height
+	}
+}
 
-<!--</script>-->
+onMounted(() => {
+	const canvas = pongCanvas.value
+	ctx.value = canvas.getContext('2d')
+	if (ctx.value) {
+		updateCanvasDimensions()
+		console.log(canvasWidth.value)
+		canvas.width = canvasWidth.value
+		canvas.height = canvasHeight.value
+		gameLoop()
+	}
 
-<!--<template>-->
-<!--	<Header></Header>-->
-<!--	<div class="bg-[#436B9D] flex flex-col h-screen justify-center space-y-5">-->
-<!--		<h1 class="text-8xl lg:text-9xl font-[Kanit] text-center font-bold text-white ">| P0NG .</h1>-->
-<!--		<div-->
-<!--			class="bg-[#436B9D] relative h-[500px] w-[650px] lg:w-[800px] border-4 overflow-hidden mx-auto"-->
-<!--			tabindex="0"-->
-<!--			@keydown="onKeyDown"-->
-<!--		>-->
-<!--			<div class="absolute top-4 left-10 right-10 flex items-center justify-between text-white font-bold text-4xl lg:text-5xl font-[Kanit]">-->
-<!--				<span>0</span>-->
-<!--				<span>2</span>-->
-<!--			</div>-->
-<!--			<div class="absolute h-full border-l-2 border-white border-dashed left-1/2 transform -translate-x-1/2"></div>-->
-<!--			<div class="absolute left-4 w-4 h-32 bg-white" :style="{ top: `${leftY}px` }"></div>-->
-<!--			<div class="absolute right-4 w-4 h-32 bg-white" :style="{ top: `${rightY}px` }"></div>-->
-<!--			<div class="absolute w-4 h-4 bg-white rounded-xl top-[250px] left-[200px]"></div>-->
-<!--		</div>-->
-<!--	</div>-->
-<!--</template>-->
+	window.addEventListener('resize', detectOrientation)
+	window.addEventListener('keydown', handleKeyDown)
+	window.addEventListener('keyup', handleKeyUp)
+})
 
-<script></script>
-<template></template>
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', detectOrientation)
+	window.removeEventListener('keydown', handleKeyDown)
+	window.removeEventListener('keyup', handleKeyUp)
+})
+
+let upKey1 = false
+let downKey1 = false
+let upKey2 = false
+let downKey2 = false
+let leftKey1 = false
+let rightKey1 = false
+let leftKey2 = false
+let rightKey2 = false
+
+const handleKeyDown = (event: KeyboardEvent) => {
+	if (gameState.isPortrait) {
+		if (event.key === 'q') leftKey1 = true
+		if (event.key === 'w') rightKey1 = true
+		if (event.key === 'ArrowLeft') leftKey2 = true
+		if (event.key === 'ArrowRight') rightKey2 = true
+	} else {
+		if (event.key === 'w') upKey1 = true
+		if (event.key === 's') downKey1 = true
+		if (event.key === 'ArrowUp') upKey2 = true
+		if (event.key === 'ArrowDown') downKey2 = true
+	}
+}
+
+const handleKeyUp = (event: KeyboardEvent) => {
+	if (gameState.isPortrait) {
+		if (event.key === 'q') leftKey1 = false
+		if (event.key === 'w') rightKey1 = false
+		if (event.key === 'ArrowLeft') leftKey2 = false
+		if (event.key === 'ArrowRight') rightKey2 = false
+	} else {
+		if (event.key === 'w') upKey1 = false
+		if (event.key === 's') downKey1 = false
+		if (event.key === 'ArrowUp') upKey2 = false
+		if (event.key === 'ArrowDown') downKey2 = false
+	}
+}
+
+const updatePaddlesPosition = () => {
+	if (gameState.isPortrait) {
+		if (leftKey1 && player1Pos > 0) player1Pos -= playerSpeed
+		if (rightKey1 && player1Pos < canvasWidth.value - paddleHeight - 10) player1Pos += playerSpeed
+
+		if (leftKey2 && player2Pos > 0) player2Pos -= playerSpeed
+		if (rightKey2 && player2Pos < canvasWidth.value - paddleHeight - 10) player2Pos += playerSpeed
+	} else {
+		if (upKey1 && player1Pos > 0) player1Pos -= playerSpeed
+		if (downKey1 && player1Pos < canvasHeight.value - paddleHeight) player1Pos += playerSpeed
+
+		if (upKey2 && player2Pos > 0) player2Pos -= playerSpeed
+		if (downKey2 && player2Pos < canvasHeight.value - paddleHeight) player2Pos += playerSpeed
+	}
+}
+
+const drawPaddles = () => {
+	if (ctx.value) {
+		ctx.value.fillStyle = 'red'
+		ctx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
+		if (gameState.isPortrait) {
+			ctx.value.fillRect(player1Pos, 0, paddleHeight, paddleWidth)
+			ctx.value.fillRect(player2Pos, canvasHeight.value - paddleWidth, paddleHeight, paddleWidth)
+		} else {
+			ctx.value.fillRect(0, player1Pos, paddleWidth, paddleHeight)
+			ctx.value.fillRect(canvasWidth.value - paddleWidth, player2Pos, paddleWidth, paddleHeight)
+		}
+	}
+}
+
+const gameLoop = () => {
+	updatePaddlesPosition()
+	drawPaddles()
+	requestAnimationFrame(gameLoop)
+}
+</script>
+
+<template>
+	<Header></Header>
+	<div class="flex flex-col min-h-screen">
+		<div>
+
+		</div>
+		<div class="w-[95%] h-[70vh] relative flex  bg-gray-800 mx-auto rounded-xl py-3 mt-3">
+			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
+		</div>
+	</div>
+</template>
