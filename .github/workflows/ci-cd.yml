@@ -1,0 +1,9 @@
+name: Frontend CI/CD
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  frontend-ci-cd:
+    uses: ftpreavis/.github/.github/workflows/frontend-ci-cd-template.yml@master
+    secrets: inherit
