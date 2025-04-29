@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// import Header from '@/components/Header.vue'
+import Header from '@/components/Header.vue'
 import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
@@ -24,19 +24,10 @@ const basePaddleSpeed = 3
 let initialPaddleSpeed = 0
 let ballSpeedX = basePaddleSpeed
 let ballSpeedY = basePaddleSpeed
-const speedBoost = 1.00
+const speedBoost = 1.05
 let isWaiting = false
 const message = ref<string>('')
-// window.innerHeight > window.innerWidth
-const gameState = reactive({
-	isPortrait: true
-})
-
-const detectOrientation = () => {
-	// gameState.isPortrait = window.innerHeight > window.innerWidth
-	// gameState.isPortrait = true
-	updateCanvasDimensions()
-}
+const gameMode = ref<string | null>(null)
 
 const updateCanvasDimensions = () => {
 	if (pongCanvas.value) {
@@ -52,6 +43,7 @@ const updateCanvasDimensions = () => {
 		player2Pos = canvasWidth.value / 2 - (paddleHeight / 2)
 		ballPosX = canvasWidth.value / 2
 		ballPosY = canvasHeight.value / 2
+		render()
 	}
 }
 
@@ -68,73 +60,46 @@ onMounted(() => {
 			player2Pos = (canvasWidth.value - paddleHeight) / 2
 			ballPosX = (canvasWidth.value - ballRaduis) / 2
 			ballPosY = (canvasHeight.value - ballRaduis) / 2
-			resetBall(1)
-			gameLoop()
+			render()
 		}
 	}
 
-	window.addEventListener('resize', detectOrientation)
+	window.addEventListener('resize', updateCanvasDimensions)
 	window.addEventListener('keydown', handleKeyDown)
 	window.addEventListener('keyup', handleKeyUp)
 })
 
 onBeforeUnmount(() => {
-	window.removeEventListener('resize', detectOrientation)
+	window.removeEventListener('resize', updateCanvasDimensions)
 	window.removeEventListener('keydown', handleKeyDown)
 	window.removeEventListener('keyup', handleKeyUp)
 })
 
-let upKey1 = false
-let downKey1 = false
-let upKey2 = false
-let downKey2 = false
 let leftKey1 = false
 let rightKey1 = false
 let leftKey2 = false
 let rightKey2 = false
 
 const handleKeyDown = (event: KeyboardEvent) => {
-	if (gameState.isPortrait) {
-		if (event.key === 'a') leftKey1 = true
-		if (event.key === 'w') rightKey1 = true
-		if (event.key === 'ArrowLeft') leftKey2 = true
-		if (event.key === 'ArrowRight') rightKey2 = true
-	} else {
-		if (event.key === 'w') upKey1 = true
-		if (event.key === 's') downKey1 = true
-		if (event.key === 'ArrowUp') upKey2 = true
-		if (event.key === 'ArrowDown') downKey2 = true
-	}
+	if (event.key === 'a') leftKey1 = true
+	if (event.key === 'w') rightKey1 = true
+	if (event.key === 'ArrowLeft') leftKey2 = true
+	if (event.key === 'ArrowRight') rightKey2 = true
 }
 
 const handleKeyUp = (event: KeyboardEvent) => {
-	if (gameState.isPortrait) {
-		if (event.key === 'a') leftKey1 = false
-		if (event.key === 'w') rightKey1 = false
-		if (event.key === 'ArrowLeft') leftKey2 = false
-		if (event.key === 'ArrowRight') rightKey2 = false
-	} else {
-		if (event.key === 'w') upKey1 = false
-		if (event.key === 's') downKey1 = false
-		if (event.key === 'ArrowUp') upKey2 = false
-		if (event.key === 'ArrowDown') downKey2 = false
-	}
+	if (event.key === 'a') leftKey1 = false
+	if (event.key === 'w') rightKey1 = false
+	if (event.key === 'ArrowLeft') leftKey2 = false
+	if (event.key === 'ArrowRight') rightKey2 = false
 }
 
 const updatePaddlesPosition = () => {
-	if (gameState.isPortrait) {
-		if (leftKey1 && player1Pos > 0) player1Pos -= playerSpeed
-		if (rightKey1 && player1Pos < canvasWidth.value - paddleHeight - 5) player1Pos += playerSpeed
+	if (leftKey1 && player1Pos > 0) player1Pos -= playerSpeed
+	if (rightKey1 && player1Pos < canvasWidth.value - paddleHeight - 5) player1Pos += playerSpeed
 
-		if (leftKey2 && player2Pos > 0) player2Pos -= playerSpeed
-		if (rightKey2 && player2Pos < canvasWidth.value - paddleHeight - 5) player2Pos += playerSpeed
-	} else {
-		if (upKey1 && player1Pos > 0) player1Pos -= playerSpeed
-		if (downKey1 && player1Pos < canvasHeight.value - paddleHeight) player1Pos += playerSpeed
-
-		if (upKey2 && player2Pos > 0) player2Pos -= playerSpeed
-		if (downKey2 && player2Pos < canvasHeight.value - paddleHeight) player2Pos += playerSpeed
-	}
+	if (leftKey2 && player2Pos > 0) player2Pos -= playerSpeed
+	if (rightKey2 && player2Pos < canvasWidth.value - paddleHeight - 5) player2Pos += playerSpeed
 }
 
 const updateBallPosition = () => {
@@ -236,8 +201,8 @@ const resetBall = (server: 1 | 2) => {
 	ballPosY = canvasHeight.value / 2
 	isWaiting = true
 	setTimeout(() => {
-		const maxX = initialPaddleSpeed * 0.8
-		const minX = initialPaddleSpeed * 0.2
+		const maxX = initialPaddleSpeed * 0.9
+		const minX = initialPaddleSpeed * 0.1
 		const sign = Math.random() < 0.5 ? 1 : -1
 		const absX = minX + Math.random() * (maxX - minX)
 		ballSpeedX = sign * absX
@@ -316,38 +281,56 @@ const drawPaddles = () => {
 	if (ctx.value) {
 		ctx.value.fillStyle = 'red'
 		ctx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
-		if (gameState.isPortrait) {
-			ctx.value.fillRect(player1Pos, 0, paddleHeight, paddleWidth)
-			ctx.value.fillRect(player2Pos, canvasHeight.value - paddleWidth, paddleHeight, paddleWidth)
-		} else {
-			ctx.value.fillRect(0, player1Pos, paddleWidth, paddleHeight)
-			ctx.value.fillRect(canvasWidth.value - paddleWidth, player2Pos, paddleWidth, paddleHeight)
-		}
+		ctx.value.fillRect(player1Pos, 0, paddleHeight, paddleWidth)
+		ctx.value.fillRect(player2Pos, canvasHeight.value - paddleWidth, paddleHeight, paddleWidth)
+
 	}
 }
 
-const gameLoop = () => {
-	updatePaddlesPosition()
-	if (!isWaiting)
-		updateBallPosition()
+const render = () => {
 	drawPaddles()
 	drawDivider()
 	drawBall()
 	drawScores()
 	if (isWaiting && message.value)
 		drawMessage()
+}
+
+const startGame = (mode: string) => {
+	gameMode.value = mode
+	setTimeout(gameLoop, 1000)
+}
+
+const gameLoop = () => {
+	updatePaddlesPosition()
+	if (!isWaiting)
+		updateBallPosition()
+	render()
 	requestAnimationFrame(gameLoop)
 }
 </script>
 
 <template>
-<!--	<Header></Header>-->
-	<div class="flex flex-col min-h-screen">
-		<div>
-
+	<div class="flex flex-col h-screen justify-center items-center">
+<!--		<Header></Header>-->
+		<div v-if="!gameMode" class="w-full h-full bg-[#000] absolute z-[1] opacity-60"></div>
+		<div v-if="!gameMode" class="absolute z-10 space-y-7 flex flex-col">
+			<h2 class="text-white font-bold text-4xl">Choose Gamemode</h2>
+			<button disabled class="text-black py-9 bg-gray-300 opacity-50 rounded-md text-lg cursor-not-allowed">Solo (IA)</button>
+			<button @click="startGame('multi')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
+			<button @click="" class="text-black py-9 bg-[#fff] rounded-md text-lg bg-gray-300 opacity-50 cursor-not-allowed" disabled>Tournament (Local)</button>
 		</div>
-		<div class="w-[95%] h-[100vh] relative flex  bg-gray-800 mx-auto rounded-xl py-3">
+		<div class=" bg-gray-800 w-[95%] h-[100vh]">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
 	</div>
+<!--	<div class="flex flex-col min-h-screen items-center justify-center">-->
+<!--		<Header></Header>-->
+
+<!--		<div class="w-[95%] h-[100vh] relative flex  bg-gray-800 mx-auto rounded-xl py-3">-->
+<!--			<canvas ref="pongCanvas" class="w-full h-full">-->
+
+<!--			</canvas>-->
+<!--		</div>-->
+<!--	</div>-->
 </template>
