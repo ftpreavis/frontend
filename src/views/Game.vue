@@ -102,6 +102,46 @@ const updatePaddlesPosition = () => {
 	if (rightKey2 && player2Pos < canvasWidth.value - paddleHeight - 5) player2Pos += playerSpeed
 }
 
+function predictBallX(ballPosX, ballPosY, ballSpeedX, ballSpeedY, paddleY, canvasWidth) {
+	const timeToReach = (ballPosY - paddleY) / Math.abs(ballSpeedY)
+	let predictedX = ballPosX + ballSpeedX * timeToReach
+
+	const fieldWidth = canvasWidth
+	const period = 2 * (fieldWidth)
+
+	predictedX = predictedX % period
+	if (predictedX < 0) {
+        predictedX += period
+    }
+	if (predictedX > fieldWidth) {
+		predictedX = period - predictedX
+	}
+	return predictedX
+}
+
+let targetX = 0;
+setInterval(() => {
+    targetX = predictBallX(ballPosX, ballPosY, ballSpeedX, ballSpeedY, paddleWidth, canvasWidth.value)
+    console.log(targetX)
+    const error = (Math.random() - 0.5) * 100
+    targetX += error
+    }, 1000)
+
+const pong_bot = () => {
+    console.log(targetX)
+    if (targetX > player1Pos + paddleHeight / 5 && targetX < player1Pos + paddleHeight - paddleHeight / 5) {
+		leftKey1 = false
+		rightKey1 = false
+	}
+	else if (targetX < player1Pos + paddleHeight / 2) {
+		leftKey1 = true
+		rightKey1 = false
+	} else if (targetX > player1Pos + paddleHeight / 2) {
+		rightKey1 = true
+		leftKey1 = false
+	}
+}
+
 const updateBallPosition = () => {
 	ballPosX += ballSpeedX
 	ballPosY += ballSpeedY
@@ -302,9 +342,11 @@ const startGame = (mode: string) => {
 }
 
 const gameLoop = () => {
+    pong_bot()
 	updatePaddlesPosition()
-	if (!isWaiting)
+	if (!isWaiting) {
 		updateBallPosition()
+    }
 	render()
 	requestAnimationFrame(gameLoop)
 }
