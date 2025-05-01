@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Header from '@/components/Header.vue'
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import Settings from '@/components/PongSettings.vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
@@ -17,7 +18,7 @@ const canvasHeight = ref(0)
 const player1Score = ref(0)
 const player2Score = ref(0)
 
-const ballRaduis = 15
+const ballRadius = 15
 let ballPosX = 0
 let ballPosY = 0
 const basePaddleSpeed = 3
@@ -28,6 +29,19 @@ const speedBoost = 1.05
 let isWaiting = false
 const message = ref<string>('')
 const gameMode = ref<string | null>(null)
+
+const showSettings = ref(false)
+const settings = ref({
+	background: '#1F2937',
+	paddle: 	'#FF0000',
+	ball: 		'#FFFFFF',
+	divider:	'#FFFFFF',
+	score:		'#FFFFFF'
+})
+
+watch(settings, () => {
+	nextTick(render)
+}, { deep: true })
 
 const updateCanvasDimensions = () => {
 	if (pongCanvas.value) {
@@ -53,13 +67,12 @@ onMounted(() => {
 		ctx.value = canvas.getContext('2d')
 		if (ctx.value) {
 			updateCanvasDimensions()
-			console.log(canvasWidth.value)
 			canvas.width = canvasWidth.value
 			canvas.height = canvasHeight.value
 			player1Pos = (canvasWidth.value - paddleHeight) / 2
 			player2Pos = (canvasWidth.value - paddleHeight) / 2
-			ballPosX = (canvasWidth.value - ballRaduis) / 2
-			ballPosY = (canvasHeight.value - ballRaduis) / 2
+			ballPosX = (canvasWidth.value - ballRadius) / 2
+			ballPosY = (canvasHeight.value - ballRadius) / 2
 			render()
 		}
 	}
@@ -102,33 +115,20 @@ const updatePaddlesPosition = () => {
 	if (rightKey2 && player2Pos < canvasWidth.value - paddleHeight - 5) player2Pos += playerSpeed
 }
 
-function predictBallX(ballPosX, ballPosY, ballSpeedX, ballSpeedY, paddleY, canvasWidth) {
-	const timeToReach = (ballPosY - paddleY) / Math.abs(ballSpeedY)
+const predictBallX = () => {
+	const timeToReach = (ballPosY - paddleWidth) / Math.abs(ballSpeedY)
 	let predictedX = ballPosX + ballSpeedX * timeToReach
 
-	const fieldWidth = canvasWidth
+	const fieldWidth = canvasWidth.value
 	const period = 2 * (fieldWidth)
 
 	predictedX = predictedX % period
-	if (predictedX < 0) {
-        predictedX += period
-    }
-	if (predictedX > fieldWidth) {
-		predictedX = period - predictedX
-	}
+	if (predictedX < 0) predictedX += period
+	if (predictedX > fieldWidth) predictedX = period - predictedX
 	return predictedX
 }
 
-let targetX = 0;
-setInterval(() => {
-    targetX = predictBallX(ballPosX, ballPosY, ballSpeedX, ballSpeedY, paddleWidth, canvasWidth.value)
-    console.log(targetX)
-    const error = (Math.random() - 0.5) * 100
-    targetX += error
-    }, 1000)
-
 const pong_bot = () => {
-    console.log(targetX)
     if (targetX > player1Pos + paddleHeight / 5 && targetX < player1Pos + paddleHeight - paddleHeight / 5) {
 		leftKey1 = false
 		rightKey1 = false
@@ -146,39 +146,36 @@ const updateBallPosition = () => {
 	ballPosX += ballSpeedX
 	ballPosY += ballSpeedY
 
-	if (ballPosX - ballRaduis <= 0 || ballPosX + ballRaduis >= canvasWidth.value) {
+	if (ballPosX - ballRadius <= 0 || ballPosX + ballRadius >= canvasWidth.value) {
 		ballSpeedX = -ballSpeedX
-
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
 	}
 
-	if (ballPosY + ballRaduis >= canvasHeight.value - paddleWidth && (ballPosX >= player2Pos && ballPosX <= player2Pos + paddleHeight)) {
+	if (ballPosY + ballRadius >= canvasHeight.value - paddleWidth && (ballPosX >= player2Pos && ballPosX <= player2Pos + paddleHeight)) {
 		ballSpeedY = -ballSpeedY
-		ballPosY = canvasHeight.value - paddleWidth - ballRaduis
+		ballPosY = canvasHeight.value - paddleWidth - ballRadius
 
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
 	}
 
 	if (
-		ballPosX + ballRaduis >= player2Pos &&
-		ballPosX - ballRaduis < player2Pos &&
+		ballPosX + ballRadius >= player2Pos &&
+		ballPosX - ballRadius < player2Pos &&
 		ballPosY >= canvasHeight.value - paddleWidth && ballPosY <= canvasHeight.value
 	) {
 		ballSpeedX = -Math.abs(ballSpeedX);
-		ballPosX   = player2Pos - ballRaduis;
+		ballPosX   = player2Pos - ballRadius;
 
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
 	}
 
 	if (
-		ballPosX - ballRaduis <= player2Pos + paddleHeight &&
-		ballPosX + ballRaduis > player2Pos + paddleHeight && ballPosY >= canvasHeight.value - paddleWidth && ballPosY <= canvasHeight.value
+		ballPosX - ballRadius <= player2Pos + paddleHeight &&
+		ballPosX + ballRadius > player2Pos + paddleHeight && ballPosY >= canvasHeight.value - paddleWidth && ballPosY <= canvasHeight.value
 	) {
 		ballSpeedX = Math.abs(ballSpeedX);
-		ballPosX   = player2Pos + paddleHeight + ballRaduis;
+		ballPosX   = player2Pos + paddleHeight + ballRadius;
 
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
@@ -187,34 +184,31 @@ const updateBallPosition = () => {
 
 
 
-	if (ballPosY - ballRaduis <= paddleWidth && (ballPosX >= player1Pos && ballPosX <= player1Pos + paddleHeight)){
+	if (ballPosY - ballRadius <= paddleWidth && (ballPosX >= player1Pos && ballPosX <= player1Pos + paddleHeight)){
 		ballSpeedY = -ballSpeedY
-
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
 	}
 
 	if (
-		ballPosX + ballRaduis >= player1Pos &&
-		ballPosX - ballRaduis < player1Pos &&
-		ballPosY - ballRaduis <= paddleWidth &&
-		ballPosY + ballRaduis >= 0
+		ballPosX + ballRadius >= player1Pos &&
+		ballPosX - ballRadius < player1Pos &&
+		ballPosY - ballRadius <= paddleWidth &&
+		ballPosY + ballRadius >= 0
 	) {
 		ballSpeedX = -Math.abs(ballSpeedX)
-		ballPosX   = player1Pos - ballRaduis
+		ballPosX   = player1Pos - ballRadius
 
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
 	}
 
 	if (
-		ballPosX - ballRaduis <= player1Pos + paddleHeight &&
-		ballPosX + ballRaduis > player1Pos + paddleHeight &&
-		ballPosY - ballRaduis <= paddleWidth &&
-		ballPosY + ballRaduis >= 0
+		ballPosX - ballRadius <= player1Pos + paddleHeight &&
+		ballPosX + ballRadius > player1Pos + paddleHeight &&
+		ballPosY - ballRadius <= paddleWidth &&
+		ballPosY + ballRadius >= 0
 	) {
 		ballSpeedX = Math.abs(ballSpeedX)
-		ballPosX   = player1Pos + paddleHeight + ballRaduis
+		ballPosX   = player1Pos + paddleHeight + ballRadius
 
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
@@ -254,9 +248,9 @@ const resetBall = (server: 1 | 2) => {
 
 const drawBall = () => {
 	if (ctx.value) {
-		ctx.value.fillStyle = 'white'
+		ctx.value.fillStyle = settings.value.ball
 		ctx.value.beginPath()
-		ctx.value.arc(ballPosX, ballPosY, ballRaduis, 0, Math.PI * 2)
+		ctx.value.arc(ballPosX, ballPosY, ballRadius, 0, Math.PI * 2)
 		ctx.value.fill()
 		ctx.value.closePath()
 	}
@@ -266,7 +260,7 @@ const drawScores = () => {
 	if (ctx.value) {
 		ctx.value.save()
 		ctx.value.font = '50px sans-serif'
-		ctx.value.fillStyle = '#fff'
+		ctx.value.fillStyle = settings.value.score
 		ctx.value.textAlign = 'center'
 
 		ctx.value.fillText(
@@ -306,7 +300,7 @@ const drawDivider = () => {
 	if (ctx.value)
 	{
 		ctx.value.save();
-		ctx.value.strokeStyle = 'white'
+		ctx.value.strokeStyle = settings.value.divider
 		ctx.value.lineWidth = 2
 		ctx.value.setLineDash([10, 10])
 		ctx.value.beginPath()
@@ -317,36 +311,49 @@ const drawDivider = () => {
 	}
 }
 
+const drawBackground = () => {
+	if (ctx.value) {
+		ctx.value.fillStyle = settings.value.background
+		ctx.value.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
+	}
+}
+
 const drawPaddles = () => {
 	if (ctx.value) {
-		ctx.value.fillStyle = 'red'
-		ctx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
+		ctx.value.fillStyle = settings.value.paddle
+		// ctx.value.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
 		ctx.value.fillRect(player1Pos, 0, paddleHeight, paddleWidth)
 		ctx.value.fillRect(player2Pos, canvasHeight.value - paddleWidth, paddleHeight, paddleWidth)
-
 	}
 }
 
 const render = () => {
+	drawBackground()
 	drawPaddles()
 	drawDivider()
 	drawBall()
 	drawScores()
-	if (isWaiting && message.value)
-		drawMessage()
+	if (isWaiting && message.value) drawMessage()
 }
+
+let targetX = 0;
 
 const startGame = (mode: string) => {
 	gameMode.value = mode
+	if (gameMode.value === "solo") {
+		setInterval(() => {
+			targetX = predictBallX()
+			const error = (Math.random() - 0.5) * 100
+			targetX += error
+		}, 1000)
+	}
 	setTimeout(gameLoop, 1000)
 }
 
 const gameLoop = () => {
-    pong_bot()
+    if (gameMode.value === 'solo') pong_bot()
 	updatePaddlesPosition()
-	if (!isWaiting) {
-		updateBallPosition()
-    }
+	if (!isWaiting) updateBallPosition()
 	render()
 	requestAnimationFrame(gameLoop)
 }
@@ -356,15 +363,19 @@ const gameLoop = () => {
 	<div class="flex flex-col h-screen justify-center items-center">
 <!--		<Header></Header>-->
 		<div v-if="!gameMode" class="w-full h-full bg-[#000] absolute z-[1] opacity-60"></div>
-		<div v-if="!gameMode" class="absolute z-10 space-y-7 flex flex-col">
-			<h2 class="text-white font-bold text-4xl">Choose Gamemode</h2>
-			<button disabled class="text-black py-9 bg-gray-300 opacity-50 rounded-md text-lg cursor-not-allowed">Solo (IA)</button>
-			<button @click="startGame('multi')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
-			<button @click="" class="text-black py-9 bg-[#fff] rounded-md text-lg bg-gray-300 opacity-50 cursor-not-allowed" disabled>Tournament (Local)</button>
+		<div v-if="!gameMode" class="absolute z-10 space-y-6 flex flex-col w-2/3 md:flex-row md:justify-around md:items-center md:space-x-10">
+			<h2 class="text-white font-bold text-5xl">| Pong .</h2>
+			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
+				<button @click="startGame('solo')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
+				<button @click="startGame('multi')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
+				<button class="text-black py-9 bg-[#fff] rounded-md text-lg opacity-50 cursor-not-allowed" disabled>Tournament (Local)</button>
+			</div>
+			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
 		</div>
 		<div class=" bg-gray-800 w-[95%] h-[100vh]">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
+		<Settings v-model:visible="showSettings" v-model:settings="settings"></Settings>
 	</div>
 <!--	<div class="flex flex-col min-h-screen items-center justify-center">-->
 <!--		<Header></Header>-->
