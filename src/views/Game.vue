@@ -29,6 +29,10 @@ const speedBoost = 1.05
 let isWaiting = false
 const message = ref<string>('')
 const gameMode = ref<string | null>(null)
+let botInterval: number
+
+let player1Name = ref<string>('IA')
+let player2Name = ref<string>('Azaleee')
 
 const showSettings = ref(false)
 const settings = ref({
@@ -80,13 +84,56 @@ onMounted(() => {
 	window.addEventListener('resize', updateCanvasDimensions)
 	window.addEventListener('keydown', handleKeyDown)
 	window.addEventListener('keyup', handleKeyUp)
+
+	if (pongCanvas.value) {
+		pongCanvas.value.addEventListener('touchstart', handleTouchStart, { passive: false })
+		pongCanvas.value.addEventListener('touchmove', handleTouchMove, { passive: false })
+		pongCanvas.value.addEventListener('touchend', handleTouchEnd, { passive: false })
+	}
 })
 
 onBeforeUnmount(() => {
 	window.removeEventListener('resize', updateCanvasDimensions)
 	window.removeEventListener('keydown', handleKeyDown)
 	window.removeEventListener('keyup', handleKeyUp)
+	if (pongCanvas.value) {
+		pongCanvas.value.removeEventListener('touchstart', handleTouchStart)
+		pongCanvas.value.removeEventListener('touchmove', handleTouchMove)
+		pongCanvas.value.removeEventListener('touchend', handleTouchEnd)
+	}
 })
+
+function clamp(val: number, min: number, max: number) {
+	return Math.max(min, Math.min(max, val))
+}
+
+const handleTouchMove = (e: TouchEvent) => {
+	e.preventDefault()
+	if (!pongCanvas.value) return
+
+	const rect = pongCanvas.value.getBoundingClientRect()
+
+	for (let i = 0; i < e.touches.length; i++) {
+		const touch = e.touches[i]
+		const x = touch.clientX - rect.left
+		const y = touch.clientY - rect.top
+		const targetPos = clamp(x - paddleHeight / 2, 0, canvasWidth.value - paddleHeight)
+		if (y < canvasHeight.value / 2) {
+			if (gameMode.value != 'solo') player1Pos = targetPos
+		} else {
+			player2Pos = targetPos
+		}
+	}
+}
+
+const handleTouchStart = (e: TouchEvent) => {
+	e.preventDefault()
+	handleTouchMove(e)
+}
+
+const handleTouchEnd = (e: TouchEvent) => {
+	e.preventDefault()
+}
 
 let leftKey1 = false
 let rightKey1 = false
@@ -279,12 +326,12 @@ const drawScores = () => {
 	}
 }
 
-const drawMessage = () => {
+const drawMessage = (color: string) => {
 	if (ctx.value)
 	{
 		ctx.value.save()
 		ctx.value.font = '40px sans-serif'
-		ctx.value.fillStyle = 'yellow'
+		ctx.value.fillStyle = color
 		ctx.value.textAlign = 'center'
 
 		ctx.value.fillText(
@@ -295,6 +342,35 @@ const drawMessage = () => {
 		ctx.value.restore()
 	}
 }
+
+// const drawPlayerName = () => {
+// 	if (ctx.value)
+// 	{
+// 		ctx.value.save()
+// 		ctx.value.font = '40px sans-serif'
+// 		ctx.value.fillStyle = 'white'
+// 		// ctx.value.textAlign = 'center'
+//
+// 		ctx.value.fillText(
+// 			player2Name.value,
+// 			canvasWidth.value / 2,
+// 			canvasHeight.value / 2 - 20
+// 		)
+// 		ctx.value.restore()
+//
+// 		ctx.value.save()
+// 		ctx.value.font = '40px sans-serif'
+// 		ctx.value.fillStyle = 'white'
+// 		// ctx.value.textAlign = 'center'
+//
+// 		ctx.value.fillText(
+// 			player1Name.value,
+// 			canvasWidth.value / 2,
+// 			canvasHeight.value / 2 - 20
+// 		)
+// 		ctx.value.restore()
+// 	}
+// }
 
 const drawDivider = () => {
 	if (ctx.value)
@@ -333,7 +409,7 @@ const render = () => {
 	drawDivider()
 	drawBall()
 	drawScores()
-	if (isWaiting && message.value) drawMessage()
+	if (isWaiting && message.value) drawMessage('yellow')
 }
 
 let targetX = 0;
@@ -341,20 +417,48 @@ let targetX = 0;
 const startGame = (mode: string) => {
 	gameMode.value = mode
 	if (gameMode.value === "solo") {
-		setInterval(() => {
+		botInterval = setInterval(() => {
 			targetX = predictBallX()
 			const error = (Math.random() - 0.5) * 100
 			targetX += error
 		}, 1000)
 	}
+	resetBall(2) // For choose random ball vector at game start
 	setTimeout(gameLoop, 1000)
 }
 
+const resetGame = () => {
+	if (gameMode.value === 'solo') clearInterval(botInterval)
+	player2Score.value = 0;
+	player1Score.value = 0;
+	player1Pos = (canvasWidth.value - paddleHeight) / 2
+	player2Pos = (canvasWidth.value - paddleHeight) / 2
+	ballPosX = canvasWidth.value / 2
+	ballPosY = canvasHeight.value / 2
+	ballSpeedX = basePaddleSpeed
+	ballSpeedY = basePaddleSpeed
+	isWaiting = false
+	render()
+}
+
+const winGame = (player: string) => {
+	message.value = player + ' win !'
+	drawMessage('red')
+	setTimeout(() => {
+		resetGame()
+		message.value = ''
+		gameMode.value = null
+	}, 2000)
+}
+
 const gameLoop = () => {
-    if (gameMode.value === 'solo') pong_bot()
+	if (gameMode.value === 'solo') pong_bot()
 	updatePaddlesPosition()
 	if (!isWaiting) updateBallPosition()
+	if (player1Score.value == 11) { winGame(player1Name.value); return }
+	if (player2Score.value == 11) { winGame(player2Name.value); return }
 	render()
+	// drawPlayerName()
 	requestAnimationFrame(gameLoop)
 }
 </script>
