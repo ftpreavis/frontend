@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Header from '@/components/Header.vue'
 import Settings from '@/components/PongSettings.vue'
+import ModeSettings from '@/components/PongModeSettings.vue'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
@@ -21,18 +22,21 @@ const player2Score = ref(0)
 const ballRadius = 15
 let ballPosX = 0
 let ballPosY = 0
-const basePaddleSpeed = 3
+let baseBallSpeed = 3
+let basePaddleSpeed = 3
 let initialPaddleSpeed = 0
-let ballSpeedX = basePaddleSpeed
-let ballSpeedY = basePaddleSpeed
+let ballSpeedX
+let ballSpeedY
 const speedBoost = 1.05
 let isWaiting = false
 const message = ref<string>('')
 const gameMode = ref<string | null>(null)
 let botInterval: number
 
-let player1Name = ref<string>('IA')
-let player2Name = ref<string>('Azaleee')
+const player1Name = ref<string>('BRR BRR')
+const player2Name = ref<string>('Azaleee')
+
+let animationId: number | null = null
 
 const showSettings = ref(false)
 const settings = ref({
@@ -42,6 +46,10 @@ const settings = ref({
 	divider:	'#FFFFFF',
 	score:		'#FFFFFF'
 })
+
+const showModeSettings = ref(false)
+const modeSettingsMode = ref<'solo' | 'multi' | null>(null)
+const cheats =ref({ enabled: false, ballSpeed: baseBallSpeed, paddleSpeed: basePlayerSpeed })
 
 watch(settings, () => {
 	nextTick(render)
@@ -190,8 +198,26 @@ const pong_bot = () => {
 }
 
 const updateBallPosition = () => {
+	if (isWaiting) return
+
 	ballPosX += ballSpeedX
 	ballPosY += ballSpeedY
+
+	console.log('je rentre deux fois pcq je suis un fdp de merde')
+	if (ballPosY - ballRadius <= 0) {
+		console.log('🏆 Player 2 score', { frame: performance.now(), ballPosX, ballPosY })
+		player2Score.value++
+		message.value = player2Name.value + ' scored !'
+		// console.log("Player 2 scored : " + ballPosY)
+		resetBall(1)
+		return
+	} else if (ballPosY + ballRadius >= canvasHeight.value) {
+		player1Score.value++
+		message.value = player1Name.value + ' scored !'
+		console.log("Player 1 scored : (height) -> " + canvasHeight.value + ' ' + ballPosY)
+		resetBall(2)
+		return
+	}
 
 	if (ballPosX - ballRadius <= 0 || ballPosX + ballRadius >= canvasWidth.value) {
 		ballSpeedX = -ballSpeedX
@@ -241,9 +267,9 @@ const updateBallPosition = () => {
 		ballPosY - ballRadius <= paddleWidth &&
 		ballPosY + ballRadius >= 0
 	) {
+		console.log('⛔ collision paddle 2 just after score', { frame: performance.now(), ballPosX, ballPosY })
 		ballSpeedX = -Math.abs(ballSpeedX)
 		ballPosX   = player1Pos - ballRadius
-
 		ballSpeedX *= speedBoost
 		ballSpeedY *= speedBoost
 	}
@@ -261,33 +287,22 @@ const updateBallPosition = () => {
 		ballSpeedY *= speedBoost
 	}
 
-
-	if (ballPosY <= 0) {
-		player2Score.value++
-		message.value = 'Player 2 scored !'
-		resetBall(1)
-	}
-	if (ballPosY >= canvasHeight.value) {
-		player1Score.value++
-		message.value = 'Player 1 scored !'
-		resetBall(2)
-	}
-
 }
 
 const resetBall = (server: 1 | 2) => {
 	ballSpeedX = 0
 	ballSpeedY = 0
-	ballPosX = canvasWidth.value / 2
-	ballPosY = canvasHeight.value / 2
+	ballPosX = (canvasWidth.value  - ballRadius * 2) / 2 + ballRadius
+	ballPosY = (canvasHeight.value - ballRadius * 2) / 2 + ballRadius
 	isWaiting = true
 	setTimeout(() => {
-		const maxX = initialPaddleSpeed * 0.9
-		const minX = initialPaddleSpeed * 0.1
+		const maxX = 0.9
+		const minX = 0.1
 		const sign = Math.random() < 0.5 ? 1 : -1
 		const absX = minX + Math.random() * (maxX - minX)
 		ballSpeedX = sign * absX
-		ballSpeedY = server === 2 ? -initialPaddleSpeed : initialPaddleSpeed
+		ballSpeedY = server === 2 ? -baseBallSpeed : baseBallSpeed
+		// console.log(ballSpeedY)
 		isWaiting = false
 		message.value = ''
 	}, 1000)
@@ -414,7 +429,28 @@ const render = () => {
 
 let targetX = 0;
 
+const playGame = (payload: never) => {
+	console.log('▶️ playGame called, cheats.enabled =', payload.cheats.enabled)
+	cheats.value = payload.cheats
+	player1Name.value = payload.player1Name
+	if (cheats.value.enabled) {
+		baseBallSpeed = cheats.value.ballSpeed
+		playerSpeed = cheats.value.paddleSpeed
+	} else {
+		baseBallSpeed = 3
+		playerSpeed = 6
+	}
+	startGame(modeSettingsMode.value)
+}
+
 const startGame = (mode: string) => {
+	console.log('⚡ startGame called, mode =', mode)
+	if (animationId !== null) {
+		cancelAnimationFrame(animationId)
+		animationId = null
+	}
+	if (botInterval) clearInterval(botInterval)
+	resetGame()
 	gameMode.value = mode
 	if (gameMode.value === "solo") {
 		botInterval = setInterval(() => {
@@ -424,7 +460,7 @@ const startGame = (mode: string) => {
 		}, 1000)
 	}
 	resetBall(2) // For choose random ball vector at game start
-	setTimeout(gameLoop, 1000)
+	gameLoop()
 }
 
 const resetGame = () => {
@@ -454,12 +490,12 @@ const winGame = (player: string) => {
 const gameLoop = () => {
 	if (gameMode.value === 'solo') pong_bot()
 	updatePaddlesPosition()
-	if (!isWaiting) updateBallPosition()
+	updateBallPosition()
 	if (player1Score.value == 11) { winGame(player1Name.value); return }
 	if (player2Score.value == 11) { winGame(player2Name.value); return }
 	render()
 	// drawPlayerName()
-	requestAnimationFrame(gameLoop)
+	animationId = requestAnimationFrame(gameLoop)
 }
 </script>
 
@@ -470,8 +506,8 @@ const gameLoop = () => {
 		<div v-if="!gameMode" class="absolute z-10 space-y-6 flex flex-col w-2/3 md:flex-row md:justify-around md:items-center md:space-x-10">
 			<h2 class="text-white font-bold text-5xl">| Pong .</h2>
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
-				<button @click="startGame('solo')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
-				<button @click="startGame('multi')" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
+				<button @click="showModeSettings = true; modeSettingsMode = 'solo'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
+				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
 				<button class="text-black py-9 bg-[#fff] rounded-md text-lg opacity-50 cursor-not-allowed" disabled>Tournament (Local)</button>
 			</div>
 			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
@@ -480,6 +516,7 @@ const gameLoop = () => {
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
 		<Settings v-model:visible="showSettings" v-model:settings="settings"></Settings>
+		<ModeSettings v-model:visible="showModeSettings" :cheats="cheats" :mode="modeSettingsMode" :player1-name="player1Name" @play="playGame"></ModeSettings>
 	</div>
 <!--	<div class="flex flex-col min-h-screen items-center justify-center">-->
 <!--		<Header></Header>-->

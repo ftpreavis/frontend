@@ -105,7 +105,7 @@ const close = () => emit('update:visible', false)
 </script>
 
 <template>
-	<div v-if="props.visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+	<div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
 		<div class="bg-white rounded-lg shadow-lg p-6 h-[70vh] flex flex-col w-[300px]">
 			<h3 class="text-center text-lg">Settings</h3>
 			<p class="text-sm text-gray-500">Preview</p>
