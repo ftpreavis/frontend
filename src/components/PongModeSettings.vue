@@ -7,9 +7,14 @@ const props = defineProps<{
 	player1Name: string
 }>()
 
+interface playPayload {
+	cheats: { enabled: boolean; ballSpeed: number; paddleSpeed: number }
+	player1Name: string
+}
+
 const emit = defineEmits<{
 	(event: 'update:visible', value: boolean): void,
-	(event: 'play', payload: never) : void
+	(event: 'play', payload: playPayload) : void
 }>()
 
 const localCheats = ref({ ...props.cheats })
