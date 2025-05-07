@@ -25,8 +25,8 @@ let ballPosY = 0
 let baseBallSpeed = 3
 let basePaddleSpeed = 3
 let initialPaddleSpeed = 0
-let ballSpeedX
-let ballSpeedY
+let ballSpeedX: number
+let ballSpeedY: number
 const speedBoost = 1.05
 let isWaiting = false
 const message = ref<string>('')
@@ -202,19 +202,14 @@ const updateBallPosition = () => {
 
 	ballPosX += ballSpeedX
 	ballPosY += ballSpeedY
-
-	console.log('je rentre deux fois pcq je suis un fdp de merde')
 	if (ballPosY - ballRadius <= 0) {
-		console.log('🏆 Player 2 score', { frame: performance.now(), ballPosX, ballPosY })
 		player2Score.value++
 		message.value = player2Name.value + ' scored !'
-		// console.log("Player 2 scored : " + ballPosY)
 		resetBall(1)
 		return
 	} else if (ballPosY + ballRadius >= canvasHeight.value) {
 		player1Score.value++
 		message.value = player1Name.value + ' scored !'
-		console.log("Player 1 scored : (height) -> " + canvasHeight.value + ' ' + ballPosY)
 		resetBall(2)
 		return
 	}
@@ -267,7 +262,6 @@ const updateBallPosition = () => {
 		ballPosY - ballRadius <= paddleWidth &&
 		ballPosY + ballRadius >= 0
 	) {
-		console.log('⛔ collision paddle 2 just after score', { frame: performance.now(), ballPosX, ballPosY })
 		ballSpeedX = -Math.abs(ballSpeedX)
 		ballPosX   = player1Pos - ballRadius
 		ballSpeedX *= speedBoost
@@ -429,8 +423,7 @@ const render = () => {
 
 let targetX = 0;
 
-const playGame = (payload: never) => {
-	console.log('▶️ playGame called, cheats.enabled =', payload.cheats.enabled)
+const playGame = (payload: { cheats: { enabled: boolean; ballSpeed: number; paddleSpeed: number }, player1Name: string }) => {
 	cheats.value = payload.cheats
 	player1Name.value = payload.player1Name
 	if (cheats.value.enabled) {
@@ -440,11 +433,10 @@ const playGame = (payload: never) => {
 		baseBallSpeed = 3
 		playerSpeed = 6
 	}
-	startGame(modeSettingsMode.value)
+	if (modeSettingsMode.value) startGame(modeSettingsMode.value)
 }
 
 const startGame = (mode: string) => {
-	console.log('⚡ startGame called, mode =', mode)
 	if (animationId !== null) {
 		cancelAnimationFrame(animationId)
 		animationId = null
