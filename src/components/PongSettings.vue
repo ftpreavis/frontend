@@ -105,8 +105,8 @@ const close = () => emit('update:visible', false)
 </script>
 
 <template>
-	<div v-if="props.visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-		<div class="bg-white rounded-lg shadow-lg p-6 h-[70vh] flex flex-col w-4/5">
+	<div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+		<div class="bg-white rounded-lg shadow-lg p-6 h-[70vh] flex flex-col w-[300px]">
 			<h3 class="text-center text-lg">Settings</h3>
 			<p class="text-sm text-gray-500">Preview</p>
 			<div class="mb-4">
@@ -116,7 +116,7 @@ const close = () => emit('update:visible', false)
 			<div class="flex-1 overflow-y-auto mb-4 space-y-4">
 				<div v-for="(field, key) in colorFields" :key="key" class="">
 					<p class="text-sm mb-2">{{ field.label }}</p>
-					<input type="color" v-model="local[key]">
+					<input type="color" v-model="local[key]" class="border-2 rounded h-10 w-12">
 				</div>
 			</div>
 			<hr class="my-3">
