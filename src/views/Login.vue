@@ -1,4 +1,20 @@
 <script lang="ts" setup>
+import axios from 'axios'
+import { onMounted } from 'vue'
+
+onMounted(async () => {
+    axios.post('http://localhost:4003/auth/login', {
+        username: 'admin',
+        password: 'admin'
+    })
+    .then(response => {
+        console.log(response.data)
+    })
+    .catch(error => {
+        console.error(error)
+    })
+
+})
 // COURAGE
 </script>
 
