@@ -3,8 +3,8 @@ import axios from 'axios'
 import { onMounted } from 'vue'
 
 onMounted(async () => {
-    axios.post('http://localhost:4003/auth/login', {
-        username: 'admin',
+    axios.post('/api/auth/login', {
+        identifier: 'admin',
         password: 'admin'
     })
     .then(response => {
