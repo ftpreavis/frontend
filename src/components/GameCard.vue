@@ -27,7 +27,7 @@ defineProps({
 </script>
 
 <template>
-	<div class="relative bg-white rounded-2xl shadow-lg overflow-hidden w-full">
+	<div class="relative bg-white rounded-2xl shadow-lg overflow-hidden w-full cursor-pointer">
 		<div v-if="tag" :class="{'bg-blue-500': tag == t('newTag'), 'bg-yellow-500': tag == t('topTag')}" class="absolute top-2 left-2 text-white text-xs font-bold py-1 px-2 rounded-full">
 			{{ tag }}
 		</div>

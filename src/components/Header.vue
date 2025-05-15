@@ -17,7 +17,6 @@ function changeLanguage() {
 }
 
 const router = useRouter()
-const isLoggedIn = ref(false)
 const go = (path: string) => {
 	router.push(path)
 }
@@ -55,25 +54,7 @@ const go = (path: string) => {
 					<option value="fr">FR</option>
 				</select>
 			</nav>
-			<div class="flex items-center space-x-2">
-				<template v-if="!isLoggedIn">
-					<button
-						@click="go('/login')"
-						class="
-						text-white font-[Kanit] px-4 py-2 rounded-lg shadow-lg"
-					>
-						Login
-					</button>
-					<button
-						@click="go('/signup')"
-						class="text-[#3589D7] bg-white font-[Kanit] px-4 py-2 rounded-lg shadow-lg"
-					>
-						Sign Up
-					</button>
-				</template>
-				<template v-else>
-				</template>
-			</div>
+
 		</div>
 	</header>
 </template>

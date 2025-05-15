@@ -2,10 +2,12 @@
 import router from '@/router';
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { useAuth } from "@/store/auth.ts";
 
 const username = ref<string>('')
 const password = ref<string>('')
 const errors = ref<{ username?: string; password?: string}>({})
+const authStore = useAuth()
 const loginError = ref<string>('')
 
 const login = async () => {
@@ -17,16 +19,7 @@ const login = async () => {
     if (!password.value){
         errors.value.password = "Le mot de passe est requis."
     }
-    if (username.value && password.value)
-    {
-        const response = await axios.post('/api/auth/login', {
-            identifier: username.value,
-            password: password.value,
-        })
-        console.log(response.data)
-        localStorage.setItem('token', response.data.token)
-        router.push('/')
-    }
+    if (username.value && password.value) await authStore.authenticate(username.value, password.value)
 }
 
 const googleLogout = async() => {
@@ -41,7 +34,7 @@ const normalLogout = async () => {
 }
 
 const googleConnect = async() => {
-    window.location.href = '/api/auth/google'
+    await authStore.googleConnect()
 }
 
 </script>
