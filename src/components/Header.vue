@@ -23,6 +23,9 @@ const router = useRouter()
 const go = (path: string) => {
 	router.push(path)
 }
+
+const profileImage = "https://d3nn82uaxijpm6.cloudfront.net/assets/avatar/athlete/large-800a7033cc92b2a5548399e26b1ef42414dd1a9cb13b99454222d38d58fd28ef.png"
+const userId = 42
 </script>
 
 <template>
@@ -34,7 +37,10 @@ const go = (path: string) => {
 			<div v-if="!authStore.isAuthenticated" @click="go('/signup')" class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
 				sign up
 			</div>
-			<div v-else><span class="text-black">User connecte</span></div>
+			<div v-else>
+				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(${profileImage})`}" @click="go('/profile/' + userId)">
+				</div>
+			</div>
 <!--			<nav class="flex space-x-5">-->
 <!--				<button-->
 <!--					@click="go('/')"-->
