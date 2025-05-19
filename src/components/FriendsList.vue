@@ -18,7 +18,7 @@ const friendsList = ref([
 
 const go = (path: string) => {
 	close()
-	router.push(path).then(() => {window.location.reload()})
+	router.push(path)
 }
 
 const close = () => emit('update:visible', false)

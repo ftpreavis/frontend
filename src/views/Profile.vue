@@ -1,31 +1,39 @@
 <script setup lang="ts">
-// import {useAuth} from "@/store/auth.ts";
-// import {onMounted} from "vue";
-//
-// const authStore = useAuth()
-//
-// onMounted(async () => {
-// 	if (authStore.token && !authStore.user) await authStore.fetchUser()
-// })
-
+import {onMounted} from "vue";
 import Header from "@/components/Header.vue";
 import EditProfile from "@/components/EditProfile.vue";
 import FriendsList from "@/components/FriendsList.vue";
 import {useRoute} from "vue-router";
-import {computed, reactive, ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
+import {useAuth} from "../store/auth.ts";
 
 const showEditProfile = ref(false)
 const showFriendsList = ref(false)
 
+const authStore = useAuth()
 const route = useRoute()
-const userId = ref(route.params.userId)
 
-const currentUser = ref({id: '42', username: 'NovaALaProd'})
-const isOwner = computed(() => currentUser.value.id === userId)
+const loadProfile = async (id: number) => await authStore.fetchUserById(id)
+
+onMounted(() => {
+	try {
+		loadProfile(Number(route.params.userId))
+	} catch {
+		console.log('ad')
+	}
+})
+
+watch(
+	() => route.params.userId,
+	(newId) => {
+		try { loadProfile(Number(newId)) } catch {console.log('ad')}
+	})
+
+const isOwner = computed(() =>
+	authStore.user?.id === authStore.userId
+)
 const isFriend = false
 
-const profileName = "CiscoGaming"
-const profileEmail = "oshoffpro@gmail.com"
 const profileImage = "https://d3nn82uaxijpm6.cloudfront.net/assets/avatar/athlete/large-800a7033cc92b2a5548399e26b1ef42414dd1a9cb13b99454222d38d58fd28ef.png"
 const nbFriends = 243
 const profileBio = "Salut moi c'est Matias"
@@ -44,12 +52,12 @@ const lastGames = reactive([
 <template>
 	<div class="bg-[#F8F6F0] h-screen">
 		<Header></Header>
-		<div class="flex flex-col">
+		<div class="flex flex-col" v-if="authStore.user">
 			<div class="flex flex-col bg-[#fff] mt-3 px-8 py-4">
 				<div class="flex items-center">
 					<div class="w-[90px] h-[90px] rounded-full bg-cover" :style="{ backgroundImage: `url(${profileImage})`}">
 					</div>
-					<span class="ml-5 text-lg font-semibold">{{profileName}} {{userId}}</span>
+					<span class="ml-5 text-lg font-semibold">{{authStore.user.username}}</span>
 				</div>
 				<span class="mt-4 text-sm">{{ profileBio }}</span>
 				<div class="mt-3 flex flex-row items-center justify-between">
@@ -117,6 +125,9 @@ const lastGames = reactive([
 					</table>
 				</div>
 			</div>
+		</div>
+		<div v-else>
+			Pas user
 		</div>
 	</div>
 	<EditProfile v-model:visible="showEditProfile"></EditProfile>

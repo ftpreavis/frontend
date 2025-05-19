@@ -14,7 +14,7 @@ const routes = [
 	{ path: '/pong', name: 'Pong', component: Pong },
 	{ path: '/login', name: 'Login', component: Login },
 	{ path: '/signup', name: 'SignUp', component: SignUp },
-	{ path: '/profile/:userId', name: 'Profile', component: Profile, meta: { requiresAuth: true } },
+	{ path: '/profile/:userId', name: 'Profile', component: Profile, meta: { requiresAuth: true, props: true } },
 ]
 
 const router = createRouter({

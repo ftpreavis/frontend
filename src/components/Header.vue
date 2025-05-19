@@ -37,8 +37,9 @@ const userId = 42
 			<div v-if="!authStore.isAuthenticated" @click="go('/signup')" class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
 				sign up
 			</div>
-			<div v-else>
-				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(${profileImage})`}" @click="go('/profile/' + userId)">
+			<div v-else class="w-[70px] flex flex-row items-center">
+				<ChatBubbleOvalLeftEllipsisIcon class="h-6 w-6" stroke="pink"></ChatBubbleOvalLeftEllipsisIcon>
+				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(${profileImage})`}" @click="go('/profile/' + authStore.userId)">
 				</div>
 			</div>
 <!--			<nav class="flex space-x-5">-->
