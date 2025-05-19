@@ -8,6 +8,12 @@ const password = ref<string>('')
 const errors = ref<{ username?: string; password?: string}>({})
 const loginError = ref<string>('')
 
+const setCookies = (name: string, value: string) => {
+    let d = new Date();
+    d.setTime(d.getTime() + 7 * 1 * 24 * 60 * 60 * 1000);
+    document.cookie = name + "=" + value + "; expires=" + d + "; path=/api/auth" + "; samesite=Lax"
+}
+
 const login = async () => {
     errors.value = {}
 
@@ -24,8 +30,8 @@ const login = async () => {
             password: password.value,
         })
         console.log(response.data)
-        localStorage.setItem('token', response.data.token)
-        router.push('/')
+        setCookies("access_token", response.data.token)
+        // router.push('/')
     }
 }
 
@@ -37,7 +43,7 @@ const googleLogout = async() => {
 const normalLogout = async () => {
     const response = await axios.get('/api/auth/normalLogout')
     console.log(response.data)
-    localStorage.removeItem('token')
+    document.cookie = 'access_token=; path=/api/auth; expires=0'
 }
 
 const googleConnect = async() => {
