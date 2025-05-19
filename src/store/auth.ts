@@ -25,7 +25,6 @@ export const useAuth = defineStore('auth', () => {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
 			console.log('Login response:', response.data);
 			localStorage.setItem('token', response.data.tokens)
-
 			await router.push('/')
 		} catch (error){
 			loginError.value = "Nom d'utilisateur ou mot de passe incorect"

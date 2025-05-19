@@ -10,13 +10,15 @@
 
 import Header from "@/components/Header.vue";
 import EditProfile from "@/components/EditProfile.vue";
+import FriendsList from "@/components/FriendsList.vue";
 import {useRoute} from "vue-router";
 import {computed, reactive, ref} from "vue";
 
 const showEditProfile = ref(false)
+const showFriendsList = ref(false)
 
 const route = useRoute()
-const userId = route.params.userId
+const userId = ref(route.params.userId)
 
 const currentUser = ref({id: '42', username: 'NovaALaProd'})
 const isOwner = computed(() => currentUser.value.id === userId)
@@ -51,23 +53,23 @@ const lastGames = reactive([
 				</div>
 				<span class="mt-4 text-sm">{{ profileBio }}</span>
 				<div class="mt-3 flex flex-row items-center justify-between">
-					<div class="flex flex-col">
+					<button class="flex flex-col cursor-pointer text-left" @click="showFriendsList = true">
 						<span class="text-gray-400 text-sm my-1">Friends</span>
-						<span class="font-semibold cursor-pointer">{{ nbFriends }}</span>
-					</div>
+						<span class="font-semibold">{{ nbFriends }}</span>
+					</button>
 					<div class="flex">
-						<div v-if="!isOwner && isFriend" class="cursor-pointer border py-2 px-6 rounded-lg
+						<button v-if="!isOwner && isFriend" class="cursor-pointer border py-2 px-6 rounded-lg
 						 hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
 							<span>Message</span>
-						</div>
-						<div v-else-if="!isOwner" class="cursor-pointer border py-2 px-6 rounded-lg
+						</button>
+						<button v-else-if="!isOwner" class="cursor-pointer border py-2 px-6 rounded-lg
 						 hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
 							<span>Add to friend</span>
-						</div>
-						<div @click="showEditProfile = true" v-if="isOwner" class="cursor-pointer border py-2 px-6 rounded-lg
+						</button>
+						<button @click="showEditProfile = true" v-if="isOwner" class="cursor-pointer border py-2 px-6 rounded-lg
 						 hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
 							Edit profile
-						</div>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -118,6 +120,7 @@ const lastGames = reactive([
 		</div>
 	</div>
 	<EditProfile v-model:visible="showEditProfile"></EditProfile>
+	<FriendsList v-model:visible="showFriendsList"></FriendsList>
 <!--	<div v-if="!authStore.user">Chargemednt</div>-->
 <!--	<div v-else><h1>{{authStore.user.username}} fgg</h1> <p>sdf</p></div>-->
 </template>
