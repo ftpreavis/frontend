@@ -6,6 +6,7 @@ import ChooseGameMode from '@/views/ChooseGameMode.vue'
 import Login from '@/views/Login.vue'
 import SignUp from '@/views/SignUp.vue'
 import Profile from '@/views/Profile.vue'
+import ChatPage from "@/views/ChatPage.vue";
 import { useAuth } from '@/store/auth.ts'
 
 const routes = [
@@ -15,6 +16,7 @@ const routes = [
 	{ path: '/login', name: 'Login', component: Login },
 	{ path: '/signup', name: 'SignUp', component: SignUp },
 	{ path: '/profile/:userId', name: 'Profile', component: Profile, meta: { requiresAuth: true, props: true } },
+	{ path: '/chat', name: 'Chat', component: ChatPage, meta: { requiresAuth: true, props: true } }
 ]
 
 const router = createRouter({
