@@ -2,11 +2,17 @@
 import router from '@/router';
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
+import { useAuth } from "@/store/auth.ts";
+import Header from "@/components/Header.vue";
+import {parseAstAsync} from "vite";
 
 const username = ref<string>('')
 const password = ref<string>('')
 const errors = ref<{ username?: string; password?: string}>({})
+const authStore = useAuth()
 const loginError = ref<string>('')
+
+onMounted(() => {console.log('yo')})
 
 const login = async () => {
     errors.value = {}
@@ -17,16 +23,9 @@ const login = async () => {
     if (!password.value){
         errors.value.password = "Le mot de passe est requis."
     }
-    if (username.value && password.value)
-    {
-        const response = await axios.post('/api/auth/login', {
-            identifier: username.value,
-            password: password.value,
-        })
-        console.log(response.data)
-        localStorage.setItem('token', response.data.token)
-        router.push('/')
-    }
+    if (username.value && password.value) await authStore.authenticate(username.value, password.value)
+	// await router.push('/')
+		// .then(() => {window.location.reload()})
 }
 
 const googleLogout = async() => {
@@ -34,19 +33,16 @@ const googleLogout = async() => {
     console.log(response.data)
 }
 
-const normalLogout = async () => {
-    const response = await axios.get('/api/auth/normalLogout')
-    console.log(response.data)
-    localStorage.removeItem('token')
-}
+const normalLogout = async () => await authStore.logout()
 
 const googleConnect = async() => {
-    window.location.href = '/api/auth/google'
+    await authStore.googleConnect()
 }
 
 </script>
 
 <template>
+	<Header></Header>
 	<div class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
 		<h3 class="mb-3 text-center">Login</h3>
 		<div class="border flex flex-col p-4 space-y-3">
