@@ -6,6 +6,9 @@ import App from './App.vue'
 import router from './router'
 import { createI18n } from 'vue-i18n'
 import { createPinia } from "pinia";
+import axios from 'axios'
+
+axios.defaults.withCredentials = true
 
 const messages = {
 	en: {

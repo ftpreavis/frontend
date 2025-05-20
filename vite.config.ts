@@ -34,7 +34,15 @@ export default defineConfig({
 				target: 'http://lobby-service:3000',
 				changeOrigin: true,
 				rewrite: path => path.replace(/^\/socket\/lobby/, '')
-			}
+			},
+			// '/api/chat': {
+			// 	// 2️⃣ Ta vraie URL back
+			// 	target: 'http://localhost:5432',
+			// 	changeOrigin: true,
+			// 	secure: false,
+			// 	// 3️⃣ On réécrit /api/chat/... → /chat/...
+			// 	rewrite: (path) => path.replace(/^\/api\/chat/, '/chat')
+			// }
 		},
 	}
 })
