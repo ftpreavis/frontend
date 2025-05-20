@@ -22,12 +22,13 @@ const player2Score = ref(0)
 const ballRadius = 15
 let ballPosX = 0
 let ballPosY = 0
-let baseBallSpeed = 3
+let ballSpeed = 3
 let basePaddleSpeed = 3
 let initialPaddleSpeed = 0
-let ballSpeedX: number
-let ballSpeedY: number
+let ballAngleX: number
+let ballAngleY: number
 const speedBoost = 1.05
+const maxBounceAngle = Math.PI / 3
 let isWaiting = false
 const message = ref<string>('')
 const gameMode = ref<string | null>(null)
@@ -49,7 +50,7 @@ const settings = ref({
 
 const showModeSettings = ref(false)
 const modeSettingsMode = ref<'solo' | 'multi' | null>(null)
-const cheats =ref({ enabled: false, ballSpeed: baseBallSpeed, paddleSpeed: basePlayerSpeed })
+const cheats =ref({ enabled: false, ballSpeed: ballSpeed, paddleSpeed: basePlayerSpeed })
 
 watch(settings, () => {
 	nextTick(render)
@@ -171,8 +172,8 @@ const updatePaddlesPosition = () => {
 }
 
 const predictBallX = () => {
-	const timeToReach = (ballPosY - paddleWidth) / Math.abs(ballSpeedY)
-	let predictedX = ballPosX + ballSpeedX * timeToReach
+	const timeToReach = (ballPosY - paddleWidth) / Math.abs(ballAngleY)
+	let predictedX = ballPosX + ballAngleX * timeToReach
 
 	const fieldWidth = canvasWidth.value
 	const period = 2 * (fieldWidth)
@@ -200,8 +201,8 @@ const pong_bot = () => {
 const updateBallPosition = () => {
 	if (isWaiting) return
 
-	ballPosX += ballSpeedX
-	ballPosY += ballSpeedY
+	ballPosX += ballAngleX
+	ballPosY += ballAngleY
 	if (ballPosY - ballRadius <= 0) {
 		player2Score.value++
 		message.value = player2Name.value + ' scored !'
@@ -215,46 +216,57 @@ const updateBallPosition = () => {
 	}
 
 	if (ballPosX - ballRadius <= 0 || ballPosX + ballRadius >= canvasWidth.value) {
-		ballSpeedX = -ballSpeedX
+		ballAngleX = -ballAngleX
 	}
 
-	if (ballPosY + ballRadius >= canvasHeight.value - paddleWidth && (ballPosX >= player2Pos && ballPosX <= player2Pos + paddleHeight)) {
-		ballSpeedY = -ballSpeedY
-		ballPosY = canvasHeight.value - paddleWidth - ballRadius
+    if (ballPosY + ballRadius >= canvasHeight.value - paddleWidth && ballPosX >= player2Pos && ballPosX <= player2Pos + paddleHeight) {
+        const relativeIntersectX = (ballPosX - (player2Pos + paddleHeight / 2)) / (paddleHeight / 2)
 
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
-	}
+        const bounceAngle = relativeIntersectX * maxBounceAngle
+
+        const speed = Math.sqrt(ballAngleX ** 2 + ballAngleY ** 2) * speedBoost
+
+        ballAngleX = speed * Math.sin(bounceAngle)
+        ballAngleY = -speed * Math.cos(bounceAngle)
+
+        ballPosY = canvasHeight.value - paddleWidth - ballRadius
+    }
 
 	if (
 		ballPosX + ballRadius >= player2Pos &&
 		ballPosX - ballRadius < player2Pos &&
 		ballPosY >= canvasHeight.value - paddleWidth && ballPosY <= canvasHeight.value
 	) {
-		ballSpeedX = -Math.abs(ballSpeedX);
+		ballAngleX = -Math.abs(ballAngleX);
 		ballPosX   = player2Pos - ballRadius;
 
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
+		ballAngleX *= speedBoost
+		ballAngleY *= speedBoost
 	}
 
 	if (
 		ballPosX - ballRadius <= player2Pos + paddleHeight &&
 		ballPosX + ballRadius > player2Pos + paddleHeight && ballPosY >= canvasHeight.value - paddleWidth && ballPosY <= canvasHeight.value
 	) {
-		ballSpeedX = Math.abs(ballSpeedX);
+		ballAngleX = Math.abs(ballAngleX);
 		ballPosX   = player2Pos + paddleHeight + ballRadius;
 
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
+		ballAngleX *= speedBoost
+		ballAngleY *= speedBoost
 	}
 
+    if (ballPosY - ballRadius <= paddleWidth && (ballPosX >= player1Pos && ballPosX <= player1Pos + paddleHeight)) {
+        const relativeIntersectX = (ballPosX - (player1Pos + paddleHeight / 2)) / (paddleHeight / 2)
 
+        const bounceAngle = relativeIntersectX * maxBounceAngle
 
+        const speed = Math.sqrt(ballAngleX ** 2 + ballAngleY ** 2) * speedBoost
 
-	if (ballPosY - ballRadius <= paddleWidth && (ballPosX >= player1Pos && ballPosX <= player1Pos + paddleHeight)){
-		ballSpeedY = -ballSpeedY
-	}
+        ballAngleX = speed * Math.sin(bounceAngle)
+        ballAngleY = speed * Math.cos(bounceAngle)
+
+        ballPosY = paddleWidth + ballRadius
+    }
 
 	if (
 		ballPosX + ballRadius >= player1Pos &&
@@ -262,10 +274,10 @@ const updateBallPosition = () => {
 		ballPosY - ballRadius <= paddleWidth &&
 		ballPosY + ballRadius >= 0
 	) {
-		ballSpeedX = -Math.abs(ballSpeedX)
+		ballAngleX = -Math.abs(ballAngleX)
 		ballPosX   = player1Pos - ballRadius
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
+		ballAngleX *= speedBoost
+		ballAngleY *= speedBoost
 	}
 
 	if (
@@ -274,29 +286,27 @@ const updateBallPosition = () => {
 		ballPosY - ballRadius <= paddleWidth &&
 		ballPosY + ballRadius >= 0
 	) {
-		ballSpeedX = Math.abs(ballSpeedX)
+		ballAngleX = Math.abs(ballAngleX)
 		ballPosX   = player1Pos + paddleHeight + ballRadius
 
-		ballSpeedX *= speedBoost
-		ballSpeedY *= speedBoost
+		ballAngleX *= speedBoost
+		ballAngleY *= speedBoost
 	}
-
 }
 
 const resetBall = (server: 1 | 2) => {
-	ballSpeedX = 0
-	ballSpeedY = 0
+	ballAngleX = 0
+	ballAngleY = 0
 	ballPosX = (canvasWidth.value  - ballRadius * 2) / 2 + ballRadius
 	ballPosY = (canvasHeight.value - ballRadius * 2) / 2 + ballRadius
 	isWaiting = true
 	setTimeout(() => {
-		const maxX = 0.9
-		const minX = 0.1
-		const sign = Math.random() < 0.5 ? 1 : -1
-		const absX = minX + Math.random() * (maxX - minX)
-		ballSpeedX = sign * absX
-		ballSpeedY = server === 2 ? -baseBallSpeed : baseBallSpeed
-		// console.log(ballSpeedY)
+        const angleDeg = (((Math.random() * 60) * Math.PI) / 180)
+		const directionX = Math.random() < 0.5 ? 1 : -1
+		const directionY = server === 2 ? -1 : 1
+        console.log(ballSpeed)
+		ballAngleX = Math.sin(angleDeg) * ballSpeed * directionX
+        ballAngleY = Math.cos(angleDeg) * ballSpeed * directionY
 		isWaiting = false
 		message.value = ''
 	}, 1000)
@@ -427,11 +437,11 @@ const playGame = (payload: { cheats: { enabled: boolean; ballSpeed: number; padd
 	cheats.value = payload.cheats
 	player1Name.value = payload.player1Name
 	if (cheats.value.enabled) {
-		baseBallSpeed = cheats.value.ballSpeed
+		ballSpeed = cheats.value.ballSpeed
 		playerSpeed = cheats.value.paddleSpeed
 	} else {
-		baseBallSpeed = 3
-		playerSpeed = 6
+		ballSpeed = canvasHeight.value * 0.005
+		playerSpeed = 10
 	}
 	if (modeSettingsMode.value) startGame(modeSettingsMode.value)
 }
@@ -463,8 +473,8 @@ const resetGame = () => {
 	player2Pos = (canvasWidth.value - paddleHeight) / 2
 	ballPosX = canvasWidth.value / 2
 	ballPosY = canvasHeight.value / 2
-	ballSpeedX = basePaddleSpeed
-	ballSpeedY = basePaddleSpeed
+	ballAngleX = basePaddleSpeed
+	ballAngleY = basePaddleSpeed
 	isWaiting = false
 	render()
 }
