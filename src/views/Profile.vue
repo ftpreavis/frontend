@@ -44,8 +44,10 @@ const isOwner = computed(() =>
 )
 const isFriend = false
 
-const nbFriends = 243
-const profileBio = "Salut moi c'est Matias"
+const profileBio = computed(() =>
+	authStore.user?.biography || "This user hasn’t written a bio yet."
+)
+
 const nbWin = computed(() => authStore.user?.stats?.wins ?? 0)
 const nbLoose = computed(() => authStore.user?.stats?.losses ?? 0)
 const nbTotal = computed(() => {
@@ -77,6 +79,20 @@ const lastGames = computed(() => {
 	]
 
 	return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5)
+})
+
+const nbFriends = computed(() => {
+	const user = authStore.user
+	if (!user) return 0
+
+	const sent = user.sentRequests?.filter(f => f.status === 'ACCEPTED') ?? []
+	const received = user.receivedRequests?.filter(f => f.status === 'ACCEPTED') ?? []
+
+	const all = [...sent, ...received]
+	const uniqueIds = new Set(all.map(f =>
+		f.userId === user.id ? f.friendId : f.userId
+	))
+	return uniqueIds.size
 })
 
 </script>
