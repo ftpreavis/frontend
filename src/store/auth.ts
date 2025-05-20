@@ -28,8 +28,7 @@ export const useAuth = defineStore('auth', () => {
 			setCookies("access_token", response.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
-
-			// await router.push('/').then(() => {window.location.reload()})
+			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
 			loginError.value = "Nom d'utilisateur ou mot de passe incorect"
 			console.log("Nom d'utilisateur ou mot de passe incorect" + error)
@@ -70,6 +69,7 @@ export const useAuth = defineStore('auth', () => {
 		token.value = null
 		isAuthenticated.value = false
 		userId.value = null
+		await router.push('/').then(() => {window.location.reload()})
 	}
 
 	return {

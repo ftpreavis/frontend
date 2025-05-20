@@ -6,7 +6,7 @@ import {
 	Cog6ToothIcon
 
 } from '@heroicons/vue/24/outline'
-import { useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import { useI18n } from 'vue-i18n';
 import {useAuth} from "@/store/auth.ts";
 
@@ -20,6 +20,7 @@ function changeLanguage() {
 }
 
 const router = useRouter()
+const route = useRoute()
 const go = (path: string) => {
 	router.push(path)
 }
@@ -34,7 +35,10 @@ const userId = 42
 	>
 		<div class="flex items-center h-full justify-between">
 			<a @click="go('/')" class="text-4xl font-extrabold text-[#000] leading-none transform -translate-y-[3px] cursor-pointer">logo</a>
-			<div v-if="!authStore.isAuthenticated" @click="go('/signup')" class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
+			<div v-if="!authStore.isAuthenticated && route.path === '/signup'" @click="go('/login')" class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
+				sign in
+			</div>
+			<div v-else-if="!authStore.isAuthenticated" @click="go('/signup')" class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
 				sign up
 			</div>
 			<div v-else class="w-[70px] flex flex-row items-center">

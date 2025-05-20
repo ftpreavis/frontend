@@ -3,6 +3,7 @@ import router from '@/router';
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { useAuth } from "@/store/auth.ts";
+import Header from "@/components/Header.vue";
 import {parseAstAsync} from "vite";
 
 const username = ref<string>('')
@@ -23,7 +24,6 @@ const login = async () => {
         errors.value.password = "Le mot de passe est requis."
     }
     if (username.value && password.value) await authStore.authenticate(username.value, password.value)
-	console.log('asd')
 	// await router.push('/')
 		// .then(() => {window.location.reload()})
 }
@@ -42,6 +42,7 @@ const googleConnect = async() => {
 </script>
 
 <template>
+	<Header></Header>
 	<div class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
 		<h3 class="mb-3 text-center">Login</h3>
 		<div class="border flex flex-col p-4 space-y-3">
