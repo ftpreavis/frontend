@@ -53,13 +53,32 @@ const nbTotal = computed(() => {
 	return total > 0 ? (nbWin.value / total) * 100 : 0
 })
 
-const lastGames = reactive([
-	{ id: 1, game: 'Pong', opponent: 'John Smith', score: '21-15', result: 'Victoire' },
-	{ id: 2, game: 'Pong', opponent: 'Alice Martin', score: '19-21', result: 'Défaite' },
-	{ id: 3, game: 'TicTac', opponent: 'Bob Lee', score: '21-18', result: 'Victoire' },
-	{ id: 4, game: 'Pong', opponent: 'Clara Zhou', score: '17-21', result: 'Défaite' },
-	{ id: 5, game: 'Pong', opponent: 'David Kim', score: '21-19', result: 'Victoire' }
-])
+const lastGames = computed(() => {
+	const user = authStore.user
+	if (!user) return []
+
+	const allMatches = [
+		...(user.MatchesAsPlayer1 ?? []).map(match => ({
+			id: match.id,
+			opponent: match.player2?.username ?? 'Unknown',
+			score: `${match.player1Score}-${match.player2Score}`,
+			result: match.player1Score > match.player2Score ? 'Victoire' : 'Défaite',
+			game: 'Pong',
+			playedAt: new Date(match.playedAt)
+		})),
+		...(user.MatchesAsPlayer2 ?? []).map(match => ({
+			id: match.id,
+			opponent: match.player1?.username ?? 'Unknown',
+			score: `${match.player2Score}-${match.player1Score}`,
+			result: match.player2Score > match.player1Score ? 'Victoire' : 'Défaite',
+			game: 'Pong',
+			playedAt: new Date(match.playedAt)
+		}))
+	]
+
+	return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5)
+})
+
 </script>
 
 <template>
