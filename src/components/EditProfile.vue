@@ -2,6 +2,7 @@
 import { BoldIcon } from "@heroicons/vue/24/outline";
 import {c} from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
 import {ref, watch} from "vue"
+import TwoFactor from "@/components//TwoFactor.vue";
 
 const props = defineProps<{
 	visible: boolean
@@ -22,6 +23,7 @@ const username = ref<string>('')
 const bio = ref<string>('')
 const password = ref<string>('')
 const avatarPreview = ref<string>(props.initialAvatar);
+const showTwoFactor = ref(false)
 
 watch(
     () => props.visible,
@@ -63,6 +65,8 @@ const save = () => {
 			<input v-model="password" type="password" placeholder="New password" class="border-[2px]">
 			<button class="cursor-pointer" @click="save">save</button>
 			<button class="cursor-pointer" @click="close">close</button>
+            <button class="cursor-pointer mt-4" @click="showTwoFactor = true"> 2FA </button>
 		</div>
 	</div>
+    <TwoFactor v-model:visible="showTwoFactor"/>
 </template>
