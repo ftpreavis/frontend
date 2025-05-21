@@ -42,8 +42,10 @@ export const useAuth = defineStore('auth', () => {
 				headers: { Authorization: `Bearer ${token.value}` }
 			})
 			user.value = data
+			return data
 		} catch {
 			user.value = null
+			return null
 		}
 	}
 
