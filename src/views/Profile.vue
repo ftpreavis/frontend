@@ -95,6 +95,20 @@ const nbFriends = computed(() => {
 	return uniqueIds.size
 })
 
+const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File | null, username: string, bio: string, password: string }) => {
+    axios.patch(`/api/users/${authStore.userId}/avatar`, {
+				headers: { Authorization: `Bearer ${authStore.token}` },
+                avatar: "/uploads/avatars/default.png"
+			})
+    axios.patch(`/api/users/${authStore.userId}`, {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+        username: username,
+        biography: bio,
+        password: password
+    })
+    window.location.reload()
+}
+
 </script>
 
 <template>
@@ -197,6 +211,6 @@ const nbFriends = computed(() => {
 			Pas user
 		</div>
 	</div>
-	<EditProfile v-model:visible="showEditProfile" />
+	<EditProfile v-model:visible="showEditProfile" :initialAvatar="'https://dgalywyr863hv.cloudfront.net/pictures/athletes/161839970/36281934/1/large.jpg'" :initial-bio="authStore.user?.biography || 'This user hasn’t written a bio yet.'" :initial-username="authStore.user?.username" @save-profile="handleSaveProfile"/>
 	<FriendsList v-model:visible="showFriendsList" />
 </template>
