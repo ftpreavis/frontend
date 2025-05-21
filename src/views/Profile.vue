@@ -1,63 +1,62 @@
 <script setup lang="ts">
-import { onMounted, computed, reactive, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Header from "@/components/Header.vue";
 import EditProfile from "@/components/EditProfile.vue";
 import FriendsList from "@/components/FriendsList.vue";
-import { useAuth } from "../store/auth.ts";
+import { useAuth } from "@/store/auth";
 
-const showEditProfile = ref(false)
-const showFriendsList = ref(false)
+const showEditProfile = ref(false);
+const showFriendsList = ref(false);
 
-const authStore = useAuth()
-const route = useRoute()
+const authStore = useAuth();
+const route = useRoute();
+const router = useRouter();
 
-const profileImage = ref<string | null>(null)
+const profileImage = ref<string | null>(null);
+const profileUser = ref<any | null>(null);
 
 const loadProfile = async (id: number) => {
-	await authStore.fetchUserById(id)
-	profileImage.value = `http://localhost:4003/users/${id}/avatar`
-}
+	const data = await authStore.fetchUserById(id);
+	if (data) {
+		profileUser.value = data;
+		profileImage.value = `/api/users/${id}/avatar`;
+	}
+};
 
 onMounted(() => {
-	try {
-		loadProfile(Number(route.params.userId))
-	} catch {
-		console.log('Erreur lors du chargement du profil')
-	}
-})
+	loadProfile(Number(route.params.userId));
+});
 
 watch(
 	() => route.params.userId,
 	(newId) => {
-		try {
-			loadProfile(Number(newId))
-		} catch {
-			console.log('Erreur lors du changement de profil')
-		}
+		loadProfile(Number(newId));
 	}
-)
+);
 
-const isOwner = computed(() =>
-	authStore.user?.id === authStore.userId
-)
-const isFriend = false
+function goToChatWithUser(targetUserId: number) {
+	router.push({ name: 'ChatPage', query: { userId: targetUserId } })
+};
+
+const isOwner = computed(() => profileUser.value?.id === authStore.userId);
+const isFriend = false;
 
 const profileBio = computed(() =>
-	authStore.user?.biography || "This user hasn’t written a bio yet."
-)
+	profileUser.value?.biography || "This user hasn’t written a bio yet."
+);
 
-const nbWin = computed(() => authStore.user?.stats?.wins ?? 0)
-const nbLoose = computed(() => authStore.user?.stats?.losses ?? 0)
+const nbWin = computed(() => profileUser.value?.stats?.wins ?? 0);
+const nbLoose = computed(() => profileUser.value?.stats?.losses ?? 0);
 const nbTotal = computed(() => {
-	const total = nbWin.value + nbLoose.value
-	return total > 0 ? (nbWin.value / total) * 100 : 0
-})
+	const total = nbWin.value + nbLoose.value;
+	return total > 0 ? (nbWin.value / total) * 100 : 0;
+});
 
 const lastGames = computed(() => {
-	const user = authStore.user
-	if (!user) return []
+	const user = profileUser.value;
+	if (!user) return [];
 
 	const allMatches = [
 		...(user.MatchesAsPlayer1 ?? []).map(match => ({
@@ -76,59 +75,52 @@ const lastGames = computed(() => {
 			game: 'Pong',
 			playedAt: new Date(match.playedAt)
 		}))
-	]
+	];
 
-	return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5)
-})
+	return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5);
+});
 
 const nbFriends = computed(() => {
-	const user = authStore.user
-	if (!user) return 0
+	const user = profileUser.value;
+	if (!user) return 0;
 
-	const sent = user.sentRequests?.filter(f => f.status === 'ACCEPTED') ?? []
-	const received = user.receivedRequests?.filter(f => f.status === 'ACCEPTED') ?? []
+	const sent = user.sentRequests?.filter(f => f.status === 'ACCEPTED') ?? [];
+	const received = user.receivedRequests?.filter(f => f.status === 'ACCEPTED') ?? [];
 
-	const all = [...sent, ...received]
+	const all = [...sent, ...received];
 	const uniqueIds = new Set(all.map(f =>
 		f.userId === user.id ? f.friendId : f.userId
-	))
-	return uniqueIds.size
-})
+	));
+	return uniqueIds.size;
+});
 
 const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File | null, username: string, bio: string, password: string }) => {
-    axios.patch(`/api/users/${authStore.userId}/avatar`, {
-				headers: { Authorization: `Bearer ${authStore.token}` },
-                avatar: "/uploads/avatars/default.png"
-			})
-    axios.patch(`/api/users/${authStore.userId}`, {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-        username: username,
-        biography: bio,
-        password: password
-    })
-    window.location.reload()
-}
-
+	axios.patch(`/api/users/${authStore.userId}/avatar`, {
+		headers: { Authorization: `Bearer ${authStore.token}` },
+		avatar: "/uploads/avatars/default.png"
+	});
+	axios.patch(`/api/users/${authStore.userId}`, {
+		headers: { Authorization: `Bearer ${authStore.token}` },
+		username: username,
+		biography: bio,
+		password: password
+	});
+	window.location.reload();
+};
 </script>
 
 <template>
-	<div class="bg-[#F8F6F0] h-screen">
-		<Header />
-		<div class="flex flex-col" v-if="authStore.user">
+	<div class="bg-[#F8F6F0] h-full">
+		<div class="flex flex-col" v-if="profileUser">
 			<div class="flex flex-col bg-white mt-3 px-8 py-4">
 				<div class="flex items-center">
-					<div
-						class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat"
-						v-if="profileImage"
-						:style="{ backgroundImage: `url(${profileImage})` }"
-					/>
-					<div
-						v-else
-						class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500"
-					>
+					<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat" v-if="profileImage"
+						:style="{ backgroundImage: `url(${profileImage})` }" />
+					<div v-else
+						class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
 						Aucun avatar
 					</div>
-					<span class="ml-5 text-lg font-semibold">{{ authStore.user.username }}</span>
+					<span class="ml-5 text-lg font-semibold">{{ profileUser.username }}</span>
 				</div>
 				<span class="mt-4 text-sm">{{ profileBio }}</span>
 				<div class="mt-3 flex flex-row items-center justify-between">
@@ -137,23 +129,16 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 						<span class="font-semibold">{{ nbFriends }}</span>
 					</button>
 					<div class="flex">
-						<button
-							v-if="!isOwner && isFriend"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2"
-						>
-							<span>Message</span>
+						<button v-if="!isOwner" @click="goToChatWithUser(profileUser.id)"
+							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
+							Message
 						</button>
-						<button
-							v-else-if="!isOwner"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2"
-						>
+						<button v-if="!isOwner"
+							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
 							<span>Add to friend</span>
 						</button>
-						<button
-							@click="showEditProfile = true"
-							v-if="isOwner"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black"
-						>
+						<button @click="showEditProfile = true" v-if="isOwner"
+							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
 							Edit profile
 						</button>
 					</div>
@@ -183,34 +168,34 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 				<div class="overflow-x-auto">
 					<table class="min-w-full bg-white rounded-lg overflow-hidden">
 						<thead class="bg-gray-100">
-						<tr>
-							<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Game</th>
-							<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Name</th>
-							<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Score</th>
-							<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Result</th>
-						</tr>
+							<tr>
+								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Game</th>
+								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Name</th>
+								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Score</th>
+								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Result</th>
+							</tr>
 						</thead>
 						<tbody>
-						<tr v-for="game in lastGames" :key="game.id" class="border-t">
-							<td class="px-4 py-3 text-sm text-gray-700">{{ game.game }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ game.opponent }}</td>
-							<td class="px-4 py-3 text-center text-sm text-gray-700">{{ game.score }}</td>
-							<td
-								class="px-4 py-3 text-center text-sm"
-								:class="game.result === 'Victoire' ? 'text-green-600' : 'text-red-600'"
-							>
-								{{ game.result }}
-							</td>
-						</tr>
+							<tr v-for="game in lastGames" :key="game.id" class="border-t">
+								<td class="px-4 py-3 text-sm text-gray-700">{{ game.game }}</td>
+								<td class="px-4 py-3 text-sm text-gray-700">{{ game.opponent }}</td>
+								<td class="px-4 py-3 text-center text-sm text-gray-700">{{ game.score }}</td>
+								<td class="px-4 py-3 text-center text-sm"
+									:class="game.result === 'Victoire' ? 'text-green-600' : 'text-red-600'">
+									{{ game.result }}
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
 		<div v-else>
-			Pas user
+			User not found
 		</div>
 	</div>
-	<EditProfile v-model:visible="showEditProfile" :initialAvatar="'https://dgalywyr863hv.cloudfront.net/pictures/athletes/161839970/36281934/1/large.jpg'" :initial-bio="authStore.user?.biography || 'This user hasn’t written a bio yet.'" :initial-username="authStore.user?.username" @save-profile="handleSaveProfile"/>
+	<EditProfile v-model:visible="showEditProfile" :initial-avatar="profileImage || ''"
+		:initial-bio="profileUser?.biography || ''" :initial-username="profileUser?.username || 'No user found'"
+		@save-profile="handleSaveProfile" />
 	<FriendsList v-model:visible="showFriendsList" />
 </template>

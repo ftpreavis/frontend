@@ -4,7 +4,6 @@ import Header from "@/components/Header.vue";
 
 <template>
 	<div class="bg-[#F8F6F0] h-screen">
-		<Header></Header>
 		<div class="flex w-10/12 m-auto">
 			<div>
 				<h1 class="text-[60px]">Preavis</h1>
