@@ -122,7 +122,7 @@ onUnmounted(() => {
 
 watch(() => currentMessages.value.length, async () => {
 	await nextTick()
-	chatUIStore.updateScrollIndicators()
+	chatUIStore.checkAutoScroll();
 })
 </script>
 

@@ -8,6 +8,7 @@ export const useChatUI = defineStore('chat_ui', () => {
 	const isAtBottom = ref(true)
 	const showScrollButton = ref(false)
 	const showNewMsgText = ref(false)
+	const shouldAutoScroll = ref(false)
 
 	const chatStore = useChat()
 	const socket = useSocket()
@@ -17,16 +18,27 @@ export const useChatUI = defineStore('chat_ui', () => {
 		const userId = chatStore.selectedUserId
 		if (!el || userId === null) return
 
-		isAtBottom.value = el.scrollTop + el.clientHeight >= el.scrollHeight - 50
+		const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 50
+		isAtBottom.value = atBottom
 
 		const unread = chatStore.unread[userId] ?? 0
-		showScrollButton.value = !isAtBottom.value
-		showNewMsgText.value = !isAtBottom.value && unread > 0
+		showScrollButton.value = !atBottom
+		showNewMsgText.value = !atBottom && unread > 0
 
 		if (isAtBottom.value && unread > 0) {
 			socket.emit('mark_as_read', { withUserId: userId })
 			chatStore.markAsRead(userId)
-			scrollToBottom();
+			// scrollToBottom();
+		}
+
+		shouldAutoScroll.value = atBottom;
+	}
+
+	function checkAutoScroll()
+	{
+		if (shouldAutoScroll.value) {
+			scrollToBottom()
+			shouldAutoScroll.value = false
 		}
 	}
 
@@ -58,6 +70,7 @@ export const useChatUI = defineStore('chat_ui', () => {
 		showScrollButton,
 		showNewMsgText,
 		updateScrollIndicators,
+		checkAutoScroll,
 		scrollToBottom,
 		attachScroll,
 		detachScroll
