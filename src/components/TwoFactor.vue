@@ -21,7 +21,7 @@ const close = () => emit('update:visible', false)
 watch(() => props.visible, async (newVal) => {
     if (newVal) {
         try {
-            const response = await axios.post('http://localhost:4001/auth/2fa/setup', {}, {
+            const response = await axios.post('/api/auth/2fa/setup', {}, {
                 headers: {
                 Authorization: `Bearer ${authStore.token}`
                 }
@@ -35,7 +35,7 @@ watch(() => props.visible, async (newVal) => {
 
 const TwoFactorVerif = async() => {
     try {
-        await axios.post('http://localhost:4001/auth/2fa/verify', {token: code.value}, {
+        await axios.post('/api/auth/2fa/verify', {token: code.value}, {
             headers: {
             Authorization: `Bearer ${authStore.token}`
             }
