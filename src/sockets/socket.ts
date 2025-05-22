@@ -8,7 +8,7 @@ export function useSocket() {
 		const authStore = useAuth();
 
 		const url =
-			import.meta.env.DEV
+			process.env.NODE_ENV == 'development'
 				? 'ws://localhost:4002'
 				: '/socket/chat';
 

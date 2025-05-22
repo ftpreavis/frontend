@@ -24,9 +24,11 @@ export const useChat = defineStore('chat', () => {
 	const unread = ref<Record<number, number>>({})
 	const conversations = ref<ConversationPreview[]>([])
 	const selectedUserId = ref<number | null>(null)
+	const scrollToBottomFlag = ref(false)
+
 	const authStore = useAuth()
 
-	function handleIncomingMessage(message: {
+	function receiveMessage(message: {
 		id: number
 		senderId: number
 		receiverId: number
@@ -34,6 +36,8 @@ export const useChat = defineStore('chat', () => {
 		createdAt: string
 	}) {
 		const fromId = message.senderId
+		const isCurrentChatOpen = selectedUserId.value === fromId
+
 		const msg: Message = {
 			id: message.id,
 			senderId: message.senderId,
@@ -51,21 +55,20 @@ export const useChat = defineStore('chat', () => {
 
 		updateConversationPreview(fromId, message.content, message.createdAt)
 
-		if (selectedUserId.value !== fromId) {
-			unread.value[fromId] = (unread.value[fromId] || 0) + 1
-		} else {
-			unread.value[fromId] = 0
+		if (!isCurrentChatOpen) {
+			updateUnread(fromId, 1)
+			return
 		}
+
+		// Let ChatPage.vue decide scroll & read logic
+		scrollToBottomFlag.value = true
 	}
 
-	async function updateConversationPreview(userId: number, content: string, createdAt: string) {
+	function updateConversationPreview(userId: number, content: string, createdAt: string) {
 		let convo = conversations.value.find(c => c.userId === userId)
-
 		let user = authStore.userMap[userId]
-		if (!user) {
-			user = await authStore.fetchUserById(userId)
-			if (!user) return // ⛔ don't proceed if still not found
-		}
+
+		if (!user) return // should already be preloaded
 
 		if (!convo) {
 			convo = {
@@ -79,8 +82,6 @@ export const useChat = defineStore('chat', () => {
 		} else {
 			convo.lastMessage = content
 			convo.lastDate = createdAt
-			convo.username = user.username
-			convo.avatar = user.avatar || '/default.png'
 		}
 	}
 
@@ -88,12 +89,8 @@ export const useChat = defineStore('chat', () => {
 		selectedUserId.value = userId
 	}
 
-	function loadMessages(userId: number, msgs: Message[]) {
-		messages.value[userId] = msgs
-	}
-
 	function updateUnread(userId: number, count: number) {
-		unread.value[userId] = unread.value[userId] ? unread.value[userId] + count : count
+		unread.value[userId] = (unread.value[userId] || 0) + count
 	}
 
 	function markAsRead(userId: number) {
@@ -123,14 +120,12 @@ export const useChat = defineStore('chat', () => {
 				params: { userId }
 			})
 			setConversations(data)
-			// Preload user data into userMap
+
 			for (const conv of data) {
-				if (!authStore.userMap[conv.userId]) {
-					authStore.userMap[conv.userId] = {
-						id: conv.userId,
-						username: conv.username,
-						avatar: conv.avatar
-					}
+				authStore.userMap[conv.userId] = {
+					id: conv.userId,
+					username: conv.username,
+					avatar: conv.avatar
 				}
 			}
 		} catch (err) {
@@ -147,7 +142,7 @@ export const useChat = defineStore('chat', () => {
 				unread.value[entry.fromUserId] = entry.count
 			}
 		} catch (err) {
-			console.error('Failed to load unread:', err)
+			console.error('Failed to load unread counts:', err)
 		}
 	}
 
@@ -160,7 +155,7 @@ export const useChat = defineStore('chat', () => {
 					skip: 0
 				}
 			})
-			const formatted = data.map((m: any) => ({
+			const formatted: Message[] = data.map((m: any) => ({
 				id: m.id,
 				senderId: m.senderId,
 				content: m.content,
@@ -168,7 +163,8 @@ export const useChat = defineStore('chat', () => {
 					hour: '2-digit',
 					minute: '2-digit',
 					hour12: false
-				})
+				}),
+				rawTime: m.createdAt
 			}))
 			messages.value[userId] = formatted
 		} catch (err) {
@@ -176,28 +172,18 @@ export const useChat = defineStore('chat', () => {
 		}
 	}
 
-	function pushMessage(userId: number, msg: Message) {
-		if (!messages.value[userId]) messages.value[userId] = []
-		messages.value[userId].push(msg)
-
-		updateConversationPreview(userId, msg.content, new Date().toISOString())
-	}
-
 	return {
 		messages,
 		unread,
 		conversations,
 		selectedUserId,
+		scrollToBottomFlag,
 		setSelectedUser,
-		handleIncomingMessage,
 		updateUnread,
 		markAsRead,
-		loadMessages,
-		setConversations,
-		updateConversationPreview,
 		loadConversations,
 		loadUnread,
 		fetchMessagesWith,
-		pushMessage
+		receiveMessage
 	}
 })

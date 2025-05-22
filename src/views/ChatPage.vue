@@ -4,6 +4,7 @@ import { useAuth } from "@/store/auth"
 import { useChat } from "@/store/chat"
 import { useRoute } from "vue-router"
 import { useSocket } from '@/sockets/socket'
+import { scrollContainer as sharedScrollRef } from '@/store/ui'
 import { formatDateLabel } from '@/utils/date'
 
 const authStore = useAuth()
@@ -13,36 +14,66 @@ const route = useRoute()
 
 const selectedId = ref<number | null>(null)
 const newMessage = ref('')
-
-const scrollContainer = ref<HTMLElement | null>(null)
+const scrollContainer = sharedScrollRef
 const showScrollButton = ref(false)
 const showNewMsgText = ref(false)
 
 const isNearBottom = (): boolean => {
-	if (!scrollContainer.value) return true
 	const el = scrollContainer.value
-	const threshold = 100
-	return el.scrollTop + el.clientHeight >= el.scrollHeight - threshold
+	if (!el) return true
+	return el.scrollTop + el.clientHeight >= el.scrollHeight - 100
 }
 
 const handleScroll = () => {
 	if (!scrollContainer.value || selectedId.value === null) return
+	const atBottom = isNearBottom()
 
-	const nearBottom = isNearBottom()
+	showScrollButton.value = !atBottom
+	showNewMsgText.value = !atBottom && (chatStore.unread[selectedId.value] ?? 0) > 0
 
-	showScrollButton.value = !nearBottom
-	showNewMsgText.value = !nearBottom && chatStore.unread[selectedId.value] > 0
-
-	if (nearBottom) {
-		if (chatStore.unread[selectedId.value] > 0) {
-			socket.emit('mark_as_read', { withUserId: selectedId.value })
-			chatStore.markAsRead(selectedId.value)
-		}
+	if (atBottom && chatStore.unread[selectedId.value] > 0) {
+		socket.emit('mark_as_read', { withUserId: selectedId.value })
+		chatStore.markAsRead(selectedId.value)
 	}
 }
 
-const convs = computed(() => {
-	return chatStore.conversations.map(conv => {
+watch(() => chatStore.scrollToBottomFlag, async (flag) => {
+	if (!flag || selectedId.value === null) return
+
+	await nextTick()
+	const el = scrollContainer.value
+	if (!el) return
+
+	if (isNearBottom()) {
+		socket.emit('mark_as_read', { withUserId: selectedId.value })
+		chatStore.markAsRead(selectedId.value)
+		scrollToBottom()
+	}
+	chatStore.scrollToBottomFlag = false
+})
+
+const currentMessages = computed(() =>
+	selectedId.value !== null ? chatStore.messages[selectedId.value] ?? [] : []
+)
+
+const groupedMessages = computed(() => {
+	const groups: Array<{ date: string; messages: typeof currentMessages.value }> = []
+	let lastDate = ''
+
+	currentMessages.value.forEach(msg => {
+		const msgDate = formatDateLabel(new Date(msg.rawTime))
+		if (msgDate !== lastDate) {
+			groups.push({ date: msgDate, messages: [] })
+			lastDate = msgDate
+		}
+		groups[groups.length - 1].messages.push(msg)
+	})
+
+	return groups
+})
+
+const convs = computed(() =>
+	chatStore.conversations.map(conv => {
 		const user = authStore.userMap[conv.userId]
 		return {
 			id: conv.userId,
@@ -53,58 +84,35 @@ const convs = computed(() => {
 			unreadCount: chatStore.unread[conv.userId] ?? 0
 		}
 	})
-})
-
-const currentMessages = computed(() => {
-	return selectedId.value !== null ? (chatStore.messages[selectedId.value] ?? []) : []
-})
-
-const groupedMessages = computed(() => {
-	const groups: Array<{ date: string; messages: typeof currentMessages.value }> = []
-	let lastDate = ''
-
-	currentMessages.value.forEach(msg => {
-		console.log(msg.rawTime);
-		const msgDate = formatDateLabel(new Date(msg.rawTime)) // supports raw & processed
-
-		if (msgDate !== lastDate) {
-			groups.push({ date: msgDate, messages: [] })
-			lastDate = msgDate
-		}
-
-		groups[groups.length - 1].messages.push(msg)
-	})
-
-	return groups
-})
+)
 
 onMounted(async () => {
 	if (!authStore.userId) return
-
 	chatStore.setSelectedUser(null)
 
 	const queryTarget = Number(route.query.userId)
 	if (queryTarget && !isNaN(queryTarget)) {
 		await selectConversation(queryTarget)
 	}
-});
+})
+
+onUnmounted(() => {
+	chatStore.setSelectedUser(null)
+})
 
 watch(() => currentMessages.value.length, async () => {
 	await nextTick()
 	handleScroll()
-});
+})
 
 const scrollToBottom = () => {
-	if (scrollContainer.value) {
-		scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
+	const el = scrollContainer.value
+	if (el) {
+		el.scrollTop = el.scrollHeight
 		showScrollButton.value = false
 		showNewMsgText.value = false
 	}
-};
-
-onUnmounted(() => {
-	chatStore.setSelectedUser(null)
-});
+}
 
 const selectConversation = async (id: number) => {
 	selectedId.value = id
@@ -124,20 +132,9 @@ const onSendMessage = () => {
 		content: newMessage.value.trim()
 	})
 
-	chatStore.pushMessage(selectedId.value, {
-		id: Date.now(),
-		senderId: authStore.userId!,
-		content: newMessage.value.trim(),
-		time: new Date().toLocaleTimeString('default', {
-			hour: '2-digit', minute: '2-digit', hour12: false
-		}),
-		rawTime: new Date().toISOString()
-	})
-
 	newMessage.value = ''
 	nextTick(scrollToBottom)
 }
-
 </script>
 
 <template>
@@ -214,12 +211,12 @@ const onSendMessage = () => {
 
 			<!-- Input -->
 			<button v-if="showScrollButton && currentMessages.length > 0" @click="scrollToBottom"
-					class="fixed bottom-24 right-6 z-10 bg-blue-500 text-white px-3 py-2 rounded-full shadow-md hover:bg-blue-600 flex items-center space-x-2 transition">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-						stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-					</svg>
-					<span v-if="showNewMsgText">New messages</span>
+				class="fixed bottom-24 right-6 z-10 bg-blue-500 text-white px-3 py-2 rounded-full shadow-md hover:bg-blue-600 flex items-center space-x-2 transition">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+					stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+				</svg>
+				<span v-if="showNewMsgText">New messages</span>
 			</button>
 			<div class="p-4 bg-white border-t border-gray-200 flex items-center">
 				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage" placeholder="Type a message..."
