@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/store/auth'
 import { useChat } from '@/store/chat'
 import { useSocket } from '@/sockets/socket'
@@ -12,6 +12,7 @@ const authStore = useAuth()
 const chatStore = useChat()
 const socket = useSocket()
 const route = useRoute()
+const router = useRouter()
 const chatUIStore = useChatUI()
 
 const selectedId = ref<number | null>(null)
@@ -49,13 +50,17 @@ const convs = computed(() =>
 		return {
 			id: conv.userId,
 			name: user?.username ?? 'Unknown',
-			avatar: user?.avatar ?? '',
+			avatar: `/api/users/${conv.userId}/avatar`,
 			lastMessage: conv.lastMessage,
 			lastDate: conv.lastDate,
 			unreadCount: chatStore.unread[conv.userId] ?? 0
 		}
 	})
 )
+
+function goToProfile(targetUserId: number) {
+	router.push({ name: 'Profile', params: { userId: targetUserId } })
+};
 
 const selectConversation = async (id: number) => {
 	chatUIStore.detachScroll()
@@ -156,8 +161,8 @@ watch(() => currentMessages.value.length, async () => {
 			<button class="md:hidden p-2 text-sm" @click="selectedId = null">← Back</button>
 
 			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
-				<img :src="convs.find(c => c.id === selectedId)?.avatar" alt="avatar"
-					class="w-10 h-10 rounded-full flex-shrink-0" />
+				<button @click="goToProfile(selectedId)"><img :src="convs.find(c => c.id === selectedId)?.avatar" alt="avatar"
+					class="w-10 h-10 rounded-full flex-shrink-0" /></button>
 				<h3 class="text-md font-semibold mt-1">{{convs.find(c => c.id === selectedId)?.name}}</h3>
 			</div>
 
