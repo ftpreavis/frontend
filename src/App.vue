@@ -15,13 +15,13 @@ onMounted(async () => {
 	if (authStore.userId) {
 		const socket = useSocket()
 		socket.connect()
+		setupChatSocket()
 
 		await Promise.all([
 			chatStore.loadConversations(authStore.userId),
 			chatStore.loadUnread(authStore.userId)
 		])
 
-		setupChatSocket()
 	}
 })
 

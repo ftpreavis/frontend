@@ -24,7 +24,6 @@ export const useChat = defineStore('chat', () => {
 	const unread = ref<Record<number, number>>({})
 	const conversations = ref<ConversationPreview[]>([])
 	const selectedUserId = ref<number | null>(null)
-	const scrollToBottomFlag = ref(false)
 
 	const authStore = useAuth()
 
@@ -35,6 +34,7 @@ export const useChat = defineStore('chat', () => {
 		content: string
 		createdAt: string
 	}) {
+		console.log('[receiveMessage] called!', message)
 		const fromId = message.senderId
 		const isCurrentChatOpen = selectedUserId.value === fromId
 
@@ -54,14 +54,7 @@ export const useChat = defineStore('chat', () => {
 		messages.value[fromId].push(msg)
 
 		updateConversationPreview(fromId, message.content, message.createdAt)
-
-		if (!isCurrentChatOpen) {
-			updateUnread(fromId, 1)
-			return
-		}
-
-		// Let ChatPage.vue decide scroll & read logic
-		scrollToBottomFlag.value = true
+		updateUnread(fromId, 1)
 	}
 
 	function updateConversationPreview(userId: number, content: string, createdAt: string) {
@@ -90,7 +83,10 @@ export const useChat = defineStore('chat', () => {
 	}
 
 	function updateUnread(userId: number, count: number) {
-		unread.value[userId] = (unread.value[userId] || 0) + count
+		console.log("Coming count :", count);
+		console.log("Previous unread value :", unread.value[userId]);
+		unread.value[userId] = (unread.value[userId] ?? 0) + count
+		console.log("New value :", unread.value[userId]);
 	}
 
 	function markAsRead(userId: number) {
@@ -177,7 +173,7 @@ export const useChat = defineStore('chat', () => {
 		unread,
 		conversations,
 		selectedUserId,
-		scrollToBottomFlag,
+		updateConversationPreview,
 		setSelectedUser,
 		updateUnread,
 		markAsRead,

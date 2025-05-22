@@ -1,7 +1,5 @@
 export function formatDateLabel(date: Date): string {
 
-	console.log(date);
-
 	const today = new Date()
 	const isToday = date.toDateString() === today.toDateString()
 	const isThisYear = date.getFullYear() === today.getFullYear()

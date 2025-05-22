@@ -2,10 +2,16 @@ import { useSocket } from '@/sockets/socket'
 import { useChat } from '@/store/chat'
 import { useAuth } from '@/store/auth'
 
+let isChatSocketSetup = false
+
 export function setupChatSocket() {
+	if (isChatSocketSetup) return
+	isChatSocketSetup = true
 	const socket = useSocket()
 	const chatStore = useChat()
 	const authStore = useAuth()
+
+	console.log('[setupChatSocket] init')
 
 	socket.on('connect', async () => {
 		console.log('✅ Chat socket connected')
@@ -24,6 +30,7 @@ export function setupChatSocket() {
 	})
 
 	socket.on('receive_message', (message) => {
+		console.log('[WS] receive_message triggered', message)
 		chatStore.receiveMessage(message)
 	})
 
