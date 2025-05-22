@@ -34,6 +34,14 @@ export const useChatUI = defineStore('chat_ui', () => {
 		shouldAutoScroll.value = atBottom;
 	}
 
+	function updateShowNewMsgHint() {
+		const userId = chatStore.selectedUserId
+		if (userId === null) return
+
+		const unread = chatStore.unread[userId] ?? 0
+		showNewMsgText.value = !isAtBottom.value && unread > 0
+	}
+
 	function checkAutoScroll()
 	{
 		if (shouldAutoScroll.value) {
@@ -70,6 +78,7 @@ export const useChatUI = defineStore('chat_ui', () => {
 		showScrollButton,
 		showNewMsgText,
 		updateScrollIndicators,
+		updateShowNewMsgHint,
 		checkAutoScroll,
 		scrollToBottom,
 		attachScroll,

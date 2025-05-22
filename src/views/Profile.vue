@@ -110,92 +110,94 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 </script>
 
 <template>
-	<div class="bg-[#F8F6F0] h-full">
-		<div class="flex flex-col" v-if="profileUser">
-			<div class="flex flex-col bg-white mt-3 px-8 py-4">
-				<div class="flex items-center">
-					<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat" v-if="profileImage"
-						:style="{ backgroundImage: `url(${profileImage})` }" />
-					<div v-else
-						class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
-						Aucun avatar
+	<div v-bind="$attrs">
+		<div class="bg-[#F8F6F0] h-full">
+			<div class="flex flex-col" v-if="profileUser">
+				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+					<div class="flex items-center">
+						<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat" v-if="profileImage"
+							:style="{ backgroundImage: `url(${profileImage})` }" />
+						<div v-else
+							class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
+							Aucun avatar
+						</div>
+						<span class="ml-5 text-lg font-semibold">{{ profileUser.username }}</span>
 					</div>
-					<span class="ml-5 text-lg font-semibold">{{ profileUser.username }}</span>
+					<span class="mt-4 text-sm">{{ profileBio }}</span>
+					<div class="mt-3 flex flex-row items-center justify-between">
+						<button class="flex flex-col cursor-pointer text-left" @click="showFriendsList = true">
+							<span class="text-gray-400 text-sm my-1">Friends</span>
+							<span class="font-semibold">{{ nbFriends }}</span>
+						</button>
+						<div class="flex">
+							<button v-if="!isOwner" @click="goToChatWithUser(profileUser.id)"
+								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
+								Message
+							</button>
+							<button v-if="!isOwner"
+								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
+								<span>Add to friend</span>
+							</button>
+							<button @click="showEditProfile = true" v-if="isOwner"
+								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
+								Edit profile
+							</button>
+						</div>
+					</div>
 				</div>
-				<span class="mt-4 text-sm">{{ profileBio }}</span>
-				<div class="mt-3 flex flex-row items-center justify-between">
-					<button class="flex flex-col cursor-pointer text-left" @click="showFriendsList = true">
-						<span class="text-gray-400 text-sm my-1">Friends</span>
-						<span class="font-semibold">{{ nbFriends }}</span>
-					</button>
-					<div class="flex">
-						<button v-if="!isOwner" @click="goToChatWithUser(profileUser.id)"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
-							Message
-						</button>
-						<button v-if="!isOwner"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
-							<span>Add to friend</span>
-						</button>
-						<button @click="showEditProfile = true" v-if="isOwner"
-							class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
-							Edit profile
-						</button>
+				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+					<span class="mb-2">Stats for all game</span>
+					<hr class="mb-3" />
+					<div class="flex flex-row justify-around">
+						<div class="flex flex-col">
+							<span class="text-gray-400 text-sm my-1">Win</span>
+							<span>{{ nbWin }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-400 text-sm my-1">Loose</span>
+							<span>{{ nbLoose }}</span>
+						</div>
+						<div class="flex flex-col">
+							<span class="text-gray-400 text-sm my-1">Ratio</span>
+							<span>{{ nbTotal.toFixed(2) }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+					<span class="mb-2">Your recent game</span>
+					<hr class="mb-3" />
+					<div class="overflow-x-auto">
+						<table class="min-w-full bg-white rounded-lg overflow-hidden">
+							<thead class="bg-gray-100">
+								<tr>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Game</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Name</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Score</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Result</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="game in lastGames" :key="game.id" class="border-t">
+									<td class="px-4 py-3 text-sm text-gray-700">{{ game.game }}</td>
+									<td class="px-4 py-3 text-sm text-gray-700">{{ game.opponent }}</td>
+									<td class="px-4 py-3 text-center text-sm text-gray-700">{{ game.score }}</td>
+									<td class="px-4 py-3 text-center text-sm"
+										:class="game.result === 'Victoire' ? 'text-green-600' : 'text-red-600'">
+										{{ game.result }}
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-			<div class="flex flex-col bg-white mt-3 px-8 py-4">
-				<span class="mb-2">Stats for all game</span>
-				<hr class="mb-3" />
-				<div class="flex flex-row justify-around">
-					<div class="flex flex-col">
-						<span class="text-gray-400 text-sm my-1">Win</span>
-						<span>{{ nbWin }}</span>
-					</div>
-					<div class="flex flex-col">
-						<span class="text-gray-400 text-sm my-1">Loose</span>
-						<span>{{ nbLoose }}</span>
-					</div>
-					<div class="flex flex-col">
-						<span class="text-gray-400 text-sm my-1">Ratio</span>
-						<span>{{ nbTotal.toFixed(2) }}</span>
-					</div>
-				</div>
-			</div>
-			<div class="flex flex-col bg-white mt-3 px-8 py-4">
-				<span class="mb-2">Your recent game</span>
-				<hr class="mb-3" />
-				<div class="overflow-x-auto">
-					<table class="min-w-full bg-white rounded-lg overflow-hidden">
-						<thead class="bg-gray-100">
-							<tr>
-								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Game</th>
-								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Name</th>
-								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Score</th>
-								<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Result</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="game in lastGames" :key="game.id" class="border-t">
-								<td class="px-4 py-3 text-sm text-gray-700">{{ game.game }}</td>
-								<td class="px-4 py-3 text-sm text-gray-700">{{ game.opponent }}</td>
-								<td class="px-4 py-3 text-center text-sm text-gray-700">{{ game.score }}</td>
-								<td class="px-4 py-3 text-center text-sm"
-									:class="game.result === 'Victoire' ? 'text-green-600' : 'text-red-600'">
-									{{ game.result }}
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+			<div v-else>
+				User not found
 			</div>
 		</div>
-		<div v-else>
-			User not found
-		</div>
+		<EditProfile v-model:visible="showEditProfile" :initial-avatar="profileImage || ''"
+			:initial-bio="profileUser?.biography || ''" :initial-username="profileUser?.username || 'No user found'"
+			@save-profile="handleSaveProfile" />
+		<FriendsList v-model:visible="showFriendsList" />
 	</div>
-	<EditProfile v-model:visible="showEditProfile" :initial-avatar="profileImage || ''"
-		:initial-bio="profileUser?.biography || ''" :initial-username="profileUser?.username || 'No user found'"
-		@save-profile="handleSaveProfile" />
-	<FriendsList v-model:visible="showFriendsList" />
 </template>

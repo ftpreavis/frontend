@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useAuth } from '@/store/auth'
 import axios from 'axios'
+import { useChatUI } from './chat_ui'
 
 interface Message {
 	id: number
@@ -26,6 +27,7 @@ export const useChat = defineStore('chat', () => {
 	const selectedUserId = ref<number | null>(null)
 
 	const authStore = useAuth()
+	const chatUIStore = useChatUI()
 
 	function receiveMessage(message: {
 		id: number
@@ -55,6 +57,8 @@ export const useChat = defineStore('chat', () => {
 
 		updateConversationPreview(fromId, message.content, message.createdAt)
 		updateUnread(fromId, 1)
+		if (isCurrentChatOpen)
+			chatUIStore.updateScrollIndicators()
 	}
 
 	function updateConversationPreview(userId: number, content: string, createdAt: string) {
@@ -83,10 +87,7 @@ export const useChat = defineStore('chat', () => {
 	}
 
 	function updateUnread(userId: number, count: number) {
-		console.log("Coming count :", count);
-		console.log("Previous unread value :", unread.value[userId]);
-		unread.value[userId] = (unread.value[userId] ?? 0) + count
-		console.log("New value :", unread.value[userId]);
+		unread.value[userId] = (unread.value[userId] ?? 0) + count;
 	}
 
 	function markAsRead(userId: number) {

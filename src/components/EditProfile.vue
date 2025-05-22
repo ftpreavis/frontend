@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { BoldIcon } from "@heroicons/vue/24/outline";
-import {c} from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
 import {ref, watch} from "vue"
 
 const props = defineProps<{
