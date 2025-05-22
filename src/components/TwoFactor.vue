@@ -40,6 +40,7 @@ const TwoFactorVerif = async() => {
             Authorization: `Bearer ${authStore.token}`
             }
         })
+        close()
     } catch (err: any) {
         console.error(err)
     }
@@ -55,6 +56,7 @@ const TwoFactorVerif = async() => {
             <img :src="qrCodeUrl" alt="QR Code 2FA" class="w-40 h-40 mb-4 border rounded-md" />
             <p class="text-sm text-gray-600 mb-2 text-center">Scanne et entre le code ici :</p>
             <input
+            v-model="code"
             type="text"
             placeholder="Code à 6 chiffres"
             class="border p-2 w-full rounded mb-2 text-center"

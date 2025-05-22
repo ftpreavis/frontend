@@ -22,10 +22,18 @@ export const useAuth = defineStore('auth', () => {
 		document.cookie = name + "=" + value + "; expires=" + d + "; path=/" + "; samesite=Lax"
 	}
 
-	const authenticate = async (username: string, password: string) => {
+	const authenticate = async (username: string, password: string, token2FA: string | null) => {
 		try {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
-			setCookies("access_token", response.data.token)
+            console.log(response)
+            if (response.data.requires2FA) {
+                const response2FA = await axios.post('/api/auth/2fa/login', {id: username, token: token2FA})
+                console.log(response2FA)
+                setCookies("access_token", response2FA.data.token)
+            }
+            else {
+                setCookies("access_token", response.data.token)
+            }
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})

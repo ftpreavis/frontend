@@ -8,6 +8,7 @@ import {parseAstAsync} from "vite";
 
 const username = ref<string>('')
 const password = ref<string>('')
+const token2FA = ref<string>('')
 const errors = ref<{ username?: string; password?: string}>({})
 const authStore = useAuth()
 const loginError = ref<string>('')
@@ -23,7 +24,7 @@ const login = async () => {
     if (!password.value){
         errors.value.password = "Le mot de passe est requis."
     }
-    if (username.value && password.value) await authStore.authenticate(username.value, password.value)
+    if (username.value && password.value) await authStore.authenticate(username.value, password.value, token2FA.value)
 	// await router.push('/')
 		// .then(() => {window.location.reload()})
 }
@@ -56,6 +57,11 @@ const googleConnect = async() => {
 				<label>
 					Password :
 					<input v-model="password" type="password" class="border-2 rounded h-8 w-full">
+                    <p v-if="errors.password" class="text-red-600 text-sm mt-1">{{ errors.password }}</p>
+				</label>
+                <label>
+					token2FA :
+					<input v-model="token2FA" type="text" class="border-2 rounded h-8 w-full">
                     <p v-if="errors.password" class="text-red-600 text-sm mt-1">{{ errors.password }}</p>
 				</label>
 				<input type="submit" value="Login"
