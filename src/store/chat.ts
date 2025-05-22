@@ -36,7 +36,6 @@ export const useChat = defineStore('chat', () => {
 		content: string
 		createdAt: string
 	}) {
-		console.log('[receiveMessage] called!', message)
 		const fromId = message.senderId
 		const isCurrentChatOpen = selectedUserId.value === fromId
 

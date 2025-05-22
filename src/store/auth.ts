@@ -33,9 +33,8 @@ export const useAuth = defineStore('auth', () => {
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
 			loginError.value = "Nom d'utilisateur ou mot de passe incorect"
-			console.log("Nom d'utilisateur ou mot de passe incorect" + error)
+			console.log("Nom d'utilisateur ou mot de passe incorect " + error)
 		}
-		console.log('dasd')
 	}
 
 	const fetchUserById = async (id: number) => {

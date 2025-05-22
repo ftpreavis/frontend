@@ -19,7 +19,6 @@ export function setupChatSocket() {
 	})
 
 	socket.on('disconnect', (reason) => {
-		console.warn('🔌 Chat socket disconnected:', reason)
 	})
 
 	socket.on('connect_error', (err) => {
@@ -44,6 +43,5 @@ export function setupChatSocket() {
 	socket.on('notify_popup', ({ fromUserId, content }) => {
 		const user = authStore.userMap?.[fromUserId]
 		const sender = user?.username ?? `User ${fromUserId}`
-		console.log(`🔔 Popup from ${sender}: ${content}`)
 	})
 }
