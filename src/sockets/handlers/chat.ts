@@ -11,10 +11,7 @@ export function setupChatSocket() {
 	const chatStore = useChat()
 	const authStore = useAuth()
 
-	console.log('[setupChatSocket] init')
-
 	socket.on('connect', async () => {
-		console.log('✅ Chat socket connected')
 		if (authStore.userId) {
 			await chatStore.loadConversations(authStore.userId)
 			await chatStore.loadUnread(authStore.userId)
@@ -29,8 +26,14 @@ export function setupChatSocket() {
 		console.error('❌ Chat socket error:', err.message)
 	})
 
-	socket.on('receive_message', (message) => {
-		console.log('[WS] receive_message triggered', message)
+	socket.on('receive_message', async (message) => {
+		const fromId = message.senderId
+		const authStore = useAuth()
+
+		if (authStore.userId !== fromId && !authStore.userMap[fromId]) {
+			const data = await authStore.fetchUserById(fromId)
+			if (!data) return
+		}
 		chatStore.receiveMessage(message)
 	})
 
