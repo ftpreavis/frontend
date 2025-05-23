@@ -3,6 +3,10 @@ import { ref } from 'vue'
 import { useAuth } from '@/store/auth'
 import axios from 'axios'
 import { useChatUI } from './chat_ui'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
+import ChatToast from '@/components/ChatToast.vue'
+import { useRouter } from 'vue-router'
 
 interface Message {
 	id: number
@@ -25,6 +29,7 @@ export const useChat = defineStore('chat', () => {
 	const unread = ref<Record<number, number>>({})
 	const conversations = ref<ConversationPreview[]>([])
 	const selectedUserId = ref<number | null>(null)
+	const router = useRouter()
 
 	const authStore = useAuth()
 	const chatUIStore = useChatUI()
@@ -58,6 +63,29 @@ export const useChat = defineStore('chat', () => {
 		updateUnread(fromId, 1)
 		if (isCurrentChatOpen)
 			chatUIStore.updateScrollIndicators()
+		else {
+			const openConversation = async () => {
+				if (router.currentRoute.value.name === 'ChatPage') {
+					setSelectedUser(fromId)
+				} else {
+					await router.push({ name: 'ChatPage', query: { userId: fromId } })
+				}
+			}
+
+			toast(ChatToast, {
+				type: 'default',
+				position: 'top-right',
+				autoClose: 3000,
+				expandCustomProps: true,
+				theme: 'colored',
+				onClick: openConversation, // ⬅️ Click-to-open behavior
+				contentProps: {
+					title: authStore.userMap[fromId]?.username ?? 'Unknown',
+					avatar: `/api/users/${fromId}/avatar`,
+					message: msg.content.length > 30 ? msg.content.slice(0, 30) + '…' : msg.content,
+				},
+			})
+		}
 	}
 
 	function updateConversationPreview(userId: number, content: string, createdAt: string) {

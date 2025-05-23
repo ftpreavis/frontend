@@ -12,6 +12,8 @@ import { useSocket } from '@/sockets/socket'
 import { useChatUI } from '@/store/chat_ui'
 import { formatDateLabel } from '@/utils/date'
 import type { ComponentPublicInstance } from 'vue'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 /* -------------------------------------------------------------------------- */
 /*                                  Constants                                 */
@@ -99,7 +101,12 @@ const onSendMessage = async () => {
 	const { allowed, reason } = await chatStore.checkUserBlockStatus(selectedId.value)
 	if (!allowed) {
 		newMessage.value = ''
-		alert(`❌ You can't send a message — ${reason}`)
+		toast.error(`${reason}`, {
+			position: 'top-right',
+			autoClose: 3000,
+			pauseOnHover: true,
+			theme: 'light'
+		});
 		return
 	}
 
@@ -158,6 +165,10 @@ watch(() => currentMessages.value.length, async () => {
 	await nextTick()
 	chatUIStore.checkAutoScroll();
 })
+
+watch(() => chatStore.selectedUserId, async () => {
+	chatStore.selectedUserId !== null ? selectConversation(chatStore.selectedUserId) : null
+})
 </script>
 
 <template>
@@ -204,14 +215,14 @@ watch(() => currentMessages.value.length, async () => {
 						<div v-for="msg in group.messages" :key="msg.id"
 							:class="msg.senderId === authStore.userId ? 'flex justify-end' : 'flex justify-start'">
 							<template v-if="msg.senderId !== authStore.userId">
-								<div class="p-2 rounded max-w-xs bg-white text-gray-800">
+								<div class="p-2 rounded max-w-xs bg-white text-gray-800 break-words">
 									{{ msg.content }}
 								</div>
 								<div class="text-xs text-gray-400 self-end ml-1">{{ msg.time }}</div>
 							</template>
 							<template v-else>
 								<div class="text-xs text-gray-400 self-end mr-1">{{ msg.time }}</div>
-								<div class="p-2 rounded max-w-xs bg-blue-500 text-white">
+								<div class="p-2 rounded max-w-xs bg-blue-500 text-white break-words">
 									{{ msg.content }}
 								</div>
 							</template>
