@@ -56,6 +56,7 @@ const googleConnect = async() => {
 </script>
 
 <template>
+	<div class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
 	<Header></Header>
 	<div v-if="!requires2FA" class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
 		<h3 class="mb-3 text-center">Login</h3>
@@ -98,4 +99,5 @@ const googleConnect = async() => {
 			<button @click="googleConnect" class="py-2 px-5 border rounded text-orange-400 shadow-md cursor-pointer">Google</button>
 		</div>
 	</div>
+  </div>
 </template>

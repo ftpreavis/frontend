@@ -2,16 +2,15 @@
 FROM node:24
 WORKDIR /app
 
-# 1) Copy package.json + lock and install into image
 COPY package*.json ./
+
 RUN npm ci
 
-# 2) Copy the rest of your source
 COPY . .
 
-# 3) Dev‐mode env & port
 ENV VITE_HOST=0.0.0.0
 ENV VITE_PORT=5173
 
 EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+
+CMD ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0 --port 5173"]

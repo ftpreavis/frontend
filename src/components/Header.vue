@@ -9,7 +9,14 @@ import {
 import {useRoute, useRouter} from 'vue-router'
 import { useI18n } from 'vue-i18n';
 import {useAuth} from "@/store/auth.ts";
+import { useChat } from '@/store/chat'
+import { computed } from 'vue'
 
+const chatStore = useChat()
+
+const totalUnread = computed(() =>
+	Object.values(chatStore.unread).reduce((sum, c) => sum + c, 0)
+)
 const authStore = useAuth()
 
 const { t, locale } = useI18n();
@@ -42,8 +49,11 @@ const userId = 42
 				sign up
 			</div>
 			<div v-else class="w-[100px] flex flex-row items-center justify-end space-x-3">
-				<button @click="go('/chat')">
-					<ChatBubbleOvalLeftEllipsisIcon class="h-7 w-7 text-gray-500"></ChatBubbleOvalLeftEllipsisIcon>
+				<button @click="go('/chat')" class="relative">
+					<ChatBubbleOvalLeftEllipsisIcon class="h-7 w-7 text-gray-500"/>
+					<span v-if="totalUnread > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+						{{ totalUnread }}
+					</span>
 				</button>
 				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(${profileImage})`}" @click="go('/profile/' + authStore.userId)">
 				</div>
