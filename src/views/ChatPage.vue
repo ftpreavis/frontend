@@ -161,7 +161,7 @@ watch(() => currentMessages.value.length, async () => {
 			<button class="md:hidden p-2 text-sm" @click="selectedId = null">← Back</button>
 
 			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
-				<button @click="goToProfile(selectedId)"><img :src="convs.find(c => c.id === selectedId)?.avatar" alt="avatar"
+				<button @click="goToProfile(selectedId)"><img :src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`" alt="avatar"
 					class="w-10 h-10 rounded-full flex-shrink-0" /></button>
 				<h3 class="text-md font-semibold mt-1">{{convs.find(c => c.id === selectedId)?.name}}</h3>
 			</div>
