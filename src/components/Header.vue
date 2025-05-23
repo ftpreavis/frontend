@@ -55,7 +55,7 @@ const userId = 42
 						{{ totalUnread }}
 					</span>
 				</button>
-				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(${profileImage})`}" @click="go('/profile/' + authStore.userId)">
+				<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer" :style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center`}" @click="go('/profile/' + authStore.userId)">
 				</div>
 			</div>
 <!--			<nav class="flex space-x-5">-->
