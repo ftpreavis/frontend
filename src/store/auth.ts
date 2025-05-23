@@ -27,28 +27,28 @@ export const useAuth = defineStore('auth', () => {
 	const authenticate = async (username: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
-            console.log(response)
-            if (response.data.requires2FA) {
-                return response.data.requires2FA
-            }
-            setCookies("access_token", response.data.token)
+			console.log(response)
+			if (response.data.requires2FA) {
+				return response.data.requires2FA
+			}
+			setCookies("access_token", response.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
-			await router.push('/').then(() => {window.location.reload()})
-		} catch (error){
+			await router.push('/').then(() => { window.location.reload() })
+		} catch (error) {
 			loginError.value = "Nom d'utilisateur ou mot de passe incorect"
 			console.log("Nom d'utilisateur ou mot de passe incorect " + error)
 		}
 	}
 
-    const authenticate2FA = async (id: string, token2FA: string) => {
-        const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
-        console.log(response2FA)
-        setCookies("access_token", response2FA.data.token)
-        const userData = await axios.get('/api/users/profile')
-        setCookies('userId', String(userData.data.id))
-        await router.push('/').then(() => {window.location.reload()})
-    }
+	const authenticate2FA = async (id: string, token2FA: string) => {
+		const response2FA = await axios.post('/api/auth/2fa/login', { id: id, token: token2FA })
+		console.log(response2FA)
+		setCookies("access_token", response2FA.data.token)
+		const userData = await axios.get('/api/users/profile')
+		setCookies('userId', String(userData.data.id))
+		await router.push('/').then(() => { window.location.reload() })
+	}
 
 	const fetchUserById = async (id: number) => {
 		if (userMap.value[id]) return userMap.value[id];
@@ -67,7 +67,7 @@ export const useAuth = defineStore('auth', () => {
 
 	const googleConnect = async () => {
 		try {
-            axios.get('/api//auth/google/callback')
+			axios.get('/api//auth/google/callback')
 			window.location.href = '/api/auth/google'
 			isAuthenticated.value = true
 		} catch {
@@ -88,7 +88,7 @@ export const useAuth = defineStore('auth', () => {
 		token.value = null
 		isAuthenticated.value = false
 		userId.value = null
-		await router.push('/').then(() => {window.location.reload()})
+		await router.push('/').then(() => { window.location.reload() })
 	}
 
 	return {
@@ -101,7 +101,7 @@ export const useAuth = defineStore('auth', () => {
 		googleConnect,
 		logout,
 		authenticate,
-        authenticate2FA,
+		authenticate2FA,
 		fetchUserById
 	}
 })
