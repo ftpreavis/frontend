@@ -32,7 +32,7 @@ export function fetchMessages(
 	otherId: number,
 	take = 1,
 	skip = 0
-): Promise<Array<{ id: number; senderId: number; content: string; time: string }>> {
+): Promise<Array<{ id: number; senderId: number; content: string; createdAt: string }>> {
 	return axios
 		.get(`/api/chat/messages/${otherId}`, {
 			params: { userId, take, skip },

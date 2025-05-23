@@ -32,7 +32,6 @@ const games = computed(() => [
 </script>
 
 <template>
-	<Header></Header>
 	<div class="flex flex-col w-11/12 m-auto space-y-5 mt-5">
 		<GameCard v-for="game in games" :key="game.id" :gameName="game.name" :imageUrl="game.image" :tag="game.tag" :desc="game.desc" @click="game.playFunction"></GameCard>
 	</div>

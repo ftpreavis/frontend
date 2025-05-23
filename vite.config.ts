@@ -33,6 +33,7 @@ export default defineConfig({
 			'/socket/lobby': {
 				target: 'http://lobby-service:3000',
 				changeOrigin: true,
+				ws: true,
 				rewrite: path => path.replace(/^\/socket\/lobby/, '')
 			},
 			// '/api/chat': {

@@ -42,7 +42,6 @@ const googleConnect = async() => {
 </script>
 
 <template>
-	<Header></Header>
 	<div class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
 		<h3 class="mb-3 text-center">Login</h3>
 		<div class="border flex flex-col p-4 space-y-3">
