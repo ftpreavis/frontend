@@ -22,18 +22,14 @@ export const useAuth = defineStore('auth', () => {
 		document.cookie = name + "=" + value + "; expires=" + d + "; path=/" + "; samesite=Lax"
 	}
 
-	const authenticate = async (username: string, password: string, token2FA: string | null) => {
+	const authenticate = async (username: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
             console.log(response)
             if (response.data.requires2FA) {
-                const response2FA = await axios.post('/api/auth/2fa/login', {id: username, token: token2FA})
-                console.log(response2FA)
-                setCookies("access_token", response2FA.data.token)
+                return response.data.requires2FA
             }
-            else {
-                setCookies("access_token", response.data.token)
-            }
+            setCookies("access_token", response.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})
@@ -43,6 +39,15 @@ export const useAuth = defineStore('auth', () => {
 		}
 		console.log('dasd')
 	}
+
+    const authenticate2FA = async (id: string, token2FA: string) => {
+        const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
+        console.log(response2FA)
+        setCookies("access_token", response2FA.data.token)
+        const userData = await axios.get('/api/users/profile')
+        setCookies('userId', String(userData.data.id))
+        await router.push('/').then(() => {window.location.reload()})
+    }
 
 	const fetchUserById = async (id: number) => {
 		try {
@@ -59,6 +64,7 @@ export const useAuth = defineStore('auth', () => {
 
 	const googleConnect = async () => {
 		try {
+            axios.get('/api//auth/google/callback')
 			window.location.href = '/api/auth/google'
 			isAuthenticated.value = true
 		} catch {
@@ -91,6 +97,7 @@ export const useAuth = defineStore('auth', () => {
 		googleConnect,
 		logout,
 		authenticate,
+        authenticate2FA,
 		fetchUserById
 	}
 })

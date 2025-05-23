@@ -3,6 +3,7 @@ import { BoldIcon } from "@heroicons/vue/24/outline";
 import {c} from "vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf";
 import {ref, watch} from "vue"
 import TwoFactor from "@/components//TwoFactor.vue";
+import { useAuth } from "@/store/auth";
 
 const props = defineProps<{
 	visible: boolean
@@ -24,6 +25,7 @@ const bio = ref<string>('')
 const password = ref<string>('')
 const avatarPreview = ref<string>(props.initialAvatar);
 const showTwoFactor = ref(false)
+const authStore = useAuth()
 
 watch(
     () => props.visible,
@@ -38,10 +40,10 @@ watch(
 );
 
 const handleAvatarChange = (event: Event) =>{
-  const target = event.target as HTMLInputElement
-  if (target.files?.length) {
-    avatar.value = target.files[0]
-  }
+    const target = event.target as HTMLInputElement
+    if (target.files?.length) {
+        avatar.value = target.files[0]
+    }
 }
 
 const save = () => {
@@ -66,7 +68,7 @@ const save = () => {
 			<input v-model="password" type="password" placeholder="New password" class="border-[2px]">
 			<button class="cursor-pointer" @click="save">save</button>
 			<button class="cursor-pointer" @click="close">close</button>
-            <button class="cursor-pointer mt-4" @click="showTwoFactor = true"> 2FA </button>
+            <button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4" @click="showTwoFactor = true"> 2FA </button>
 		</div>
 	</div>
     <TwoFactor v-model:visible="showTwoFactor"/>
