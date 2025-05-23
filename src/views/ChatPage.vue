@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+/* -------------------------------------------------------------------------- */
+/*                                   Imports                                  */
+/* -------------------------------------------------------------------------- */
+
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/store/auth'
@@ -7,6 +12,10 @@ import { useSocket } from '@/sockets/socket'
 import { useChatUI } from '@/store/chat_ui'
 import { formatDateLabel } from '@/utils/date'
 import type { ComponentPublicInstance } from 'vue'
+
+/* -------------------------------------------------------------------------- */
+/*                                  Constants                                 */
+/* -------------------------------------------------------------------------- */
 
 const authStore = useAuth()
 const chatStore = useChat()
@@ -17,6 +26,10 @@ const chatUIStore = useChatUI()
 
 const selectedId = ref<number | null>(null)
 const newMessage = ref('')
+
+/* -------------------------------------------------------------------------- */
+/*                                   Binding                                  */
+/* -------------------------------------------------------------------------- */
 
 function bindScrollContainer(el: Element | ComponentPublicInstance | null) {
 	if (el instanceof HTMLElement) {
@@ -58,6 +71,10 @@ const convs = computed(() =>
 	})
 )
 
+/* -------------------------------------------------------------------------- */
+/*                                  Functions                                 */
+/* -------------------------------------------------------------------------- */
+
 function goToProfile(targetUserId: number) {
 	router.push({ name: 'Profile', params: { userId: targetUserId } })
 };
@@ -76,9 +93,17 @@ const selectConversation = async (id: number) => {
 	chatUIStore.attachScroll()
 }
 
-const onSendMessage = () => {
+const onSendMessage = async () => {
 	if (!newMessage.value.trim() || selectedId.value === null) return
 
+	const { allowed, reason } = await chatStore.checkUserBlockStatus(selectedId.value)
+	if (!allowed) {
+		newMessage.value = ''
+		alert(`❌ You can't send a message — ${reason}`)
+		return
+	}
+
+	// ✅ Continue as normal
 	const content = newMessage.value.trim()
 	const now = new Date()
 
@@ -108,6 +133,10 @@ const onSendMessage = () => {
 	newMessage.value = ''
 	nextTick(chatUIStore.scrollToBottom)
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                   Events                                   */
+/* -------------------------------------------------------------------------- */
 
 onMounted(async () => {
 	if (!authStore.userId) return
@@ -161,8 +190,9 @@ watch(() => currentMessages.value.length, async () => {
 			<button class="md:hidden p-2 text-sm" @click="selectedId = null">← Back</button>
 
 			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
-				<button @click="goToProfile(selectedId)"><img :src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`" alt="avatar"
-					class="w-10 h-10 rounded-full flex-shrink-0" /></button>
+				<button @click="goToProfile(selectedId)"><img
+						:src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`"
+						alt="avatar" class="w-10 h-10 rounded-full flex-shrink-0" /></button>
 				<h3 class="text-md font-semibold mt-1">{{convs.find(c => c.id === selectedId)?.name}}</h3>
 			</div>
 
@@ -190,7 +220,8 @@ watch(() => currentMessages.value.length, async () => {
 				</div>
 			</div>
 
-			<button v-if="chatUIStore.showScrollButton && currentMessages.length > 0" @click="chatUIStore.scrollToBottom"
+			<button v-if="chatUIStore.showScrollButton && currentMessages.length > 0"
+				@click="chatUIStore.scrollToBottom"
 				class="fixed bottom-24 right-6 z-10 bg-blue-500 text-white px-3 py-2 rounded-full shadow-md hover:bg-blue-600 flex items-center space-x-2 transition">
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
 					stroke="currentColor">

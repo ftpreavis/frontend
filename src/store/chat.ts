@@ -168,11 +168,44 @@ export const useChat = defineStore('chat', () => {
 		}
 	}
 
+	async function checkUserBlockStatus(toUserId: number): Promise<{ allowed: boolean, reason?: string }> {
+		const userId = authStore.userId
+		const token = authStore.token
+
+		try {
+			// Check if the target has blocked me
+			const res1 = await axios.get('/api/chat/block', {
+				params: { userId: toUserId },
+				headers: { Authorization: `Bearer ${token}` },
+			})
+			const blockedMe = res1.data.some((u: any) => u.id === userId)
+			if (blockedMe) {
+				return { allowed: false, reason: "This user has blocked you." }
+			}
+
+			// Check if I have blocked the target
+			const res2 = await axios.get('/api/chat/block', {
+				params: { userId },
+				headers: { Authorization: `Bearer ${token}` },
+			})
+			const iBlockedThem = res2.data.some((u: any) => u.id === toUserId)
+			if (iBlockedThem) {
+				return { allowed: false, reason: "You have blocked this user." }
+			}
+
+			return { allowed: true }
+		} catch (err) {
+			console.error('Failed to check message permission', err)
+			return { allowed: false, reason: "Could not verify message permissions." }
+		}
+	}
+
 	return {
 		messages,
 		unread,
 		conversations,
 		selectedUserId,
+		checkUserBlockStatus,
 		updateConversationPreview,
 		setSelectedUser,
 		updateUnread,
