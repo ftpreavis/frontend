@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { BoldIcon } from "@heroicons/vue/24/outline";
 import {ref, watch} from "vue"
+import TwoFactor from "@/components//TwoFactor.vue";
+import { useAuth } from "@/store/auth";
 
 const props = defineProps<{
 	visible: boolean
@@ -21,6 +23,8 @@ const username = ref<string>('')
 const bio = ref<string>('')
 const password = ref<string>('')
 const avatarPreview = ref<string>(props.initialAvatar);
+const showTwoFactor = ref(false)
+const authStore = useAuth()
 
 watch(
     () => props.visible,
@@ -35,10 +39,10 @@ watch(
 );
 
 const handleAvatarChange = (event: Event) =>{
-  const target = event.target as HTMLInputElement
-  if (target.files?.length) {
-    avatar.value = target.files[0]
-  }
+    const target = event.target as HTMLInputElement
+    if (target.files?.length) {
+        avatar.value = target.files[0]
+    }
 }
 
 const save = () => {
@@ -50,6 +54,7 @@ const save = () => {
     })
     close()
 }
+
 </script>
 
 <template>
@@ -62,6 +67,8 @@ const save = () => {
 			<input v-model="password" type="password" placeholder="New password" class="border-[2px]">
 			<button class="cursor-pointer" @click="save">save</button>
 			<button class="cursor-pointer" @click="close">close</button>
+            <button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4" @click="showTwoFactor = true"> 2FA </button>
 		</div>
 	</div>
+    <TwoFactor v-model:visible="showTwoFactor"/>
 </template>
