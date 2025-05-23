@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/* -------------------------------------------------------------------------- */
+/*                                   Imports                                  */
+/* -------------------------------------------------------------------------- */
+
 import { onMounted, computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
@@ -6,16 +10,51 @@ import Header from "@/components/Header.vue";
 import EditProfile from "@/components/EditProfile.vue";
 import FriendsList from "@/components/FriendsList.vue";
 import { useAuth } from "@/store/auth";
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import { ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/outline'
 
+/* -------------------------------------------------------------------------- */
+/*                                  Constants                                 */
+/* -------------------------------------------------------------------------- */
+
+const isBlocked = ref(false);
+const showConfirm = ref(false);
 const showEditProfile = ref(false);
 const showFriendsList = ref(false);
-
+const willBlock = ref(true);
 const authStore = useAuth();
 const route = useRoute();
 const router = useRouter();
-
 const profileImage = ref<string | null>(null);
 const profileUser = ref<any | null>(null);
+
+/* -------------------------------------------------------------------------- */
+/*                                  Functions                                 */
+/* -------------------------------------------------------------------------- */
+
+const handleConfirm = async (confirmed: boolean) => {
+	showConfirm.value = false
+	if (!confirmed || !profileUser.value) return
+
+	const url = '/api/chat/block'
+	const method = willBlock.value ? 'post' : 'delete'
+	const body = {
+		blockerId: authStore.userId,
+		blockedId: profileUser.value.id,
+	}
+
+	try {
+		await axios({
+			method,
+			url,
+			data: body,
+			headers: { Authorization: `Bearer ${authStore.token}` },
+		})
+		isBlocked.value = willBlock.value
+	} catch (err) {
+		console.error('Failed to toggle block status', err)
+	}
+}
 
 const loadProfile = async (id: number) => {
 	const data = await authStore.fetchUserById(id);
@@ -25,8 +64,25 @@ const loadProfile = async (id: number) => {
 	}
 };
 
-onMounted(() => {
+async function toggleBlockUser() {
+	willBlock.value = !isBlocked.value
+	showConfirm.value = true
+}
+
+onMounted(async () => {
 	loadProfile(Number(route.params.userId));
+	if (!isOwner.value) {
+		try {
+			const res = await axios.get(`/api/chat/block`, {
+				params: { userId: authStore.userId },
+				headers: { Authorization: `Bearer ${authStore.token}` },
+			})
+			console.log("Blocked users :", res.data);
+			isBlocked.value = res.data.some((user: any) => user.id === profileUser.value?.id)
+		} catch (err) {
+			console.error('Error fetching blocked users:', err)
+		}
+	}
 });
 
 watch(
@@ -131,16 +187,23 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 						</button>
 						<div class="flex">
 							<button v-if="!isOwner" @click="goToChatWithUser(profileUser.id)"
-								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
-								Message
+								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500 hover:border-black">
+								<span class="flex items-center gap-2">
+									Send Message
+									<ChatBubbleLeftEllipsisIcon class="w-5 h-5" />
+								</span>
 							</button>
 							<button v-if="!isOwner"
-								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black mr-2">
+								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black hover:bg-emerald-500 hover:text-white">
 								<span>Add to friend</span>
 							</button>
 							<button @click="showEditProfile = true" v-if="isOwner"
-								class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
+								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
 								Edit profile
+							</button>
+							<button v-if="!isOwner" @click="toggleBlockUser"
+								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg bg-red-400 hover:bg-red-500 transition-all ease-in-out duration-500 hover:border-black">
+								{{ isBlocked ? 'Unblock User' : 'Block User' }}
 							</button>
 						</div>
 					</div>
@@ -199,5 +262,9 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 			:initial-bio="profileUser?.biography || ''" :initial-username="profileUser?.username || 'No user found'"
 			@save-profile="handleSaveProfile" />
 		<FriendsList v-model:visible="showFriendsList" />
+		<ConfirmDialog :visible="showConfirm" :title="willBlock ? 'Block this user?' : 'Unblock this user?'" :message="willBlock
+			? 'Are you sure you want to block this user? You will not be able to interact.'
+			: 'Do you want to unblock this user and restore interaction?'" :ok-button="willBlock ? 'Block' : 'Unblock'"
+			cancel-button="Cancel" @update:visible="(val) => showConfirm = val" @confirm="handleConfirm" />
 	</div>
 </template>
