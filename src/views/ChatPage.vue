@@ -171,7 +171,7 @@ watch(() => currentMessages.value.length, async () => {
 					'flex items-start p-3 rounded-lg cursor-pointer hover:bg-gray-100',
 					selectedId === conv.id ? 'bg-gray-200' : 'bg-gray-50',
 				]">
-					<img :src="conv.avatar" alt="avatar" class="w-10 h-10 rounded-full mr-3 flex-shrink-0" />
+					<img :src="conv.avatar" alt="avatar" class="object-contain object-center w-10 h-10 rounded-full mr-3 flex-shrink-0" />
 					<div class="flex-1 min-w-0">
 						<div class="flex justify-between items-end">
 							<span class="font-medium text-gray-900">{{ conv.name }}</span>
@@ -192,7 +192,7 @@ watch(() => currentMessages.value.length, async () => {
 			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
 				<button @click="goToProfile(selectedId)"><img
 						:src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`"
-						alt="avatar" class="w-10 h-10 rounded-full flex-shrink-0" /></button>
+						alt="avatar" class="object-contain object-center w-12 h-12 rounded-full flex-shrink-0" /></button>
 				<h3 class="text-md font-semibold mt-1">{{convs.find(c => c.id === selectedId)?.name}}</h3>
 			</div>
 
