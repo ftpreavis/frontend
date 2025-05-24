@@ -6,6 +6,7 @@ import { useChatUI } from './chat_ui'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 import ChatToast from '@/components/ChatToast.vue'
+import { useLang } from '@/composables/useLang'
 import { useRouter } from 'vue-router'
 
 interface Message {
@@ -30,6 +31,7 @@ export const useChat = defineStore('chat', () => {
 	const conversations = ref<ConversationPreview[]>([])
 	const selectedUserId = ref<number | null>(null)
 	const router = useRouter()
+	const { t } = useLang()
 
 	const authStore = useAuth()
 	const chatUIStore = useChatUI()
@@ -78,7 +80,7 @@ export const useChat = defineStore('chat', () => {
 				autoClose: 3000,
 				expandCustomProps: true,
 				theme: 'colored',
-				onClick: openConversation, // ⬅️ Click-to-open behavior
+				onClick: openConversation,
 				contentProps: {
 					title: authStore.userMap[fromId]?.username ?? 'Unknown',
 					avatar: `/api/users/${fromId}/avatar`,
@@ -92,7 +94,7 @@ export const useChat = defineStore('chat', () => {
 		let convo = conversations.value.find(c => c.userId === userId)
 		let user = authStore.userMap[userId]
 
-		if (!user) return // should already be preloaded
+		if (!user) return
 
 		if (!convo) {
 			convo = {
@@ -208,7 +210,7 @@ export const useChat = defineStore('chat', () => {
 			})
 			const blockedMe = res1.data.some((u: any) => u.id === userId)
 			if (blockedMe) {
-				return { allowed: false, reason: "This user has blocked you." }
+				return { allowed: false, reason: t('chat.block.blockedByUser') }
 			}
 
 			// Check if I have blocked the target
@@ -218,13 +220,13 @@ export const useChat = defineStore('chat', () => {
 			})
 			const iBlockedThem = res2.data.some((u: any) => u.id === toUserId)
 			if (iBlockedThem) {
-				return { allowed: false, reason: "You have blocked this user." }
+				return { allowed: false, reason: t('chat.block.userBlocked') }
 			}
 
 			return { allowed: true }
 		} catch (err) {
 			console.error('Failed to check message permission', err)
-			return { allowed: false, reason: "Could not verify message permissions." }
+			return { allowed: false, reason: t('error.chat.block.errorPerms') }
 		}
 	}
 

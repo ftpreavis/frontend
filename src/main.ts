@@ -4,32 +4,11 @@ import './assets/tailwind.css';
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { createI18n } from 'vue-i18n'
 import { createPinia } from "pinia";
 import axios from 'axios'
 import Vue3Toasity from 'vue3-toastify';
+import i18n from '@/lang/lang'
 
 axios.defaults.withCredentials = true
 
-const messages = {
-	en: {
-		pongGameDesc: "Old game",
-		pacManDesc: "Classical PacMan game",
-		topTag: "TOP RATED",
-		newTag: "NEW !"
-	},
-	fr: {
-		pongGameDesc: "Vieux jeu",
-		pacManDesc: "Jeu classique PacMan",
-		topTag: "MIEUX NOTE",
-		newTag: "NOUVEAU !"
-	}
-}
-
-const i18h = createI18n({
-	legacy: false,
-	locale: 'fr',
-	messages
-})
-
-const app = createApp(App).use(router).use(i18h).use(createPinia()).use(Vue3Toasity, {limit: 2}).mount('#app')
+const app = createApp(App).use(router).use(i18n).use(createPinia()).use(Vue3Toasity, {limit: 2}).mount('#app')
