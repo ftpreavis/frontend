@@ -12,6 +12,7 @@ import FriendsList from "@/components/FriendsList.vue";
 import { useAuth } from "@/store/auth";
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/outline'
+import { useLang } from "@/composables/useLang"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Constants                                 */
@@ -25,6 +26,7 @@ const willBlock = ref(true);
 const authStore = useAuth();
 const route = useRoute();
 const router = useRouter();
+const { t } = useLang();
 const profileImage = ref<string | null>(null);
 const profileUser = ref<any | null>(null);
 
@@ -100,7 +102,7 @@ const isOwner = computed(() => profileUser.value?.id === authStore.userId);
 const isFriend = false;
 
 const profileBio = computed(() =>
-	profileUser.value?.biography || "This user hasn’t written a bio yet."
+	profileUser.value?.biography || t('profile.noBio')
 );
 
 const nbWin = computed(() => profileUser.value?.stats?.wins ?? 0);
@@ -175,68 +177,72 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 							:style="{ backgroundImage: `url(${profileImage})` }" />
 						<div v-else
 							class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
-							Aucun avatar
+							{{ t('profile.noAvatar') }}
 						</div>
 						<span class="ml-5 text-lg font-semibold">{{ profileUser.username }}</span>
 					</div>
 					<span class="mt-4 text-sm">{{ profileBio }}</span>
 					<div class="mt-3 flex flex-row items-center justify-between">
 						<button class="flex flex-col cursor-pointer text-left" @click="showFriendsList = true">
-							<span class="text-gray-400 text-sm my-1">Friends</span>
+							<span class="text-gray-400 text-sm my-1">{{ t('profile.friends') }}</span>
 							<span class="font-semibold">{{ nbFriends }}</span>
 						</button>
 						<div class="flex">
 							<button v-if="!isOwner" @click="goToChatWithUser(profileUser.id)"
 								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500 hover:border-black">
 								<span class="flex items-center gap-2">
-									Send Message
+									{{ t('profile.sendMessage') }}
 									<ChatBubbleLeftEllipsisIcon class="w-5 h-5" />
 								</span>
 							</button>
 							<button v-if="!isOwner"
 								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black hover:bg-emerald-500 hover:text-white">
-								<span>Add to friend</span>
+								<span>{{ t('profile.addFriend') }}</span>
 							</button>
 							<button @click="showEditProfile = true" v-if="isOwner"
 								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
-								Edit profile
+								{{ t('profile.edit') }}
 							</button>
 							<button v-if="!isOwner" @click="toggleBlockUser"
 								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg bg-red-400 hover:bg-red-500 transition-all ease-in-out duration-500 hover:border-black">
-								{{ isBlocked ? 'Unblock User' : 'Block User' }}
+								{{ isBlocked ? t('profile.unblock') : t('profile.block') }}
 							</button>
 						</div>
 					</div>
 				</div>
 				<div class="flex flex-col bg-white mt-3 px-8 py-4">
-					<span class="mb-2">Stats for all game</span>
+					<span class="mb-2">{{ t('profile.statsTitle') }}</span>
 					<hr class="mb-3" />
 					<div class="flex flex-row justify-around">
 						<div class="flex flex-col">
-							<span class="text-gray-400 text-sm my-1">Win</span>
+							<span class="text-gray-400 text-sm my-1">{{ t('profile.win') }}</span>
 							<span>{{ nbWin }}</span>
 						</div>
 						<div class="flex flex-col">
-							<span class="text-gray-400 text-sm my-1">Loose</span>
+							<span class="text-gray-400 text-sm my-1">{{ t('profile.loose') }}</span>
 							<span>{{ nbLoose }}</span>
 						</div>
 						<div class="flex flex-col">
-							<span class="text-gray-400 text-sm my-1">Ratio</span>
+							<span class="text-gray-400 text-sm my-1">{{ t('profile.ratio' )}}</span>
 							<span>{{ nbTotal.toFixed(2) }}</span>
 						</div>
 					</div>
 				</div>
 				<div class="flex flex-col bg-white mt-3 px-8 py-4">
-					<span class="mb-2">Your recent game</span>
+					<span class="mb-2">{{ t('profile.recentGames') }}</span>
 					<hr class="mb-3" />
 					<div class="overflow-x-auto">
 						<table class="min-w-full bg-white rounded-lg overflow-hidden">
 							<thead class="bg-gray-100">
 								<tr>
-									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Game</th>
-									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Name</th>
-									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Score</th>
-									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">Result</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">{{
+										t('profile.table.game') }}</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">{{
+										t('profile.table.name') }}</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">{{
+										t('profile.table.score') }}</th>
+									<th class="px-4 py-2 text-center text-sm font-medium text-gray-600">{{
+										t('profile.table.result') }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -246,7 +252,8 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 									<td class="px-4 py-3 text-center text-sm text-gray-700">{{ game.score }}</td>
 									<td class="px-4 py-3 text-center text-sm"
 										:class="game.result === 'Victoire' ? 'text-green-600' : 'text-red-600'">
-										{{ game.result }}
+										{{ game.result === 'Victoire' ? t('profile.table.win') : t('profile.table.loss')
+										}}
 									</td>
 								</tr>
 							</tbody>
@@ -255,16 +262,17 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 				</div>
 			</div>
 			<div v-else>
-				User not found
+				{{ t('profile.notFound') }}
 			</div>
 		</div>
 		<EditProfile v-model:visible="showEditProfile" :initial-avatar="profileImage || ''"
 			:initial-bio="profileUser?.biography || ''" :initial-username="profileUser?.username || 'No user found'"
 			@save-profile="handleSaveProfile" />
 		<FriendsList v-model:visible="showFriendsList" />
-		<ConfirmDialog :visible="showConfirm" :title="willBlock ? 'Block this user?' : 'Unblock this user?'" :message="willBlock
-			? 'Are you sure you want to block this user? You will not be able to interact.'
-			: 'Do you want to unblock this user and restore interaction?'" :ok-button="willBlock ? 'Block' : 'Unblock'"
-			cancel-button="Cancel" @update:visible="(val) => showConfirm = val" @confirm="handleConfirm" />
+		<ConfirmDialog :visible="showConfirm" :title="willBlock ? t('confirm.blockTitle') : t('confirm.unblockTitle')"
+			:message="willBlock ? t('confirm.blockMessage') : t('confirm.unblockMessage')"
+			:ok-button="willBlock ? t('confirm.blockOk') : t('confirm.unblockOk')"
+			:cancel-button="t('confirm.defaultCancel')" @update:visible="(val) => showConfirm = val"
+			@confirm="handleConfirm" />
 	</div>
 </template>

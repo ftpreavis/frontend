@@ -28,7 +28,6 @@ export const useChatUI = defineStore('chat_ui', () => {
 		if (isAtBottom.value && unread > 0) {
 			socket.emit('mark_as_read', { withUserId: userId })
 			chatStore.markAsRead(userId)
-			// scrollToBottom();
 		}
 
 		shouldAutoScroll.value = atBottom;

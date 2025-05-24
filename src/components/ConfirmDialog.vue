@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import Modal from '@/components/Modal.vue'
+import { useLang } from "@/composables/useLang"
+
+const { t } = useLang()
 
 const props = defineProps<{
 	visible: boolean
@@ -15,7 +18,7 @@ const emit = defineEmits<{
 	(event: 'confirm', value: boolean): void
 }>()
 
-const cancelText = ref(props.cancelButton ?? 'Cancel')
+const cancelText = ref(props.cancelButton ?? t('confirm.defaultCancel'))
 
 watch(
 	() => props.cancelButton,

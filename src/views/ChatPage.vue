@@ -175,8 +175,8 @@ watch(() => chatStore.selectedUserId, async () => {
 	<div class="flex h-full overflow-hidden">
 		<aside class="w-full md:w-1/3 border-r border-gray-200 bg-white p-4"
 			:class="selectedId !== null ? 'hidden md:block' : ''">
-			<h2 class="text-lg font-semibold mb-4">Conversations</h2>
-			<div v-if="convs.length === 0">Pas encore de discussion par ici...</div>
+			<h2 class="text-lg font-semibold mb-4">{{ $t('chat.conversations') }}</h2>
+			<div v-if="convs.length === 0">{{ $t('chat.noConversations') }}</div>
 			<ul class="space-y-2">
 				<li v-for="conv in convs" :key="conv.id" @click="selectConversation(conv.id)" :class="[
 					'flex items-start p-3 rounded-lg cursor-pointer hover:bg-gray-100',
@@ -198,7 +198,7 @@ watch(() => chatStore.selectedUserId, async () => {
 		</aside>
 
 		<section v-if="selectedId !== null" class="flex flex-col flex-1">
-			<button class="md:hidden p-2 text-sm" @click="selectedId = null">← Back</button>
+			<button class="md:hidden p-2 text-sm" @click="selectedId = null">{{ $t('chat.back') }}</button>
 
 			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
 				<button @click="goToProfile(selectedId)"><img
@@ -238,14 +238,14 @@ watch(() => chatStore.selectedUserId, async () => {
 					stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 				</svg>
-				<span v-if="chatUIStore.showNewMsgText">New messages</span>
+				<span v-if="chatUIStore.showNewMsgText">{{ $t('chat.newMessages') }}</span>
 			</button>
 
 			<div class="p-4 bg-white border-t border-gray-200 flex items-center">
-				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage" placeholder="Type a message..."
+				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage" :placeholder="$t('chat.inputPlaceholder')"
 					class="w-full px-4 py-2 border rounded focus:outline-none focus:ring" />
 				<button @click="onSendMessage" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded">
-					Send
+					{{ $t('chat.send') }}
 				</button>
 			</div>
 		</section>
