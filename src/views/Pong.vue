@@ -2,6 +2,7 @@
 import Header from '@/components/Header.vue'
 import Settings from '@/components/PongSettings.vue'
 import ModeSettings from '@/components/PongModeSettings.vue'
+import Tournament from '@/components/Tournament.vue'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
@@ -48,8 +49,10 @@ const settings = ref({
 	score:		'#FFFFFF'
 })
 
+const showTournament = ref(false)
+
 const showModeSettings = ref(false)
-const modeSettingsMode = ref<'solo' | 'multi' | null>(null)
+const modeSettingsMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
 const cheats =ref({ enabled: false, ballSpeed: ballSpeed, paddleSpeed: basePlayerSpeed })
 
 watch(settings, () => {
@@ -490,14 +493,16 @@ const winGame = (player: string) => {
 }
 
 const gameLoop = () => {
-	if (gameMode.value === 'solo') pong_bot()
-	updatePaddlesPosition()
-	updateBallPosition()
-	if (player1Score.value == 11) { winGame(player1Name.value); return }
-	if (player2Score.value == 11) { winGame(player2Name.value); return }
-	render()
-	// drawPlayerName()
-	animationId = requestAnimationFrame(gameLoop)
+    if (!showTournament.value){
+        if (gameMode.value === 'solo') pong_bot()
+        updatePaddlesPosition()
+        updateBallPosition()
+        if (player1Score.value == 11) { winGame(player1Name.value); return }
+        if (player2Score.value == 11) { winGame(player2Name.value); return }
+        render()
+        // drawPlayerName()
+        animationId = requestAnimationFrame(gameLoop)
+    }
 }
 </script>
 
@@ -510,10 +515,13 @@ const gameLoop = () => {
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
 				<button @click="showModeSettings = true; modeSettingsMode = 'solo'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
 				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
-				<button class="text-black py-9 bg-[#fff] rounded-md text-lg opacity-50 cursor-not-allowed" disabled>Tournament (Local)</button>
+				<button @click="showTournament = true; modeSettingsMode = 'tournament'; showModeSettings = true" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
 			</div>
 			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
 		</div>
+        <div v-if="showTournament" class="absolute z-10 bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-xl h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Tournament v-model:visible="showTournament"></Tournament>
+        </div>
 		<div class=" bg-gray-800 w-[95%] h-[100vh]">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
