@@ -2,6 +2,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { ref } from "vue"
 import router from '@/router'
 import axios from 'axios'
+import { useLang } from '@/composables/useLang'
 
 const getCookie = (name: string): string | null => {
 	const cookies = document.cookie.split('; ')
@@ -14,6 +15,7 @@ export const useAuth = defineStore('auth', () => {
 	const userId = ref<number | null>(Number(getCookie('userId')))
 	const token = ref<string | null>(getCookie('access_token'))
 	const loginError = ref<string>('')
+	const { t } = useLang()
 	const isAuthenticated = ref<boolean>(!!token.value)
 	const userMap = ref<Record<number, { id: number; username: string; avatar?: string }>>({})
 
@@ -36,7 +38,7 @@ export const useAuth = defineStore('auth', () => {
 			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
-			loginError.value = "Nom d'utilisateur ou mot de passe incorect"
+			loginError.value = t('error.auth.invalidCredentials')
 			console.log("Nom d'utilisateur ou mot de passe incorect " + error)
 		}
 	}
@@ -71,7 +73,7 @@ export const useAuth = defineStore('auth', () => {
 			window.location.href = '/api/auth/google'
 			isAuthenticated.value = true
 		} catch {
-			loginError.value = "Erreur de connexion avec Google"
+			loginError.value = t('error.auth.googleAuthFailed')
 		}
 	}
 

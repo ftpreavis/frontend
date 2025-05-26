@@ -3,6 +3,9 @@ import { BoldIcon } from "@heroicons/vue/24/outline";
 import {ref, watch} from "vue"
 import TwoFactor from "@/components//TwoFactor.vue";
 import { useAuth } from "@/store/auth";
+import { useLang } from "@/composables/useLang"
+
+const { t } = useLang()
 
 const props = defineProps<{
 	visible: boolean
@@ -62,12 +65,12 @@ const save = () => {
 		<div class="bg-white rounded-lg shadow-lg p-6 h-[70vh] flex flex-col w-[300px]" @click.stop>
             <img v-if="avatarPreview" :src="avatarPreview" class="w-24 h-24 object-cover rounded-full mb-4" />
 			<input type="File" accept="image/*" @change="handleAvatarChange">
-			<input v-model="username" type="text" placeholder="Profile Name" class="border-[2px]">
-			<input v-model="bio" type="text" placeholder="Biography" class="border-[2px]">
-			<input v-model="password" type="password" placeholder="New password" class="border-[2px]">
-			<button class="cursor-pointer" @click="save">save</button>
-			<button class="cursor-pointer" @click="close">close</button>
-            <button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4" @click="showTwoFactor = true"> 2FA </button>
+			<input v-model="username" type="text" :placeholder="t('profile.usernamePlaceholder')" class="border-[2px]">
+			<input v-model="bio" type="text" :placeholder="t('profile.bioPlaceholder')" class="border-[2px]">
+			<input v-model="password" type="password" :placeholder="t('profile.passwordPlaceholder')" class="border-[2px]">
+			<button class="cursor-pointer" @click="save">{{ t('profile.save') }}</button>
+			<button class="cursor-pointer" @click="close">{{ t('profile.close') }}</button>
+            <button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
 		</div>
 	</div>
     <TwoFactor v-model:visible="showTwoFactor"/>
