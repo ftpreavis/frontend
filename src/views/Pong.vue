@@ -3,7 +3,9 @@ import Header from '@/components/Header.vue'
 import Settings from '@/components/PongSettings.vue'
 import ModeSettings from '@/components/PongModeSettings.vue'
 import Tournament from '@/components/Tournament.vue'
+import TournamentNext from '@/components/TournamentNext.vue'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useTournament } from '@/store/tournament'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
@@ -50,6 +52,8 @@ const settings = ref({
 })
 
 const showTournament = ref(false)
+const showNextMatch = ref(false)
+const tournament = useTournament()
 
 const showModeSettings = ref(false)
 const modeSettingsMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
@@ -307,7 +311,6 @@ const resetBall = (server: 1 | 2) => {
         const angleDeg = (((Math.random() * 60) * Math.PI) / 180)
 		const directionX = Math.random() < 0.5 ? 1 : -1
 		const directionY = server === 2 ? -1 : 1
-        console.log(ballSpeed)
 		ballAngleX = Math.sin(angleDeg) * ballSpeed * directionX
         ballAngleY = Math.cos(angleDeg) * ballSpeed * directionY
 		isWaiting = false
@@ -449,6 +452,19 @@ const playGame = (payload: { cheats: { enabled: boolean; ballSpeed: number; padd
 	if (modeSettingsMode.value) startGame(modeSettingsMode.value)
 }
 
+const playTournamentGame = (cheats: {ballSpeed: number; paddleSpeed: number }) => {
+    ballSpeed = cheats.ballSpeed
+    playerSpeed = cheats.paddleSpeed
+    updatePlayerName()
+	if (modeSettingsMode.value) startGame(modeSettingsMode.value)
+}
+
+const updatePlayerName = () => {
+    player1Name.value = tournament.currentMatch.player1
+    player2Name.value = tournament.currentMatch.player2
+}
+
+
 const startGame = (mode: string) => {
 	if (animationId !== null) {
 		cancelAnimationFrame(animationId)
@@ -456,14 +472,18 @@ const startGame = (mode: string) => {
 	}
 	if (botInterval) clearInterval(botInterval)
 	resetGame()
-	gameMode.value = mode
-	if (gameMode.value === "solo") {
-		botInterval = setInterval(() => {
-			targetX = predictBallX()
-			const error = (Math.random() - 0.5) * 100
-			targetX += error
-		}, 1000)
-	}
+    gameMode.value = mode
+    if (gameMode.value === "solo") {
+        botInterval = setInterval(() => {
+        targetX = predictBallX()
+        const error = (Math.random() - 0.5) * 100
+        targetX += error
+    }, 1000)
+    }
+    if (gameMode.value == 'tournament' && !showTournament) {
+        player1Name.value = tournament.currentMatch.player1 || 'null'
+        player2Name.value = tournament.currentMatch.player2 || 'null'
+    }
 	resetBall(2) // For choose random ball vector at game start
 	gameLoop()
 }
@@ -485,24 +505,32 @@ const resetGame = () => {
 const winGame = (player: string) => {
 	message.value = player + ' win !'
 	drawMessage('red')
+    if (gameMode.value == 'tournament') {
+        resetGame()
+        showNextMatch.value = true
+        tournament.matchFinished(tournament.currentMatchIndex, player)
+        updatePlayerName()
+        return
+    }
 	setTimeout(() => {
-		resetGame()
-		message.value = ''
-		gameMode.value = null
+        resetGame()
+        message.value = ''
+        gameMode.value = null
 	}, 2000)
 }
 
 const gameLoop = () => {
-    if (!showTournament.value){
+    if (!showTournament.value && !showNextMatch.value){
         if (gameMode.value === 'solo') pong_bot()
         updatePaddlesPosition()
         updateBallPosition()
-        if (player1Score.value == 11) { winGame(player1Name.value); return }
-        if (player2Score.value == 11) { winGame(player2Name.value); return }
+        if (player1Score.value == 3) { winGame(player1Name.value)}
+        if (player2Score.value == 3) { winGame(player2Name.value)}
+        if (gameMode.value != 'tournament' && (player1Score.value == 3 || player2Score.value == 3)) {return}
         render()
         // drawPlayerName()
-        animationId = requestAnimationFrame(gameLoop)
     }
+    animationId = requestAnimationFrame(gameLoop)
 }
 </script>
 
@@ -515,12 +543,13 @@ const gameLoop = () => {
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
 				<button @click="showModeSettings = true; modeSettingsMode = 'solo'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
 				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
-				<button @click="showTournament = true; modeSettingsMode = 'tournament'; showModeSettings = true" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
+				<button @click="showTournament = true; modeSettingsMode = 'tournament'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
 			</div>
 			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
 		</div>
-        <div v-if="showTournament" class="absolute z-10 bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-xl h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Tournament v-model:visible="showTournament"></Tournament>
+        <div v-if="showTournament || showNextMatch" class="absolute z-10 bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-xl h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:restart="showTournament"></TournamentNext>
+            <Tournament v-if="showTournament" v-model:visible="showTournament" @playTournament="playTournamentGame"></Tournament>
         </div>
 		<div class=" bg-gray-800 w-[95%] h-[100vh]">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>

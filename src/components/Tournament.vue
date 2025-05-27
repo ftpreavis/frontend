@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { useTournament } from '@/store/tournament'
 
 const newPlayer = ref('')
 const players = ref<string[]>([])
-const router = useRouter()
 const tournament = useTournament()
+const localCheats = ref({ballSpeed: 7.5, paddleSpeed: 20})
 
 const props = defineProps<{
 	visible: boolean,
@@ -14,9 +13,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(event: 'update:visible', value: boolean): void
+    (event: 'playTournament', cheats: {ballSpeed: number, paddleSpeed: number}): void
 }>()
 
-const close = () => emit('update:visible', false)
+const close = () => {
+    emit('update:visible', false)
+    emit('playTournament', {ballSpeed:localCheats.value.ballSpeed, paddleSpeed:localCheats.value.paddleSpeed})
+}
 
 function addPlayer() {
     const name = newPlayer.value.trim()
@@ -32,9 +35,16 @@ function removePlayer(index: number) {
 
 function startTournament() {
     tournament.startTournament(players.value)
-    console.log(tournament.matches)
     close()
 }
+onMounted(() => {
+    players.value = tournament.matches
+    .filter(match => match.round === 1)
+    .flatMap(match => [match.player1, match.player2])
+    .filter((player): player is string => player !== null);
+
+})
+
 </script>
 
 <template>
@@ -70,11 +80,23 @@ function startTournament() {
         </ul>
     
         <button
-        :disabled="players.length < 2"
+        :disabled="players.length != 4 && players.length != 8 && players.length != 16 && players.length != 32"
         @click="startTournament"
         class="mt-4 px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400"
         >
         Démarrer le tournoi
         </button>
+        <div>
+					<div class="space-y-">
+						<label class="flex justify-between text-sm">
+							Base ball speed
+							<input type="range" v-model.number="localCheats.ballSpeed" min="1" max="15" step="0.1" class="mx-2 w-20">
+						</label>
+						<label class="flex justify-between text-sm">
+							Base paddle speed
+							<input type="range" v-model.number="localCheats.paddleSpeed" min="1" max="40" step="0.1" class="mx-2 w-20">
+						</label>
+					</div>
+				</div>
     </div>
 </template>
