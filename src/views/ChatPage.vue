@@ -26,7 +26,7 @@ const route = useRoute()
 const router = useRouter()
 const chatUIStore = useChatUI()
 
-const selectedId = ref<number | null>(4)
+const selectedId = ref<number | null>(null)
 const newMessage = ref('')
 
 /* -------------------------------------------------------------------------- */
