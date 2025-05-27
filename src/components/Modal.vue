@@ -32,7 +32,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 				class="absolute inset-0 bg-black bg-opacity-50"
 				@click="close()"
 			/>
-			<div class="relative bg-white rounded-2xl shadow-xl w-[90%]" @click.stop>
+			<div class="relative bg-white rounded-2xl shadow-xl w-[500px]" @click.stop>
 				<header class="px-6 pt-6 text-center">
 					<h2 class="text-xl font-semibold text-gray-800">{{ title }}</h2>
 					<button
