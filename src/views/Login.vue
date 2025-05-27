@@ -16,7 +16,7 @@ const token2FA = ref<string>('')
 const errors = ref<{ username?: string; password?: string; token2FA?: string }>({})
 const authStore = useAuth()
 const loginError = ref<string>('')
-const requires2FA = ref<boolean>(true)
+const requires2FA = ref<boolean>(false)
 
 onMounted(() => { console.log('yo') })
 
