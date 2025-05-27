@@ -3,6 +3,10 @@ import router from '@/router';
 import axios from 'axios'
 import { ref } from 'vue'
 import { useLang } from '@/composables/useLang'
+import FormField from "@/components/Form/FormField.vue";
+import SubmitButton from "@/components/Form/SubmitButton.vue";
+import OAuthButton from "@/components/Form/OAuthButton.vue";
+import FullForm from "@/components/Form/FullForm.vue";
 
 const { t } = useLang()
 const username = ref<string>('')
@@ -46,30 +50,19 @@ const googleConnect = async() => {
 </script>
 
 <template>
-	<div class="w-4/5 m-auto border p-4 flex flex-col mt-20 shadow-xl">
-		<h3 class="mb-3 text-center">{{ t('signup.title') }}</h3>
-		<div class="border flex flex-col p-4 space-y-3">
-			<form @submit.prevent="signup" class="flex flex-col justify-center space-y-3">
-				<label>
-					{{ t('signup.username') }} :
-					<input v-model="username" type="text" class="border-2 rounded h-8 w-full">
-                    <p v-if="errors.username" class="text-red-600 text-sm mt-1">{{ errors.username }}</p>
-				</label>
-                <label>
-					{{  t('signup.email') }} :
-					<input v-model="email" type="email" class="border-2 rounded h-8 w-full">
-                    <p v-if="errors.email" class="text-red-600 text-sm mt-1">{{ errors.email }}</p>
-				</label>
-				<label>
-					{{ t('signup.password') }} :
-					<input v-model="password" type="password" class="border-2 rounded h-8 w-full">
-                    <p v-if="errors.password" class="text-red-600 text-sm mt-1">{{ errors.password }}</p>
-				</label>
-				<input type="submit" :value="t('signup.submit')"
-					   class="py-2 px-5 border rounded text-blue-600 shadow-md cursor-pointer">
-			</form>
-			<hr>
-			<button @click="googleConnect" class="py-2 px-5 border rounded text-orange-400 shadow-md cursor-pointer">{{ t('signup.google') }}</button>
+	<div class="bg-[#F8F6F0] h-screen">
+		<div class="w-11/12 m-auto p-4 flex flex-col mt-3 md:w-[500px]">
+			<h3 class="mb-5 text-center text-gray-800 text-2xl font-bold">{{ t('signup.title') }}</h3>
+			<div class="flex flex-col p-6 bg-white rounded-xl shadow-lg">
+				<FullForm @submit="signup">
+					<FormField :label="t('signup.username')" v-model="username" :error="errors.username"></FormField>
+					<FormField :label="t('signup.email')" v-model="email" type="email" :error="errors.email"></FormField>
+					<FormField :label="t('signup.password')" v-model="password" type="password" :error="errors.password"></FormField>
+					<SubmitButton :label="t('signup.submit')"></SubmitButton>
+					<hr>
+					<OAuthButton @click="googleConnect" :label="t('signup.google')"></OAuthButton>
+				</FullForm>
+			</div>
 		</div>
 	</div>
 </template>

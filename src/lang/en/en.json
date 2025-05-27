@@ -85,8 +85,8 @@
 		"2faSubmit": "Verify"
 	},
 	"landing": {
-		"title": "Preavis",
-		"tagline": "Play. Compete. Triumph."
+		"title": "Play. Compete. Triumph.",
+		"tagline": "Relive the timeless arcade classic, challenge friends in real-time, and rise through the global rankings — all in your browser. "
 	},
 	"error": {
 		"auth": {
