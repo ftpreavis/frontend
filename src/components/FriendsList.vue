@@ -69,7 +69,7 @@ const close = () => emit('update:visible', false)
 			<button class="flex flex-row items-center " v-for="friend in friendsList" @click="go('/profile/' + friend.userId)" :key="friend.id">
 				<div class="w-[40px] h-[40px] rounded-full bg-cover" :style="{ backgroundImage: `url(${friend.profilePicture})`}">
 				</div>
-				<span class="ml-2">{{friend.name}}</span>
+				<span class="ml-2 dark:text-gray-100">{{friend.name}}</span>
 			</button>
 		</div>
 	</Modal>

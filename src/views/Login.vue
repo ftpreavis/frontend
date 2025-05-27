@@ -60,15 +60,15 @@ const googleConnect = async () => {
 </script>
 
 <template>
-	<div class="bg-[#F8F6F0] h-screen">
+	<div class="bg-[#F8F6F0] h-screen dark:bg-gray-800">
 		<div class="w-11/12 m-auto p-4 flex flex-col mt-3 md:w-[500px]">
 			<div v-if="!requires2FA">
-				<h3 class="mb-5 text-center text-gray-800 text-2xl font-bold">{{ t('login.title') }}</h3>
-				<div class="flex flex-col p-6 bg-white rounded-xl shadow-lg">
+				<h3 class="mb-5 text-center text-gray-800 dark:text-gray-100 text-2xl font-bold">{{ t('login.title') }}</h3>
+				<div class="flex flex-col p-6 bg-white dark:bg-gray-700 rounded-xl shadow-lg">
 					<p v-if="loginError" class="text-red-600 text-sm mt-1">{{ loginError }}</p>
 					<FullForm @submit="login">
 						<FormField :label="t('login.username')" v-model="username" :error="errors.username"></FormField>
-						<FormField :label="t('login.password')" v-model="password" type="password"  :error="errors.username"></FormField>
+						<FormField :label="t('login.password')" v-model="password" type="password"  :error="errors.password"></FormField>
 						<SubmitButton :label="t('login.submit')"></SubmitButton>
 						<hr>
 						<OAuthButton @click="googleConnect" :label="t('signup.google')"></OAuthButton>

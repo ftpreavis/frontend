@@ -74,10 +74,10 @@ const save = () => {
 			<FormField v-model="username" label="Username" type="text" :placeholder="t('profile.usernamePlaceholder')"></FormField>
 			<FormField v-model="bio" label="Bio" type="text" :placeholder="t('profile.bioPlaceholder')"></FormField>
 			<FormField v-model="password" label="Password" type="text" :placeholder="t('profile.passwordPlaceholder')"></FormField>
-			<button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
+			<button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
 		</div>
 		<template #footer>
-			<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+			<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 				<button type="button" class="inline-flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-600 sm:ml-3 sm:w-auto" @click="save">{{ t('profile.save') }}</button>
 				<button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto" @click="close">{{ t('profile.close') }}</button>
 			</div>

@@ -50,10 +50,10 @@ const googleConnect = async() => {
 </script>
 
 <template>
-	<div class="bg-[#F8F6F0] h-screen">
+	<div class="bg-[#F8F6F0] h-screen dark:bg-gray-800">
 		<div class="w-11/12 m-auto p-4 flex flex-col mt-3 md:w-[500px]">
-			<h3 class="mb-5 text-center text-gray-800 text-2xl font-bold">{{ t('signup.title') }}</h3>
-			<div class="flex flex-col p-6 bg-white rounded-xl shadow-lg">
+			<h3 class="mb-5 text-center text-gray-800 dark:text-white text-2xl font-bold">{{ t('signup.title') }}</h3>
+			<div class="flex flex-col p-6 bg-white rounded-xl shadow-lg dark:bg-gray-700">
 				<FullForm @submit="signup">
 					<FormField :label="t('signup.username')" v-model="username" :error="errors.username"></FormField>
 					<FormField :label="t('signup.email')" v-model="email" type="email" :error="errors.email"></FormField>

@@ -13,7 +13,7 @@ defineProps({
 <template>
 	<RouterLink
 		:to="to"
-		class="inline-block px-10 py-3 rounded-full font-semibold transition focus:outline-none focus:ring bg-blue-600 text-white hover:bg-blue-700">
+		class="inline-block px-10 py-3 rounded-full font-semibold transition focus:outline-none focus:ring bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500">
 		<slot></slot>
 	</RouterLink>
 </template>

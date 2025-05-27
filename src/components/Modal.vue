@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted} from "vue";
-
-const props = defineProps<{
+defineProps<{
 	modelValue: boolean,
 	title: string,
-}>()
-
+}>();
 const emit = defineEmits<{
 	(event: 'update:modelValue', value: boolean): void
 }>()
@@ -32,9 +30,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 				class="absolute inset-0 bg-black bg-opacity-50"
 				@click="close()"
 			/>
-			<div class="relative bg-white rounded-2xl shadow-xl w-[500px]" @click.stop>
+			<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%]" @click.stop>
 				<header class="px-6 pt-6 text-center">
-					<h2 class="text-xl font-semibold text-gray-800">{{ title }}</h2>
+					<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
 					<button
 						@click="close"
 						class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl leading-none"
