@@ -169,9 +169,9 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 
 <template>
 	<div v-bind="$attrs">
-		<div class="bg-[#F8F6F0] h-full">
-			<div class="flex flex-col" v-if="profileUser">
-				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+		<div class="bg-[#F8F6F0] h-full dark:bg-gray-800">
+			<div class="flex flex-col dark:text-gray-100" v-if="profileUser">
+				<div class="flex flex-col bg-white mt-3 px-8 py-4 dark:bg-gray-700">
 					<div class="flex items-center">
 						<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat" v-if="profileImage"
 							:style="{ backgroundImage: `url(${profileImage})` }" />
@@ -210,7 +210,7 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+				<div class="flex flex-col bg-white mt-3 px-8 py-4 dark:bg-gray-700">
 					<span class="mb-2">{{ t('profile.statsTitle') }}</span>
 					<hr class="mb-3" />
 					<div class="flex flex-row justify-around">
@@ -228,7 +228,7 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 						</div>
 					</div>
 				</div>
-				<div class="flex flex-col bg-white mt-3 px-8 py-4">
+				<div class="flex flex-col bg-white mt-3 px-8 py-4 dark:bg-gray-700">
 					<span class="mb-2">{{ t('profile.recentGames') }}</span>
 					<hr class="mb-3" />
 					<div class="overflow-x-auto">
