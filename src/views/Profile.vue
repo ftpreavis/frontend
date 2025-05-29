@@ -72,7 +72,7 @@ async function toggleBlockUser() {
 }
 
 onMounted(async () => {
-	loadProfile(Number(route.params.userId));
+	await loadProfile(Number(route.params.userId));
 	if (!isOwner.value) {
 		try {
 			const res = await axios.get(`/api/chat/block`, {
@@ -117,7 +117,7 @@ const lastGames = computed(() => {
 	if (!user) return [];
 
 	const allMatches = [
-		...(user.MatchesAsPlayer1 ?? []).map(match => ({
+		...(user.MatchesAsPlayer1 ?? []).map((match: any) => ({
 			id: match.id,
 			opponent: match.player2?.username ?? 'Unknown',
 			score: `${match.player1Score}-${match.player2Score}`,
@@ -125,7 +125,7 @@ const lastGames = computed(() => {
 			game: 'Pong',
 			playedAt: new Date(match.playedAt)
 		})),
-		...(user.MatchesAsPlayer2 ?? []).map(match => ({
+		...(user.MatchesAsPlayer2 ?? []).map((match: any) => ({
 			id: match.id,
 			opponent: match.player1?.username ?? 'Unknown',
 			score: `${match.player2Score}-${match.player1Score}`,
@@ -142,8 +142,8 @@ const nbFriends = computed(() => {
 	const user = profileUser.value;
 	if (!user) return 0;
 
-	const sent = user.sentRequests?.filter(f => f.status === 'ACCEPTED') ?? [];
-	const received = user.receivedRequests?.filter(f => f.status === 'ACCEPTED') ?? [];
+	const sent = user.sentRequests?.filter((f: any) => f.status === 'ACCEPTED') ?? [];
+	const received = user.receivedRequests?.filter((f: any) => f.status === 'ACCEPTED') ?? [];
 
 	const all = [...sent, ...received];
 	const uniqueIds = new Set(all.map(f =>

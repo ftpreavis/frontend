@@ -9,9 +9,15 @@ const getCookie = (name: string): string | null => {
 	const entry = cookies.find(cookie => cookie.startsWith(name + '='))
 	return entry ? entry.split('=')[1] : null
 }
+//
+// interface User {
+// 	id: number
+// 	username: String,
+// 	stats
+// }
 
 export const useAuth = defineStore('auth', () => {
-	const user = ref(null)
+	const user = ref<any>(null)
 	const userId = ref<number | null>(Number(getCookie('userId')))
 	const token = ref<string | null>(getCookie('access_token'))
 	const loginError = ref<string>('')

@@ -9,7 +9,7 @@ export function useSocket() {
 
 		const url =
 			process.env.NODE_ENV == 'development'
-				? 'ws://localhost:4002'
+				? `ws://${location.host.substring(0, location.host.indexOf(':'))}:4002`
 				: '/socket/chat';
 
 		socket = io(url, {
