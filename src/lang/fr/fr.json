@@ -14,7 +14,9 @@
 	"header": {
 		"logo": "logo",
 		"signIn": "Connexion",
-		"signUp": "s'inscrire"
+		"signUp": "s'inscrire",
+		"viewProfile": "Profil",
+		"logout": "Déconnexion"
 	},
 	"twoFactor": {
 		"title": "Authentification 2FA",
