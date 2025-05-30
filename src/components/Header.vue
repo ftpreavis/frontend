@@ -7,10 +7,12 @@ import { useChat } from '@/store/chat'
 import { computed } from 'vue'
 import LanguageSelector from '@/components/LanguageSelector.vue'
 import { useDarkMode } from "@/composables/useDarkMode.ts";
+import DropDown from '@/components/DropDown.vue';
 
 const {theme, toggle} = useDarkMode()
 
 const chatStore = useChat()
+const openDropDownMenu = ref(false)
 
 const totalUnread = computed(() =>
 	Object.values(chatStore.unread).reduce((sum, c) => sum + c, 0)
@@ -54,10 +56,24 @@ const go = (path: string) => {
 							{{ totalUnread }}
 						</span>
 					</button>
-					<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
-						:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }"
-						@click="go('/profile/' + authStore.userId)">
-					</div>
+					<!-- @click="go('/profile/' + authStore.userId)" -->
+					<DropDown v-model="openDropDownMenu">
+						<template #trigger>
+							<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
+							:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
+							</div>
+						</template>
+						<template #menu>
+							<ul class="text-gray-900 dark:text-white">
+								<li @click="go('/profile/' + authStore.userId); openDropDownMenu = false" class="hover:bg-gray-100 dark:hover:bg-gray-900 py-1 px-4 cursor-pointer">
+									<button>{{ $t('header.viewProfile') }}</button> 
+								</li>
+								<li @click="authStore.logout" class="hover:bg-gray-100 dark:hover:bg-gray-900 py-1 px-4 cursor-pointer">
+									<button class="text-red-700">{{ $t('header.logout') }}</button>
+								</li>
+							</ul>
+						</template>
+					</DropDown>
 				</div>
 			</div>
 
