@@ -51,6 +51,8 @@ export const useAuth = defineStore('auth', () => {
 				password: password,
 				email: email,
 			})
+			const userData = await axios.get('/api/users/profile')
+			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error: any) {
 			const msg = error.response.data.error
