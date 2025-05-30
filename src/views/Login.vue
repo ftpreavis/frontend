@@ -17,8 +17,6 @@ const errors = ref<{ username?: string; password?: string; token2FA?: string }>(
 const authStore = useAuth()
 const requires2FA = ref<boolean>(false)
 
-onMounted(() => { console.log('yo') })
-
 const login = async () => {
 	errors.value = {}
 

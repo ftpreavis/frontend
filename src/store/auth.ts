@@ -21,6 +21,7 @@ export const useAuth = defineStore('auth', () => {
 	const userId = ref<number | null>(Number(getCookie('userId')))
 	const token = ref<string | null>(getCookie('access_token'))
 	const loginError = ref<string>('')
+	const signupError = ref<string>('')
 	const { t } = useLang()
 	const isAuthenticated = ref<boolean>(!!token.value)
 	const userMap = ref<Record<number, { id: number; username: string; avatar?: string }>>({})
@@ -35,17 +36,32 @@ export const useAuth = defineStore('auth', () => {
 	const authenticate = async (username: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
-            console.log(response)
-            if (response.data.requires2FA) {
-                return response.data.requires2FA
-            }
-            setCookies("access_token", response.data.token)
+			console.log(response)
+			if (response.data.requires2FA) {
+				return response.data.requires2FA
+			}
+			setCookies("access_token", response.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
 			loginError.value = t('error.auth.invalidCredentials')
 			console.log(loginError.value)
+		}
+	}
+
+	const signup = async (username: string, email: string, password: string) => {
+		try {
+			const response = await axios.post('/api/auth/signup', {
+				username: username,
+				password: password,
+				email: email,
+			})
+			await router.push('/').then(() => {window.location.reload()})
+		} catch (error: any) {
+			const msg = error.response.data.error
+			if (msg.includes('User already exists'))
+				signupError.value = t('error.signup.alreadyExists')
 		}
 	}
 
@@ -110,7 +126,9 @@ export const useAuth = defineStore('auth', () => {
 		logout,
 		authenticate,
         authenticate2FA,
-		fetchUserById
+		fetchUserById,
+		signup,
+		signupError
 	}
 })
 
