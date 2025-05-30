@@ -15,7 +15,6 @@ const password = ref<string>('')
 const token2FA = ref<string>('')
 const errors = ref<{ username?: string; password?: string; token2FA?: string }>({})
 const authStore = useAuth()
-const loginError = ref<string>('')
 const requires2FA = ref<boolean>(false)
 
 onMounted(() => { console.log('yo') })
@@ -65,10 +64,10 @@ const googleConnect = async () => {
 			<div v-if="!requires2FA">
 				<h3 class="mb-5 text-center text-gray-800 dark:text-gray-100 text-2xl font-bold">{{ t('login.title') }}</h3>
 				<div class="flex flex-col p-6 bg-white dark:bg-gray-700 rounded-xl shadow-lg">
-					<p v-if="loginError" class="text-red-600 text-sm mt-1">{{ loginError }}</p>
 					<FullForm @submit="login">
 						<FormField :label="t('login.username')" v-model="username" :error="errors.username"></FormField>
 						<FormField :label="t('login.password')" v-model="password" type="password"  :error="errors.password"></FormField>
+						<p v-if="authStore.loginError" class="text-red-600 text-sm mt-1">{{ authStore.loginError }}</p>
 						<SubmitButton :label="t('login.submit')"></SubmitButton>
 						<hr>
 						<OAuthButton @click="googleConnect" :label="t('signup.google')"></OAuthButton>
