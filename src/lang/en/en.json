@@ -16,7 +16,9 @@
 		"signIn": "sign in",
 		"signUp": "sign up",
 		"viewProfile": "Profile",
-		"logout": "Logout"
+		"logout": "Logout",
+		"lightMode": "Light mode",
+		"darkMode": "Dark mode"
 	},
 	"twoFactor": {
 		"title": "2FA Authentication",
