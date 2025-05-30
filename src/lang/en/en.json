@@ -108,5 +108,33 @@
 			"passwordRequired": "Password is required.",
 			"tokenRequired": "2FA code is required."
 		}
-	}
+	},
+    "tournament": {
+        "create": "Create a tournament",
+        "name": " Player Name",
+        "addPlayer": "Add a player",
+        "add": "Add",
+        "player": "Player",
+        "delete": "Delete",
+        "createTournament": "Create the tournament",
+        "required": "The number of players must be 4, 8, 16 or 32 to start the tournament.",
+        "table": "Tournament table",
+        "future": "Future",
+        "winner": "Winner",
+        "notPlayed": "Not played yet",
+        "nextMatch": "Start the next match",
+        "restart": "Restart a tournament",
+        "round": {
+            "32": "Round of 16",
+            "16": "Round of 8",
+            "8": "Quarter final",
+            "4": "Semi-final",
+            "2": "Final"
+        }
+    },
+    "pong": {
+        "ballSpeed": "Base ball speed",
+        "paddleSpeed": "Base paddle speed",
+        "settings": "Settings"
+    }
 }
