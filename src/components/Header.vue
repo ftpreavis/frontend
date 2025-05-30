@@ -53,9 +53,9 @@ const go = (path: string) => {
 					<!-- @click="go('/profile/' + authStore.userId)" -->
 					<DropDown v-model="openDropDownProfileMenu" width-class="w-32">
 						<template #trigger>
-							<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
+							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
 							:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
-							</div>
+							</button>
 						</template>
 						<template #menu>
 							<ul class="text-gray-900 dark:text-white">
@@ -63,7 +63,7 @@ const go = (path: string) => {
 									<button>{{ $t('header.viewProfile') }}</button> 
 								</li>
 								<li @click="toggle" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
-									{{ theme === 'light' ? $t('header.darkMode') : $t('header.lightMode') }}
+									<button>{{ theme === 'light' ? $t('header.darkMode') : $t('header.lightMode') }}</button>
 								</li>
 								<li @click="authStore.logout" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
 									<button class="text-red-500 font-semibold">{{ $t('header.logout') }}</button>

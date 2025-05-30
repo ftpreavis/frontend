@@ -51,7 +51,7 @@ const current = computed(() => languages.find((l) => l.code === selected.value))
 					@click="selected = lang.code; isOpen = false"
 					class="flex items-center justify-center py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
 				>
-					<img :src="lang.icon" alt="" class="w-5 h-5" />
+					<button><img :src="lang.icon" alt="" class="w-5 h-5" /></button>	
 
 				</li>
 			</ul>

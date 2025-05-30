@@ -39,7 +39,7 @@ export const useAuth = defineStore('auth', () => {
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
 			loginError.value = t('error.auth.invalidCredentials')
-			console.log("Nom d'utilisateur ou mot de passe incorect " + error)
+			console.log(loginError.value)
 		}
 	}
 
