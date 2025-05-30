@@ -1,33 +1,52 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue';
+
+const root = ref<HTMLElement|null>(null);
+let nextDropdownId = 0
+const dropdownId = nextDropdownId++
+const menuWidth = computed(() => props.widthClass)
+
 const props = defineProps<{
-  modelValue: boolean
+  modelValue: boolean,
+  widthClass: string
 }>()
 
 const emit = defineEmits<{
   (event: 'update:modelValue', value: boolean): void
 }>()
 
-const modalVisible = computed({
+const isOpen = computed({
   get:  () => props.modelValue,
   set:  v  => emit('update:modelValue', v)
 })
 
 function toggle() {
-	modalVisible.value = !modalVisible.value
+	window.dispatchEvent(new CustomEvent('dropdown-toggle', { detail: dropdownId }))
+	isOpen.value = !isOpen.value
 }
-
-const root = ref<HTMLElement|null>(null);
 
 function onClickOutside(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) {
-    modalVisible.value = false;
+    isOpen.value = false
   }
 }
 
-onMounted(() => window.addEventListener('click', onClickOutside));
-onUnmounted(() => window.removeEventListener('click', onClickOutside));
+function onGlobalToggle(e: Event) {
+	const ev = e as CustomEvent<number>
+	if (ev.detail !== dropdownId && isOpen.value) {
+		isOpen.value = false
+	}
+}
 
+
+onMounted(() => {
+	window.addEventListener('dropdown-toggle', onGlobalToggle)
+	window.addEventListener('click', onClickOutside)
+})
+onUnmounted(() => {
+	window.removeEventListener('dropdown-toggle', onGlobalToggle)
+	window.removeEventListener('click', onClickOutside)
+})
 </script>
 
 <template>
@@ -36,7 +55,7 @@ onUnmounted(() => window.removeEventListener('click', onClickOutside));
 			<slot name="trigger"></slot>
 		</div>
 		<transition name="fade">
-			<div v-if="modalVisible" class="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 border shadow-lg z-50 py-1 rounded-md">
+			<div v-if="isOpen" class="absolute right-0 mt-2 bg-white dark:bg-gray-700 border shadow-lg z-50 py-1 rounded-md" :class="[menuWidth]">
 				<slot name="menu"></slot>
 			</div>
 		</transition>

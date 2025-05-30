@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import DropDown from './DropDown.vue'
 
 // Icons
 import FlagEN from '@/assets/flags/flagEN.svg'
@@ -26,15 +27,43 @@ const languages = [
 const current = computed(() => languages.find((l) => l.code === selected.value))
 </script>
 
+<!--				<span>{{ current?.label }}</span>-->
+				<!--					<span>{{ lang.label }}</span>-->
 <template>
-	<div class="relative inline-block text-left">
+	<DropDown v-model="isOpen" width-class="w-full">
+		<template #trigger>
+			<button
+				class="inline-flex w-full justify-between items-center px-3 py-1.5 border border-gray-300 rounded-md bg-white text-sm dark:bg-gray-900 shadow-sm hover:bg-gray-50 text-black"
+			>
+				<div class="flex items-center space-x-2">
+					<img :src="current?.icon" alt="" class="w-5 h-5" />
+				</div>
+				<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+				</svg>
+			</button>
+		</template>
+		<template #menu>
+			<ul class="py-1 text-sm text-gray-700">
+				<li
+					v-for="lang in languages"
+					:key="lang.code"
+					@click="selected = lang.code; isOpen = false"
+					class="flex items-center justify-center py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+				>
+					<img :src="lang.icon" alt="" class="w-5 h-5" />
+
+				</li>
+			</ul>
+		</template>
+	</DropDown>
+	<!-- <div class="relative inline-block text-left">
 		<button
 			@click="isOpen = !isOpen"
 			class="inline-flex w-full justify-between items-center px-3 py-1.5 border border-gray-300 rounded-md bg-white text-sm dark:bg-gray-900 shadow-sm hover:bg-gray-50 text-black"
 		>
 			<div class="flex items-center space-x-2">
 				<img :src="current?.icon" alt="" class="w-5 h-5" />
-<!--				<span>{{ current?.label }}</span>-->
 			</div>
 			<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -53,9 +82,9 @@ const current = computed(() => languages.find((l) => l.code === selected.value))
 					class="flex items-center justify-center py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
 				>
 					<img :src="lang.icon" alt="" class="w-5 h-5" />
-<!--					<span>{{ lang.label }}</span>-->
+
 				</li>
 			</ul>
 		</div>
-	</div>
+	</div> -->
 </template>
