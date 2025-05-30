@@ -47,8 +47,6 @@ const getUsername = async() => {
 
 const close = () => {
     emit('update:visible', false)
-    emit('update:nextMatch', true)
-    emit('update:settings', { ...local.value })
 }
 
 function addPlayer() {
@@ -66,6 +64,8 @@ function removePlayer(index: number) {
 function startTournament() {
     tournament.startTournament(players.value)
     emit('playTournament', {ballSpeed:localCheats.value.ballSpeed, paddleSpeed:localCheats.value.paddleSpeed})
+    emit('update:settings', { ...local.value })
+    emit('update:nextMatch', true)
     close()
 }
 

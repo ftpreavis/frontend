@@ -119,7 +119,7 @@ const lastGames = computed(() => {
 	const allMatches = [
 		...(user.MatchesAsPlayer1 ?? []).map(match => ({
 			id: match.id,
-			opponent: match.player2?.username ?? 'Unknown',
+			opponent: match.player2Name ?? 'Unknown',
 			score: `${match.player1Score}-${match.player2Score}`,
 			result: match.player1Score > match.player2Score ? 'Victoire' : 'Défaite',
 			game: 'Pong',

@@ -472,14 +472,17 @@ const getUsername = async() => {
 }
 
 const updatePlayerName = () => {
-    player1Name.value = tournament.currentMatch.player1
-    player2Name.value = tournament.currentMatch.player2
+    player1Name.value = <string>tournament.currentMatch.player2
+    player2Name.value = <string>tournament.currentMatch.player1
 }
 
 const pushMatch = async() => {
-    console.log(player1Name.value, player2Name.value, player1Score.value, player2Score.value)
-    const response = axios.post('/api/matches', {player1Id: authStore.userId, player2Name: player1Name.value, player1Score: player2Score.value, player2Score: player1Score.value})
-    console.log(response)
+    if (gameMode.value == 'tournament' && tournament.currentMatch.player1 == profileUser.value.username) {
+        await axios.post('/api/matches', {player1Id: authStore.userId, player2Name: player1Name.value, player1Score: player2Score.value, player2Score: player1Score.value})
+    }
+    else if (gameMode.value != 'tournament'){
+        await axios.post('/api/matches', {player1Id: authStore.userId, player2Name: player1Name.value, player1Score: player2Score.value, player2Score: player1Score.value})
+    }
 }
 
 const startGame = (mode: 'solo' | 'multi' | 'tournament' | null) => {
@@ -501,7 +504,7 @@ const startGame = (mode: 'solo' | 'multi' | 'tournament' | null) => {
         player1Name.value = tournament.currentMatch.player1 || 'null'
         player2Name.value = tournament.currentMatch.player2 || 'null'
     }
-    else {
+    else if (gameMode.value != 'tournament'){
         player2Name.value = profileUser.value.username
     }
 	resetBall(2) // For choose random ball vector at game start
@@ -525,15 +528,16 @@ const resetGame = () => {
 const winGame = async(player: string) => {
 	message.value = player + ' win !'
 	drawMessage('red')
-    await pushMatch()
     if (gameMode.value == 'tournament') {
-        resetGame()
         showNextMatch.value = true
+        pushMatch()
+        resetGame()
         tournament.matchFinished(tournament.currentMatchIndex, player)
         updatePlayerName()
         return
     }
-	setTimeout(() => {
+	setTimeout(async() => {
+        pushMatch()
         resetGame()
         message.value = ''
         gameMode.value = null
