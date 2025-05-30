@@ -36,7 +36,7 @@ const getUsername = async() => {
         if (data) {
             profileUser.value = data;
         }
-    }
+}
 
     const emit = defineEmits<{
 	(event: 'update:visible', value: boolean): void

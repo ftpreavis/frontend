@@ -6,6 +6,8 @@ import Tournament from '@/components/Tournament.vue'
 import TournamentNext from '@/components/TournamentNext.vue'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useTournament } from '@/store/tournament'
+import { useAuth } from '@/store/auth'
+import axios from 'axios'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
@@ -54,6 +56,8 @@ const settings = ref({
 const showTournament = ref(false)
 const showNextMatch = ref(false)
 const tournament = useTournament()
+const authStore = useAuth()
+const profileUser = ref<any | null>(null);
 
 const showModeSettings = ref(false)
 const modeSettingsMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
@@ -106,6 +110,7 @@ onMounted(() => {
 		pongCanvas.value.addEventListener('touchmove', handleTouchMove, { passive: false })
 		pongCanvas.value.addEventListener('touchend', handleTouchEnd, { passive: false })
 	}
+    getUsername()
 })
 
 onBeforeUnmount(() => {
@@ -459,11 +464,23 @@ const playTournamentGame = (cheats: {ballSpeed: number; paddleSpeed: number }) =
 	if (modeSettingsMode.value) startGame(modeSettingsMode.value)
 }
 
+const getUsername = async() => {
+    const data = await authStore.fetchUserById(<number>authStore.userId);
+        if (data) {
+            profileUser.value = data;
+        }
+}
+
 const updatePlayerName = () => {
     player1Name.value = tournament.currentMatch.player1
     player2Name.value = tournament.currentMatch.player2
 }
 
+const pushMatch = async() => {
+    console.log(player1Name.value, player2Name.value, player1Score.value, player2Score.value)
+    const response = axios.post('/api/matches', {player1Id: authStore.userId, player2Name: player1Name.value, player1Score: player2Score.value, player2Score: player1Score.value})
+    console.log(response)
+}
 
 const startGame = (mode: 'solo' | 'multi' | 'tournament' | null) => {
 	if (animationId !== null) {
@@ -484,6 +501,9 @@ const startGame = (mode: 'solo' | 'multi' | 'tournament' | null) => {
         player1Name.value = tournament.currentMatch.player1 || 'null'
         player2Name.value = tournament.currentMatch.player2 || 'null'
     }
+    else {
+        player2Name.value = profileUser.value.username
+    }
 	resetBall(2) // For choose random ball vector at game start
 	gameLoop()
 }
@@ -502,9 +522,10 @@ const resetGame = () => {
 	render()
 }
 
-const winGame = (player: string) => {
+const winGame = async(player: string) => {
 	message.value = player + ' win !'
 	drawMessage('red')
+    await pushMatch()
     if (gameMode.value == 'tournament') {
         resetGame()
         showNextMatch.value = true
