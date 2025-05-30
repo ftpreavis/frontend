@@ -106,7 +106,7 @@
 			"usernameRequired": "Username is required.",
 			"emailRequired": "Email is required.",
 			"passwordRequired": "Password is required.",
-			"alreadyExists": "User already exists"
+			"alreadyExists": "User already exists."
 		},
 		"login": {
 			"usernameRequired": "Username is required.",
