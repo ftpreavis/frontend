@@ -34,7 +34,7 @@ const speedBoost = 1.05
 const maxBounceAngle = Math.PI / 3
 let isWaiting = false
 const message = ref<string>('')
-const gameMode = ref<string | null>(null)
+const gameMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
 let botInterval: number
 
 const player1Name = ref<string>('BRR BRR')
@@ -465,7 +465,7 @@ const updatePlayerName = () => {
 }
 
 
-const startGame = (mode: string) => {
+const startGame = (mode: 'solo' | 'multi' | 'tournament' | null) => {
 	if (animationId !== null) {
 		cancelAnimationFrame(animationId)
 		animationId = null
@@ -543,13 +543,13 @@ const gameLoop = () => {
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
 				<button @click="showModeSettings = true; modeSettingsMode = 'solo'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
 				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
-				<button @click="showTournament = true; modeSettingsMode = 'tournament'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
+				<button @click="showTournament = true; modeSettingsMode = 'tournament'; gameMode = 'tournament'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
 			</div>
 			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
 		</div>
         <div v-if="showTournament || showNextMatch" class="absolute z-10 bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-xl h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Tournament v-if="showTournament" v-model:settings="settings" v-model:visible="showTournament" v-model:nextMatch="showNextMatch" @playTournament="playTournamentGame"></Tournament>
             <TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:restart="showTournament"></TournamentNext>
-            <Tournament v-if="showTournament" v-model:visible="showTournament" @playTournament="playTournamentGame"></Tournament>
         </div>
 		<div class=" bg-gray-800 w-[95%] h-[100vh]">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
