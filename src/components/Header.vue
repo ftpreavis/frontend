@@ -50,7 +50,6 @@ const go = (path: string) => {
 							{{ totalUnread }}
 						</span>
 					</button>
-					<!-- @click="go('/profile/' + authStore.userId)" -->
 					<DropDown v-model="openDropDownProfileMenu" width-class="w-32">
 						<template #trigger>
 							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
