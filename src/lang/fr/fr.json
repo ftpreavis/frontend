@@ -106,7 +106,7 @@
 			"usernameRequired": "Le nom d'utilisateur est requis.",
 			"emailRequired": "L'email est requis.",
 			"passwordRequired": "Le mot de passe est requis.",
-			"alreadyExists": "Le nom d'utilisateur existe déjà"
+			"alreadyExists": "Le nom d'utilisateur existe déjà."
 		},
 		"login": {
 			"usernameRequired": "Le nom d'utilisateur est requis.",
