@@ -43,7 +43,6 @@ function confirm() {
 
 function cancel() {
 	close()
-	emit('confirm', false)
 }
 </script>
 

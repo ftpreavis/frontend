@@ -4,7 +4,7 @@
 /* -------------------------------------------------------------------------- */
 
 import { onMounted, computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+;import { useRoute, useRouter } from "vue-router"
 import axios from "axios";
 import Header from "@/components/Header.vue";
 import EditProfile from "@/components/EditProfile.vue";
@@ -13,6 +13,7 @@ import { useAuth } from "@/store/auth";
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/outline'
 import { useLang } from "@/composables/useLang"
+import FriendButton from "@/components/ProfilePage/FriendButton.vue";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Constants                                 */
@@ -29,6 +30,7 @@ const router = useRouter();
 const { t } = useLang();
 const profileImage = ref<string | null>(null);
 const profileUser = ref<any | null>(null);
+const profileUserId = ref(Number(route.params.userId))
 
 /* -------------------------------------------------------------------------- */
 /*                                  Functions                                 */
@@ -72,7 +74,7 @@ async function toggleBlockUser() {
 }
 
 onMounted(async () => {
-	await loadProfile(Number(route.params.userId));
+	await loadProfile(profileUserId.value);
 	if (!isOwner.value) {
 		try {
 			const res = await axios.get(`/api/chat/block`, {
@@ -165,6 +167,8 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 	});
 	window.location.reload();
 };
+
+
 </script>
 
 <template>
@@ -195,10 +199,11 @@ const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File |
 									<ChatBubbleLeftEllipsisIcon class="w-5 h-5" />
 								</span>
 							</button>
-							<button v-if="!isOwner"
-								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black hover:bg-emerald-500 hover:text-white">
-								<span>{{ t('profile.addFriend') }}</span>
-							</button>
+<!--							<button v-if="!isOwner"-->
+<!--								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black hover:bg-emerald-500 hover:text-white">-->
+<!--								<span>{{ t('profile.addFriend') }}</span>-->
+<!--							</button>-->
+							<FriendButton :profile-user-id="profileUserId"></FriendButton>
 							<button @click="showEditProfile = true" v-if="isOwner"
 								class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
 								{{ t('profile.edit') }}

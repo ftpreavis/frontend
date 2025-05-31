@@ -55,7 +55,20 @@
 			"loss": "Défaite"
 		},
 		"notFound": "Utilisateur introuvable",
-		"noBio": "Cet utilisateur n'a pas encore écrit de bio."
+		"noBio": "Cet utilisateur n'a pas encore écrit de bio.",
+		"friendButton": {
+			"buttonStatus": {
+				"add": "Ajouter",
+				"pending": "Attente",
+				"accept": "Accepter",
+				"unfriend": "Supprimer"
+			},
+			"cancelRequestModal": {
+				"title": "Supprimer la demande d'ami ?",
+				"body": "Cette action annule votre demande d’ami. Êtes-vous certain ?",
+				"confirmButton": "Annuler la demande"
+			}
+		}
 	},
 	"confirm": {
 		"defaultCancel": "Annuler",

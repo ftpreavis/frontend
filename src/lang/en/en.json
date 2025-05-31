@@ -55,7 +55,20 @@
 			"loss": "Loss"
 		},
 		"notFound": "User not found",
-		"noBio": "This user hasn't written a bio yet."
+		"noBio": "This user hasn't written a bio yet.",
+		"friendButton": {
+			"buttonStatus": {
+				"add": "Add",
+				"pending": "Pending",
+				"accept": "Accept",
+				"unfriend": "Unfriend"
+			},
+			"cancelRequestModal": {
+				"title": "Delete friend request?",
+				"body": "This action will cancel your friend request. Are you sure?",
+				"confirmButton": "Cancel Request"
+			}
+		}
 	},
 	"confirm": {
 		"defaultCancel": "Cancel",
