@@ -14,7 +14,11 @@
 	"header": {
 		"logo": "logo",
 		"signIn": "Connexion",
-		"signUp": "s'inscrire"
+		"signUp": "s'inscrire",
+		"viewProfile": "Profil",
+		"logout": "Déconnexion",
+		"lightMode": "Mode jour",
+		"darkMode": "Mode nuit"
 	},
 	"twoFactor": {
 		"title": "Authentification 2FA",
@@ -101,7 +105,8 @@
 		"signup": {
 			"usernameRequired": "Le nom d'utilisateur est requis.",
 			"emailRequired": "L'email est requis.",
-			"passwordRequired": "Le mot de passe est requis."
+			"passwordRequired": "Le mot de passe est requis.",
+			"alreadyExists": "Le nom d'utilisateur existe déjà."
 		},
 		"login": {
 			"usernameRequired": "Le nom d'utilisateur est requis.",

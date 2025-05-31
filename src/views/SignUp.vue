@@ -7,8 +7,10 @@ import FormField from "@/components/Form/FormField.vue";
 import SubmitButton from "@/components/Form/SubmitButton.vue";
 import OAuthButton from "@/components/Form/OAuthButton.vue";
 import FullForm from "@/components/Form/FullForm.vue";
+import { useAuth } from "@/store/auth.ts";
 
 const { t } = useLang()
+const authStore = useAuth()
 const username = ref<string>('')
 const password = ref<string>('')
 const email = ref<string>('')
@@ -26,14 +28,7 @@ const signup = async () => {
         errors.value.email = t('error.signup.emailRequired')
     }
     if (email.value && password.value && username.value){
-        const response = await axios.post('/api/auth/signup', {
-            username: username.value,
-            password: password.value,
-            email: email.value,
-        })
-        localStorage.setItem('token', response.data.token)
-        console.log(response.data)
-        router.push('/')
+        await authStore.signup(username.value, email.value, password.value)
     }
 }
 
@@ -58,6 +53,7 @@ const googleConnect = async() => {
 					<FormField :label="t('signup.username')" v-model="username" :error="errors.username"></FormField>
 					<FormField :label="t('signup.email')" v-model="email" type="email" :error="errors.email"></FormField>
 					<FormField :label="t('signup.password')" v-model="password" type="password" :error="errors.password"></FormField>
+					<p v-if="authStore.signupError" class="text-red-600 text-sm mt-1">{{ authStore.signupError }}</p>
 					<SubmitButton :label="t('signup.submit')"></SubmitButton>
 					<hr>
 					<OAuthButton @click="googleConnect" :label="t('signup.google')"></OAuthButton>

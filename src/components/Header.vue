@@ -7,10 +7,12 @@ import { useChat } from '@/store/chat'
 import { computed } from 'vue'
 import LanguageSelector from '@/components/LanguageSelector.vue'
 import { useDarkMode } from "@/composables/useDarkMode.ts";
+import DropDown from '@/components/DropDown.vue';
 
 const {theme, toggle} = useDarkMode()
 
 const chatStore = useChat()
+const openDropDownProfileMenu = ref(false)
 
 const totalUnread = computed(() =>
 	Object.values(chatStore.unread).reduce((sum, c) => sum + c, 0)
@@ -27,12 +29,6 @@ const go = (path: string) => {
 
 <template>
 	<header class="text-[#F8F6F0] bg-[#fff] dark:bg-gray-900 px-6 w-full h-[80px] shadow-md border-b border-gray-200 dark:border-gray-600">
-		<button
-			@click="toggle"
-			class="fixed bottom-96 right-4 p-2 bg-gray-200 rounded dark:bg-gray-700"
-		>
-			{{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
-		</button>
 		<div class="flex items-center h-full justify-between">
 			<a @click="go('/')"
 				class="text-3xl font-extrabold text-[#000]  dark:text-white leading-none transform -translate-y-[2px] cursor-pointer">Preavis.</a>
@@ -54,10 +50,26 @@ const go = (path: string) => {
 							{{ totalUnread }}
 						</span>
 					</button>
-					<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
-						:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }"
-						@click="go('/profile/' + authStore.userId)">
-					</div>
+					<DropDown v-model="openDropDownProfileMenu" width-class="w-32">
+						<template #trigger>
+							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
+							:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
+							</button>
+						</template>
+						<template #menu>
+							<ul class="text-gray-900 dark:text-white">
+								<li @click="go('/profile/' + authStore.userId); openDropDownProfileMenu = false" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button>{{ $t('header.viewProfile') }}</button> 
+								</li>
+								<li @click="toggle" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button>{{ theme === 'light' ? $t('header.darkMode') : $t('header.lightMode') }}</button>
+								</li>
+								<li @click="authStore.logout" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button class="text-red-500 font-semibold">{{ $t('header.logout') }}</button>
+								</li>
+							</ul>
+						</template>
+					</DropDown>
 				</div>
 			</div>
 
