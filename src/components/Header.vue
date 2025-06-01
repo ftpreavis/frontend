@@ -34,15 +34,15 @@ const go = (path: string) => {
 				class="text-3xl font-extrabold text-[#000]  dark:text-white leading-none transform -translate-y-[2px] cursor-pointer">Preavis.</a>
 			<div class="flex items-center">
 				<LanguageSelector class="mr-2" />
-				<div v-if="!authStore.isAuthenticated && route.path === '/signup'" @click="go('/login')"
-					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">
-					{{ $t('header.signIn')}}
-				</div>
-				<div v-else-if="!authStore.isAuthenticated" @click="go('/signup')"
-					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">
-					{{ $t('header.signUp' )}}
-				</div>
-				<div v-else class="w-[100px] flex flex-row items-center justify-end space-x-3">
+<!--				<div v-if="!authStore.isAuthenticated && route.path === '/signup'" @click="go('/login')"-->
+<!--					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">-->
+<!--					{{ $t('header.signIn')}}-->
+<!--				</div>-->
+<!--				<div v-else-if="!authStore.isAuthenticated" @click="go('/signup')"-->
+<!--					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">-->
+<!--					{{ $t('header.signUp' )}}-->
+<!--				</div>-->
+				<div v-if="authStore.isAuthenticated" class="w-[100px] flex flex-row items-center justify-end space-x-3">
 					<button @click="go('/chat')" class="relative">
 						<ChatBubbleOvalLeftEllipsisIcon class="h-7 w-7 text-gray-500 dark:text-white" />
 						<span v-if="totalUnread > 0"
@@ -59,7 +59,7 @@ const go = (path: string) => {
 						<template #menu>
 							<ul class="text-gray-900 dark:text-white">
 								<li @click="go('/profile/' + authStore.userId); openDropDownProfileMenu = false" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
-									<button>{{ $t('header.viewProfile') }}</button> 
+									<button>{{ $t('header.viewProfile') }}</button>
 								</li>
 								<li @click="toggle" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
 									<button>{{ theme === 'light' ? $t('header.darkMode') : $t('header.lightMode') }}</button>

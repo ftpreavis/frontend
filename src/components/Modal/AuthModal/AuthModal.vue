@@ -40,12 +40,7 @@ const errors = ref<{
 }>({})
 const viewConfirm = ref<boolean>(false)
 
-function closeModal() {
-	mode.value = 'signup'
-	isVisible.value = false
-}
-
-function toogleMode() {
+function toggleMode() {
 	errors.value = {}
 	mode.value = mode.value === 'signup' ? 'login' : 'signup'
 }
@@ -141,7 +136,7 @@ function requestClose(value: boolean) {
 				<p class="text-gray-500 font-light">{{ t('signup.haveAccount') }}</p>
 				<button
 					type="button"
-					@click="toogleMode"
+					@click="toggleMode"
 					class="text-blue-600 ml-1"
 				>
 					{{ t('login.title') }}
@@ -163,7 +158,7 @@ function requestClose(value: boolean) {
 					<p class="text-gray-500 font-light">{{ t('login.dontHaveAccount') }}</p>
 					<button
 						type="button"
-						@click="toogleMode"
+						@click="toggleMode"
 						class="text-blue-600 ml-1"
 					>
 						{{ t('signup.title') }}
