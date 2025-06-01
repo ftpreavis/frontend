@@ -1,0 +1,112 @@
+{
+	"chat": {
+	  "conversations": "Lok pruzaan",
+	  "noConversations": "Ni pruzaan voth hi...",
+	  "back": "← Bo",
+	  "newMessages": "Nus meyz",
+	  "inputPlaceholder": "Kogaan fah rahgol...",
+	  "send": "Bahlok",
+	  "block": {
+		"blockedByUser": "Hi los tinvaak-nid.",
+		"userBlocked": "Zu'u drey hi ni tinvaak."
+	  }
+	},
+	"header": {
+	  "logo": "Dovahdein",
+	  "signIn": "Rahgol",
+	  "signUp": "Meyz"
+	},
+	"twoFactor": {
+	  "title": "Dov Pruzaan",
+	  "scanPrompt": "Nivahriin zii, yahzii faal kodaav:",
+	  "inputPlaceholder": "Sahlok 6 los kod",
+	  "submit": "Nahlot",
+	  "close": "Qahnaar"
+	},
+	"profile": {
+	  "usernamePlaceholder": "Fahliil Nahlaan",
+	  "bioPlaceholder": "Zinrah",
+	  "passwordPlaceholder": "Nuvos fah rahgol",
+	  "save": "Hahdrim",
+	  "close": "Pruzah",
+	  "enable2FA": "Ven Dov Pruzaan",
+	  "noAvatar": "Ni faal sil",
+	  "friends": "Fahdon",
+	  "sendMessage": "Bahlok Tinvaak",
+	  "addFriend": "Ven fahdon",
+	  "edit": "Golt zinrah",
+	  "block": "Tinvaak-Nid",
+	  "unblock": "Ven Tinvaak",
+	  "statsTitle": "Zinmid los kril",
+	  "win": "Krin",
+	  "loose": "Mulaag",
+	  "ratio": "Nahlokmaar",
+	  "recentGames": "Nust lahney gein",
+	  "table": {
+		"game": "Gein",
+		"name": "Naam",
+		"score": "Lot Rah",
+		"result": "Qethsegol",
+		"win": "Krin",
+		"loss": "Mulaag"
+	  },
+	  "notFound": "Fahliil nid meyz",
+	  "noBio": "Fahliil nu voth zinrah."
+	},
+	"confirm": {
+	  "defaultCancel": "Golt",
+	  "defaultConfirm": "Pah",
+	  "blockTitle": "Tinvaak-nid fahliil?",
+	  "blockMessage": "Drey hi tinvaak-nid fahliil? Hi los ni meyz voth tinvaak.",
+	  "blockOk": "Tinvaak-nid",
+	  "unblockTitle": "Ven tinvaak fahliil?",
+	  "unblockMessage": "Drey hi ven tinvaak fahliil ahrk ven sahrot?",
+	  "unblockOk": "Ven Tinvaak"
+	},
+	"signup": {
+	  "title": "Meyz Nahlaan",
+	  "username": "Naam",
+	  "email": "Kogaan-Mail",
+	  "password": "Rahgol Kodaav",
+	  "submit": "Meyz",
+	  "google": "Gogol"
+	},
+	"login": {
+	  "title": "Rahgol",
+	  "username": "Naam",
+	  "password": "Rahgol Kodaav",
+	  "submit": "Rahgol",
+	  "google": "Gogol",
+	  "logout": "Rahgol-Nid",
+	  "logoutGoogle": "Rahgol Gogol-Nid",
+	  "2faTitle": "Dov Pruzaan",
+	  "2faPrompt": "Yahzii 6-kodaav gein faal niid",
+	  "2faPlaceholder": "Kodaav 6",
+	  "2faSubmit": "Pah"
+	},
+	"landing": {
+	  "title": "Preavis",
+	  "tagline": "Kogaan. Kendov. Dilon."
+	},
+	"error": {
+	  "auth": {
+		"invalidCredentials": "Naam los nid vokun.",
+		"googleAuthFailed": "Gogol rahgol lost hiik."
+	  },
+	  "chat": {
+		"block": {
+		  "errorPerms": "Nid krif faal vokun tinvaak."
+		}
+	  },
+	  "signup": {
+		"usernameRequired": "Naam drey hi.",
+		"emailRequired": "Kogaan-Mail drey hi.",
+		"passwordRequired": "Kodaav drey hi."
+	  },
+	  "login": {
+		"usernameRequired": "Naam drey hi.",
+		"passwordRequired": "Kodaav drey hi.",
+		"tokenRequired": "Kodaav Dov drey hi."
+	  }
+	}
+  }

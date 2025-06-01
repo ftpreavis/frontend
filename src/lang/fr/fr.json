@@ -1,0 +1,117 @@
+{
+	"chat": {
+		"conversations": "Conversations",
+		"noConversations": "Aucune conversation pour le moment...",
+		"back": "← Retour",
+		"newMessages": "Nouveaux messages",
+		"inputPlaceholder": "Écrire un message...",
+		"send": "Envoyer",
+		"block": {
+			"blockedByUser": "Cet utilisateur vous a bloqué.",
+			"userBlocked": "Vous avez bloqué cet utilisateur."
+		}
+	},
+	"header": {
+		"logo": "logo",
+		"signIn": "Connexion",
+		"signUp": "s'inscrire",
+		"viewProfile": "Profil",
+		"logout": "Déconnexion",
+		"lightMode": "Mode jour",
+		"darkMode": "Mode nuit"
+	},
+	"twoFactor": {
+		"title": "Authentification 2FA",
+		"scanPrompt": "Scannez et entrez le code ici :",
+		"inputPlaceholder": "Code à 6 chiffres",
+		"submit": "Valider",
+		"close": "Fermer"
+	},
+	"profile": {
+		"usernamePlaceholder": "Nom du profil",
+		"bioPlaceholder": "Biographie",
+		"passwordPlaceholder": "Nouveau mot de passe",
+		"save": "Enregistrer",
+		"close": "Fermer",
+		"enable2FA": "Activer 2FA",
+		"noAvatar": "Pas d'avatar",
+		"friends": "Amis",
+		"sendMessage": "Envoyer un message",
+		"addFriend": "Ajouter un ami",
+		"edit": "Modifier le profil",
+		"block": "Bloquer l'utilisateur",
+		"unblock": "Débloquer l'utilisateur",
+		"statsTitle": "Statistiques tous jeux",
+		"win": "Victoires",
+		"loose": "Défaites",
+		"ratio": "Ratio",
+		"recentGames": "Vos parties récentes",
+		"table": {
+			"game": "Jeu",
+			"name": "Nom",
+			"score": "Score",
+			"result": "Résultat",
+			"win": "Victoire",
+			"loss": "Défaite"
+		},
+		"notFound": "Utilisateur introuvable",
+		"noBio": "Cet utilisateur n'a pas encore écrit de bio."
+	},
+	"confirm": {
+		"defaultCancel": "Annuler",
+		"defaultConfirm": "Confirmer",
+		"blockTitle": "Bloquer cet utilisateur ?",
+		"blockMessage": "Êtes-vous sûr de vouloir bloquer cet utilisateur ? Vous ne pourrez plus interagir.",
+		"blockOk": "Bloquer",
+		"unblockTitle": "Débloquer cet utilisateur ?",
+		"unblockMessage": "Souhaitez-vous débloquer cet utilisateur et rétablir les interactions ?",
+		"unblockOk": "Débloquer"
+	},
+	"signup": {
+		"title": "Créer un compte",
+		"username": "Nom d'utilisateur",
+		"email": "Email",
+		"password": "Mot de passe",
+		"submit": "S'inscrire",
+		"google": "Google"
+	},
+	"login": {
+		"title": "Connexion",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+		"submit": "Se connecter",
+		"google": "Google",
+		"logout": "Déconnexion",
+		"logoutGoogle": "Déconnexion Google",
+		"2faTitle": "Authentification à deux facteurs",
+		"2faPrompt": "Entrez le code à 6 chiffres généré par votre application",
+		"2faPlaceholder": "Code à 6 chiffres",
+		"2faSubmit": "Vérifier"
+	},
+	"landing": {
+		"title": "Preavis",
+		"tagline": "Jouez. Affrontez. Triomphez."
+	},
+	"error": {
+		"auth": {
+			"invalidCredentials": "Nom d'utilisateur ou mot de passe incorrect",
+			"googleAuthFailed": "Erreur de connexion avec Google"
+		},
+		"chat": {
+			"block": {
+				"errorPerms": "Impossible de vérifier les autorisations de message."
+			}
+		},
+		"signup": {
+			"usernameRequired": "Le nom d'utilisateur est requis.",
+			"emailRequired": "L'email est requis.",
+			"passwordRequired": "Le mot de passe est requis.",
+			"alreadyExists": "Le nom d'utilisateur existe déjà."
+		},
+		"login": {
+			"usernameRequired": "Le nom d'utilisateur est requis.",
+			"passwordRequired": "Le mot de passe est requis.",
+			"tokenRequired": "Le code 2FA est requis."
+		}
+	}
+}

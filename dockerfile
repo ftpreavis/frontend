@@ -1,6 +1,6 @@
 # frontend/Dockerfile
 # 1) Build your Vite + Vue app
-FROM node:18-alpine AS build
+FROM node:24-bookworm AS build
 WORKDIR /app
 
 # Install deps and build
