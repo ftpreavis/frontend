@@ -48,7 +48,7 @@ function cancel() {
 
 <template>
 	<Modal v-model="modalValue" :title="title">
-		<div class="text-center space-y-4">
+		<div class="space-y-4">
 			<p class="text-gray-600">{{ message }}</p>
 			<div class="flex flex-col sm:flex-row justify-between gap-3 pt-4">
 				<button

@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useLang } from "@/composables/useLang"
+
 import CTAButton from "@/components/CallToActionButton.vue";
+import AuthModal from "@/components/Modal/AuthModal/AuthModal.vue";
 
 const { t } = useLang()
+const showAuthModal = ref<boolean>(false)
 </script>
 
 <template>
@@ -18,6 +22,7 @@ const { t } = useLang()
 				</div>
 			</div>
 		</div>
-
+		<button @click="showAuthModal = showAuthModal === true ? false : true">Test</button>
+		<AuthModal v-model="showAuthModal"></AuthModal>
 	</div>
 </template>

@@ -32,15 +32,16 @@ const signup = async () => {
     }
 }
 
+const googleConnect = async() => {
+	window.location.href = '/api/auth/google'
+}
+
 const normalLogout = async () => {
     const response = await axios.get('/api/auth/normalLogout')
     console.log(response.data)
     localStorage.removeItem('token')
 }
 
-const googleConnect = async() => {
-    window.location.href = '/api/auth/google'
-}
 
 </script>
 

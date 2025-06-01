@@ -68,12 +68,18 @@ export const useAuth = defineStore('auth', () => {
 	}
 
     const authenticate2FA = async (id: string, token2FA: string) => {
-        const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
-        console.log(response2FA)
-        setCookies("access_token", response2FA.data.token)
-        const userData = await axios.get('/api/users/profile')
-        setCookies('userId', String(userData.data.id))
-        await router.push('/').then(() => {window.location.reload()})
+		try {
+			const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
+			console.log(response2FA)
+			setCookies("access_token", response2FA.data.token)
+			const userData = await axios.get('/api/users/profile')
+			setCookies('userId', String(userData.data.id))
+			await router.push('/').then(() => {
+				window.location.reload()
+			})
+		} catch (error) {
+			console.log(error)
+		}
     }
 
 	const fetchUserById = async (id: number) => {
