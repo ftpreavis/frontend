@@ -82,7 +82,7 @@ const googleConnect = async () => {
 				<h3 class="mb-5 text-center text-gray-800 text-2xl font-bold">{{ t('login.2faTitle') }}</h3>
 				<div class="border flex flex-col p-4 space-y-3 bg-white rounded-xl shadow-lg">
 					<p class="text-sm text-gray-600 mb-2">{{ t('login.2faPrompt') }}</p>
-					<p v-if="loginError" class="text-red-600 text-sm mt-1">{{ loginError }}</p>
+					<p v-if="authStore.loginError" class="text-red-600 text-sm mt-1">{{ authStore.loginError }}</p>
 					<FullForm @submit="log2FA">
 						<FormField v-model="token2FA" label="" :error="errors.token2FA" :placeholder="t('login.2faPlaceholder')"/>
 						<SubmitButton :label="t('login.2faSubmit')"></SubmitButton>
