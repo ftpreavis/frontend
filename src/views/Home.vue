@@ -6,7 +6,6 @@ import { useI18n } from 'vue-i18n'
 import pongImage from '../assets/pongGameImage.jpg'
 import PacManBanner from '../assets/PacManBanner.png'
 
-import GameCard from '@/components/GameCard.vue'
 import Header from '@/components/Header.vue'
 
 const router = useRouter()

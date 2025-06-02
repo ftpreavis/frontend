@@ -36,7 +36,7 @@
 		"enable2FA": "Activer 2FA",
 		"noAvatar": "Pas d'avatar",
 		"friends": "Amis",
-		"sendMessage": "Envoyer un message",
+		"sendMessage": "Message",
 		"addFriend": "Ajouter un ami",
 		"edit": "Modifier le profil",
 		"block": "Bloquer l'utilisateur",
@@ -55,7 +55,25 @@
 			"loss": "Défaite"
 		},
 		"notFound": "Utilisateur introuvable",
-		"noBio": "Cet utilisateur n'a pas encore écrit de bio."
+		"noBio": "Cet utilisateur n'a pas encore écrit de bio.",
+		"friendButton": {
+			"buttonStatus": {
+				"add": "Ajouter",
+				"pending": "Attente",
+				"accept": "Accepter",
+				"unfriend": "Supprimer"
+			},
+			"cancelRequestModal": {
+				"title": "Supprimer la demande d'ami ?",
+				"body": "Cette action annule votre demande d’ami. Êtes-vous certain ?",
+				"confirmButton": "Annuler la demande"
+			},
+			"unfriendModal": {
+				"title": "Supprimer l’ami ?",
+				"body": "Êtes-vous sûr de vouloir supprimer cet ami ?",
+				"confirmButton": "Supprimer"
+			}
+		}
 	},
 	"confirm": {
 		"defaultCancel": "Annuler",
@@ -73,7 +91,8 @@
 		"email": "Email",
 		"password": "Mot de passe",
 		"submit": "S'inscrire",
-		"google": "Google"
+		"google": "Google",
+		"haveAccount": "Déjà un compte ?"
 	},
 	"login": {
 		"title": "Connexion",
@@ -86,7 +105,13 @@
 		"2faTitle": "Authentification à deux facteurs",
 		"2faPrompt": "Entrez le code à 6 chiffres généré par votre application",
 		"2faPlaceholder": "Code à 6 chiffres",
-		"2faSubmit": "Vérifier"
+		"2faSubmit": "Vérifier",
+		"dontHaveAccount": "Pas encore de compte ?",
+		"confirm": {
+			"2faTitle": "Annuler l’authentification à deux facteurs ?",
+			"2faMessage": "Vous n’avez pas complété l’authentification à deux facteurs. Êtes-vous sûr de vouloir quitter ?",
+			"2faConfirm": "Oui, annuler"
+		}
 	},
 	"landing": {
 		"title": "Preavis",

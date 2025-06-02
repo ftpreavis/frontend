@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { BoldIcon } from "@heroicons/vue/24/outline";
 import {computed, ref, watch} from "vue"
-import TwoFactor from "@/components//TwoFactor.vue";
-import { useAuth } from "@/store/auth";
-import { useLang } from "@/composables/useLang"
-import Modal from "@/components/Modal.vue";
+import TwoFactor from "@/components/Modal/AuthModal/TwoFactor.vue";
+import { useAuth } from "@/store/auth.ts";
+import { useLang } from "@/composables/useLang.ts"
+import Modal from "@/components/Modal/Modal.vue";
 import FormField from "@/components/Form/FormField.vue";
 
 const { t } = useLang()

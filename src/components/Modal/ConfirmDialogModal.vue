@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue'
-import Modal from '@/components/Modal.vue'
-import { useLang } from "@/composables/useLang"
+import Modal from '@/components/Modal/Modal.vue'
+import { useLang } from "@/composables/useLang.ts"
 
 const { t } = useLang()
 
@@ -43,13 +43,12 @@ function confirm() {
 
 function cancel() {
 	close()
-	emit('confirm', false)
 }
 </script>
 
 <template>
 	<Modal v-model="modalValue" :title="title">
-		<div class="text-center space-y-4">
+		<div class="space-y-4">
 			<p class="text-gray-600">{{ message }}</p>
 			<div class="flex flex-col sm:flex-row justify-between gap-3 pt-4">
 				<button
