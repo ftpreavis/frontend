@@ -46,7 +46,6 @@ function goToChatWithUser(targetUserId: number) {
 	router.push({ name: 'ChatPage', query: { userId: targetUserId } })
 };
 
-
 const handleSaveProfile = async ({ avatar, username, bio, password }: {
     avatar: File | null,
     username: string,
@@ -170,7 +169,7 @@ watch(
 						</div>
 						<div class="flex flex-col">
 							<span class="text-gray-400 text-sm my-1">{{ t('profile.ratio' )}}</span>
-							<span>{{ profileStore.nbTotal.toFixed(2) }}</span>
+							<span>{{ profileStore.winRatio.toFixed(2) }}%</span>
 						</div>
 					</div>
 				</div>

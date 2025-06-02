@@ -18,9 +18,9 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 	const profileBio = computed(() =>
 		profileUser.value?.biography || t('profile.noBio')
 	);
-	const nbWin = computed(() => profileUser.value?.stats?.wins ?? 0);
-	const nbLoose = computed(() => profileUser.value?.stats?.losses ?? 0);
-	const nbTotal = computed(() => {
+	// const nbWin = computed(() => profileUser.value?.stats?.wins ?? 0);
+	// const nbLoose = computed(() => profileUser.value?.stats?.losses ?? 0);
+	const winRatio = computed(() => {
 		const total = nbWin.value + nbLoose.value;
 		return total > 0 ? (nbWin.value / total) * 100 : 0;
 	});
@@ -31,7 +31,7 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		const allMatches = [
 			...(user.MatchesAsPlayer1 ?? []).map((match: any) => ({
 				id: match.id,
-				opponent: match.player2?.username ?? 'Unknown',
+				opponent: match.player2Name ?? 'Unknown',
 				score: `${match.player1Score}-${match.player2Score}`,
 				result: match.player1Score > match.player2Score ? 'Victoire' : 'Défaite',
 				game: 'Pong',
@@ -39,7 +39,7 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 			})),
 			...(user.MatchesAsPlayer2 ?? []).map((match: any) => ({
 				id: match.id,
-				opponent: match.player1?.username ?? 'Unknown',
+				opponent: match.player1Name ?? 'Unknown',
 				score: `${match.player2Score}-${match.player1Score}`,
 				result: match.player2Score > match.player1Score ? 'Victoire' : 'Défaite',
 				game: 'Pong',
@@ -49,6 +49,37 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 
 		return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5);
 	});
+
+    const nbWin = computed(() => {
+        const user = profileUser.value;
+        if (!user) return 0;
+    
+        const winsAsPlayer1 = (user.MatchesAsPlayer1 ?? []).filter(
+            (m: any) => m.player1Score > m.player2Score
+        ).length;
+    
+        const winsAsPlayer2 = (user.MatchesAsPlayer2 ?? []).filter(
+            (m: any) => m.player2Score > m.player1Score
+        ).length;
+    
+        return winsAsPlayer1 + winsAsPlayer2;
+    });
+
+    const nbLoose = computed(() => {
+        const user = profileUser.value;
+        if (!user) return 0;
+    
+        const lossesAsPlayer1 = (user.MatchesAsPlayer1 ?? []).filter(
+            (m: any) => m.player1Score < m.player2Score
+        ).length;
+    
+        const lossesAsPlayer2 = (user.MatchesAsPlayer2 ?? []).filter(
+            (m: any) => m.player2Score < m.player1Score
+        ).length;
+    
+        return lossesAsPlayer1 + lossesAsPlayer2;
+    });
+
 	const nbFriends = computed(() => {
 		const user = profileUser.value;
 		if (!user) return 0;
@@ -132,7 +163,7 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		profileBio,
 		nbWin,
 		nbLoose,
-		nbTotal,
+		winRatio,
 		lastGames,
 		nbFriends,
 

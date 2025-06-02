@@ -41,10 +41,10 @@
 		"edit": "Modifier le profil",
 		"block": "Bloquer l'utilisateur",
 		"unblock": "Débloquer l'utilisateur",
-		"statsTitle": "Statistiques tous jeux",
+		"statsTitle": "Statistiques de tous les jeux",
 		"win": "Victoires",
 		"loose": "Défaites",
-		"ratio": "Ratio",
+		"ratio": "Taux de victoire",
 		"recentGames": "Vos parties récentes",
 		"table": {
 			"game": "Jeu",
