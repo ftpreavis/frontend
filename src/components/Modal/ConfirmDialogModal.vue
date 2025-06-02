@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import Modal from '@/components/Modal.vue'
-import { useLang } from "@/composables/useLang"
+import {computed, ref, watch} from 'vue'
+import Modal from '@/components/Modal/Modal.vue'
+import { useLang } from "@/composables/useLang.ts"
 
 const { t } = useLang()
 
@@ -17,6 +17,11 @@ const emit = defineEmits<{
 	(event: 'update:visible', value: boolean): void
 	(event: 'confirm', value: boolean): void
 }>()
+
+const modalValue = computed({
+	get: () => props.visible,
+	set: (v: boolean) => emit('update:visible', v)
+})
 
 const cancelText = ref(props.cancelButton ?? t('confirm.defaultCancel'))
 
@@ -38,14 +43,12 @@ function confirm() {
 
 function cancel() {
 	close()
-	emit('confirm', false)
 }
 </script>
 
 <template>
-	<Modal v-if="visible" :visible="visible" @update:visible="val => emit('update:visible', val)">
-		<div class="text-center space-y-4">
-			<h2 class="text-xl font-semibold text-gray-800">{{ title }}</h2>
+	<Modal v-model="modalValue" :title="title">
+		<div class="space-y-4">
 			<p class="text-gray-600">{{ message }}</p>
 			<div class="flex flex-col sm:flex-row justify-between gap-3 pt-4">
 				<button

@@ -172,57 +172,57 @@ watch(() => chatStore.selectedUserId, async () => {
 </script>
 
 <template>
-	<div class="flex h-full overflow-hidden">
-		<aside class="w-full md:w-1/3 border-r border-gray-200 bg-white p-4"
+	<div class="flex h-full overflow-hidden dark:bg-gray-800">
+		<aside class="w-full md:w-1/3 border-r border-gray-200 dark:border-gray-600 dark:bg-gray-800 bg-white p-4 "
 			:class="selectedId !== null ? 'hidden md:block' : ''">
-			<h2 class="text-lg font-semibold mb-4">{{ $t('chat.conversations') }}</h2>
+			<h2 class="text-lg font-semibold mb-4 dark:text-gray-100">{{ $t('chat.conversations') }}</h2>
 			<div v-if="convs.length === 0">{{ $t('chat.noConversations') }}</div>
 			<ul class="space-y-2">
 				<li v-for="conv in convs" :key="conv.id" @click="selectConversation(conv.id)" :class="[
-					'flex items-start p-3 rounded-lg cursor-pointer hover:bg-gray-100',
-					selectedId === conv.id ? 'bg-gray-200' : 'bg-gray-50',
+					'flex items-start p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+					selectedId === conv.id ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-50 dark:bg-gray-800',
 				]">
 					<img :src="conv.avatar" alt="avatar" class="object-contain object-center w-10 h-10 rounded-full mr-3 flex-shrink-0" />
 					<div class="flex-1 min-w-0">
 						<div class="flex justify-between items-end">
-							<span class="font-medium text-gray-900">{{ conv.name }}</span>
+							<span class="font-medium text-gray-900 dark:text-white">{{ conv.name }}</span>
 							<span v-if="conv.unreadCount > 0"
 								class="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
 								{{ conv.unreadCount }}
 							</span>
 						</div>
-						<p class="text-sm text-gray-600 truncate">{{ conv.lastMessage }}</p>
+						<p class="text-sm text-gray-600 dark:text-gray-300 truncate">{{ conv.lastMessage }}</p>
 					</div>
 				</li>
 			</ul>
 		</aside>
 
 		<section v-if="selectedId !== null" class="flex flex-col flex-1">
-			<button class="md:hidden p-2 text-sm" @click="selectedId = null">{{ $t('chat.back') }}</button>
+			<button class="md:hidden p-2 text-sm cursor-pointer dark:text-gray-300" @click="selectedId = null">{{ $t('chat.back') }}</button>
 
-			<div class="bg-white border-b border-gray-200 p-4 flex flex-col items-center">
+			<div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-500 p-4 flex flex-col items-center">
 				<button @click="goToProfile(selectedId)"><img
 						:src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`"
 						alt="avatar" class="object-contain object-center w-12 h-12 rounded-full flex-shrink-0" /></button>
-				<h3 class="text-md font-semibold mt-1">{{convs.find(c => c.id === selectedId)?.name}}</h3>
+				<h3 class="text-md font-semibold mt-1 dark:text-white">{{convs.find(c => c.id === selectedId)?.name}}</h3>
 			</div>
 
-			<div :ref="bindScrollContainer" class="flex-1 overflow-y-auto p-4 bg-gray-50 space-y-6"
+			<div :ref="bindScrollContainer" class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 space-y-6"
 				@scroll="chatUIStore.updateScrollIndicators">
 				<div v-for="(group, index) in groupedMessages" :key="index">
-					<div class="text-center text-xs text-gray-500 mb-2">{{ group.date }}</div>
+					<div class="text-center text-xs text-gray-500 dark:text-gray-300 mb-2">{{ group.date }}</div>
 					<div class="space-y-4">
 						<div v-for="msg in group.messages" :key="msg.id"
 							:class="msg.senderId === authStore.userId ? 'flex justify-end' : 'flex justify-start'">
 							<template v-if="msg.senderId !== authStore.userId">
-								<div class="p-2 rounded max-w-xs bg-white text-gray-800 break-words">
+								<div class="p-2 rounded max-w-xs md:max-w-xl bg-white text-gray-800 break-words">
 									{{ msg.content }}
 								</div>
 								<div class="text-xs text-gray-400 self-end ml-1">{{ msg.time }}</div>
 							</template>
 							<template v-else>
 								<div class="text-xs text-gray-400 self-end mr-1">{{ msg.time }}</div>
-								<div class="p-2 rounded max-w-xs bg-blue-500 text-white break-words">
+								<div class="p-2 rounded max-w-xs md:max-w-xl bg-blue-500 text-white break-words">
 									{{ msg.content }}
 								</div>
 							</template>
@@ -233,7 +233,7 @@ watch(() => chatStore.selectedUserId, async () => {
 
 			<button v-if="chatUIStore.showScrollButton && currentMessages.length > 0"
 				@click="chatUIStore.scrollToBottom"
-				class="fixed bottom-24 right-6 z-10 bg-blue-500 text-white px-3 py-2 rounded-full shadow-md hover:bg-blue-600 flex items-center space-x-2 transition">
+				class="fixed bottom-24 right-6 z-10 bg-blue-200 text-gray-500 px-3 py-2 rounded-full shadow-md hover:bg-blue-600 flex items-center space-x-2 transition">
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
 					stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -241,9 +241,9 @@ watch(() => chatStore.selectedUserId, async () => {
 				<span v-if="chatUIStore.showNewMsgText">{{ $t('chat.newMessages') }}</span>
 			</button>
 
-			<div class="p-4 bg-white border-t border-gray-200 flex items-center">
+			<div class="p-4 bg-white dark:bg-gray-800 dark:border-gray-500 border-t border-gray-200 flex items-center">
 				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage" :placeholder="$t('chat.inputPlaceholder')"
-					class="w-full px-4 py-2 border rounded focus:outline-none focus:ring" />
+					class="w-full px-4 py-2 border rounded focus:outline-none focus:ring dark:bg-gray-700 dark:text-gray-100 dark:border-gray-500" />
 				<button @click="onSendMessage" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded">
 					{{ $t('chat.send') }}
 				</button>

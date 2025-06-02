@@ -37,7 +37,7 @@ const maxBounceAngle = Math.PI / 3
 let isWaiting = false
 const message = ref<string>('')
 const gameMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
-let botInterval: number
+let botInterval: ReturnType<typeof setInterval>
 
 const player1Name = ref<string>('BRR BRR')
 const player2Name = ref<string>('Azaleee')

@@ -7,15 +7,19 @@ export function useSocket() {
 	if (!socket) {
 		const authStore = useAuth();
 
-		const url =
-			process.env.NODE_ENV == 'development'
-				? 'ws://localhost:4002'
-				: '/socket/chat';
+		const isDev = process.env.NODE_ENV === 'development';
+		const protocol = isDev ? 'ws' : 'wss';
+		const host = isDev
+			? `${location.hostname}:4002`
+			: location.host;
+
+		const url = `${protocol}://${host}`;
 
 		socket = io(url, {
 			auth: { userId: authStore.userId },
 			autoConnect: false,
 			transports: ['websocket'], // force WS, no polling fallback
+			path: '/socket/chat'
 		});
 	}
 	return socket;

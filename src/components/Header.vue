@@ -6,8 +6,13 @@ import { useAuth } from "@/store/auth.ts";
 import { useChat } from '@/store/chat'
 import { computed } from 'vue'
 import LanguageSelector from '@/components/LanguageSelector.vue'
+import { useDarkMode } from "@/composables/useDarkMode.ts";
+import DropDown from '@/components/DropDown.vue';
+
+const {theme, toggle} = useDarkMode()
 
 const chatStore = useChat()
+const openDropDownProfileMenu = ref(false)
 
 const totalUnread = computed(() =>
 	Object.values(chatStore.unread).reduce((sum, c) => sum + c, 0)
@@ -20,37 +25,51 @@ const go = (path: string) => {
 	router.push(path)
 }
 
-const profileImage = "https://d3nn82uaxijpm6.cloudfront.net/assets/avatar/athlete/large-800a7033cc92b2a5548399e26b1ef42414dd1a9cb13b99454222d38d58fd28ef.png"
-const userId = 42
 </script>
 
 <template>
-	<header class="text-[#F8F6F0] bg-[#fff] px-6 w-full h-[80px] shadow-md border-b border-gray-200">
+	<header class="text-[#F8F6F0] bg-[#fff] dark:bg-gray-900 px-6 w-full h-[80px] shadow-md border-b border-gray-200 dark:border-gray-600">
 		<div class="flex items-center h-full justify-between">
 			<a @click="go('/')"
-				class="text-4xl font-extrabold text-[#000] leading-none transform -translate-y-[3px] cursor-pointer">logo</a>
-			<div class="flex items-center space-x-3">
-				<LanguageSelector />
-				<div v-if="!authStore.isAuthenticated && route.path === '/signup'" @click="go('/login')"
-					class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
-					{{ $t('header.SignIn')}}
-				</div>
-				<div v-else-if="!authStore.isAuthenticated" @click="go('/signup')"
-					class="text-[#1A1F36] px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border">
-					{{ $t('header.SignUp' )}}
-				</div>
-				<div v-else class="w-[100px] flex flex-row items-center justify-end space-x-3">
+				class="text-3xl font-extrabold text-[#000]  dark:text-white leading-none transform -translate-y-[2px] cursor-pointer">Preavis.</a>
+			<div class="flex items-center">
+				<LanguageSelector class="mr-2" />
+<!--				<div v-if="!authStore.isAuthenticated && route.path === '/signup'" @click="go('/login')"-->
+<!--					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">-->
+<!--					{{ $t('header.signIn')}}-->
+<!--				</div>-->
+<!--				<div v-else-if="!authStore.isAuthenticated" @click="go('/signup')"-->
+<!--					class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">-->
+<!--					{{ $t('header.signUp' )}}-->
+<!--				</div>-->
+				<div v-if="authStore.isAuthenticated" class="w-[100px] flex flex-row items-center justify-end space-x-3">
 					<button @click="go('/chat')" class="relative">
-						<ChatBubbleOvalLeftEllipsisIcon class="h-7 w-7 text-gray-500" />
+						<ChatBubbleOvalLeftEllipsisIcon class="h-7 w-7 text-gray-500 dark:text-white" />
 						<span v-if="totalUnread > 0"
 							class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
 							{{ totalUnread }}
 						</span>
 					</button>
-					<div class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
-						:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }"
-						@click="go('/profile/' + authStore.userId)">
-					</div>
+					<DropDown v-model="openDropDownProfileMenu" width-class="w-32">
+						<template #trigger>
+							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
+							:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
+							</button>
+						</template>
+						<template #menu>
+							<ul class="text-gray-900 dark:text-white">
+								<li @click="go('/profile/' + authStore.userId); openDropDownProfileMenu = false" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button>{{ $t('header.viewProfile') }}</button>
+								</li>
+								<li @click="toggle" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button>{{ theme === 'light' ? $t('header.darkMode') : $t('header.lightMode') }}</button>
+								</li>
+								<li @click="authStore.logout" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+									<button class="text-red-500 font-semibold">{{ $t('header.logout') }}</button>
+								</li>
+							</ul>
+						</template>
+					</DropDown>
 				</div>
 			</div>
 
