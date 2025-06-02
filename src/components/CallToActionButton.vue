@@ -5,6 +5,7 @@ import { RouterLink } from "vue-router";
 defineProps({
 	to: {
 		type: [String, Object],
+		default: '',
 		required: false
 	}
 });

@@ -36,7 +36,7 @@
 		"enable2FA": "Activer 2FA",
 		"noAvatar": "Pas d'avatar",
 		"friends": "Amis",
-		"sendMessage": "Envoyer un message",
+		"sendMessage": "Message",
 		"addFriend": "Ajouter un ami",
 		"edit": "Modifier le profil",
 		"block": "Bloquer l'utilisateur",
@@ -67,6 +67,11 @@
 				"title": "Supprimer la demande d'ami ?",
 				"body": "Cette action annule votre demande d’ami. Êtes-vous certain ?",
 				"confirmButton": "Annuler la demande"
+			},
+			"unfriendModal": {
+				"title": "Supprimer l’ami ?",
+				"body": "Êtes-vous sûr de vouloir supprimer cet ami ?",
+				"confirmButton": "Supprimer"
 			}
 		}
 	},

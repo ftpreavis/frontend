@@ -14,7 +14,7 @@ const showAuthModal = ref<boolean>(false)
 
 function onClickCTA() {
 	if (!authStore.isAuthenticated)
-		showAuthModal.value = showAuthModal === true ? false : true
+		showAuthModal.value = showAuthModal.value !== true
 	else
 		router.push('/pong')
 }

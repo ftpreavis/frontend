@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {computed, ref} from "vue";
 import router from "@/router";
-import { useLang } from "@/composables/useLang"
-import Modal from "@/components/Modal.vue";
+import { useLang } from "@/composables/useLang.ts"
+import Modal from "@/components/Modal/Modal.vue";
 
 const { t } = useLang()
 

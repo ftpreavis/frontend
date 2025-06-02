@@ -36,7 +36,7 @@
 		"enable2FA": "Enable 2FA",
 		"noAvatar": "No avatar",
 		"friends": "Friends",
-		"sendMessage": "Send Message",
+		"sendMessage": "Message",
 		"addFriend": "Add to friend",
 		"edit": "Edit profile",
 		"block": "Block User",
@@ -67,6 +67,11 @@
 				"title": "Delete friend request?",
 				"body": "This action will cancel your friend request. Are you sure?",
 				"confirmButton": "Cancel Request"
+			},
+			"unfriendModal": {
+				"title": "Remove Friend?",
+				"body": "Are you sure you want to remove this friend?",
+				"confirmButton": "Remove"
 			}
 		}
 	},

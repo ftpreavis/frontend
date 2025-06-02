@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref, watch} from 'vue'
-import Modal from '@/components/Modal.vue'
-import { useLang } from "@/composables/useLang"
+import Modal from '@/components/Modal/Modal.vue'
+import { useLang } from "@/composables/useLang.ts"
 
 const { t } = useLang()
 

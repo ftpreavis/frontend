@@ -83,13 +83,13 @@ export const useAuth = defineStore('auth', () => {
     }
 
 	const fetchUserById = async (id: number) => {
-		if (userMap.value[id]) return userMap.value[id];
+		// if (userMap.value[id]) return userMap.value[id];
 
 		try {
 			const { data } = await axios.get(`/api/users/profile/${id}`, {
 				headers: { Authorization: `Bearer ${token.value}` }
 			});
-			userMap.value[id] = data;
+			// userMap.value[id] = data;
 			return data;
 		} catch {
 			return null;

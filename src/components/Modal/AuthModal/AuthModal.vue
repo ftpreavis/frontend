@@ -4,12 +4,12 @@ import {computed, ref, watch} from "vue";
 import {useLang} from "@/composables/useLang.ts";
 import {useAuth} from "@/store/auth.ts";
 
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/Modal/Modal.vue";
 import FormField from "@/components/Form/FormField.vue";
 import SubmitButton from "@/components/Form/SubmitButton.vue";
 import FullForm from "@/components/Form/FullForm.vue";
 import OAuthButton from "@/components/Form/OAuthButton.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import ConfirmDialogModal from "@/components/Modal/ConfirmDialogModal.vue";
 
 const props = defineProps<{
 	modelValue: boolean
@@ -180,13 +180,13 @@ function requestClose(value: boolean) {
 				</FullForm>
 				<hr>
 				<OAuthButton @click="" :label="t('login.google')"></OAuthButton>
-				<ConfirmDialog
+				<ConfirmDialogModal
 					v-model:visible="viewConfirm"
 					:title="t('login.confirm.2faTitle')"
 					:message="t('login.confirm.2faMessage')"
 					:ok-button="t('login.confirm.2faConfirm')"
 					@confirm="onConfirmClose"
-					@update:visible="(value) => { if (!value) onCancelClose() }"></ConfirmDialog>
+					@update:visible="(value) => { if (!value) onCancelClose() }"></ConfirmDialogModal>
 			</div>
 		</div>
 	</Modal>
