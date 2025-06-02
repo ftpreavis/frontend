@@ -64,7 +64,7 @@ function getRoundLabel(round: number, total: number): string {
 
                     <div class="w-32 text-center">
                         <span v-if="match.winner">
-                        <p class="font-bold text-green-600">{{ $t('tournament.winner') }}" :</p><br />
+                        <p class="font-bold text-green-600">{{ $t('tournament.winner') }} :</p><br />
                         {{ match.winner }}
                         </span>
                         <span v-else class="text-gray-500 italic">{{ $t('tournament.notPlayed') }}</span>
