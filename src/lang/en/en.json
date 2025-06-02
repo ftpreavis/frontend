@@ -44,7 +44,7 @@
 		"statsTitle": "Stats for all game",
 		"win": "Win",
 		"loose": "Loose",
-		"ratio": "Ratio",
+		"ratio": "Win rate",
 		"recentGames": "Your recent game",
 		"table": {
 			"game": "Game",
