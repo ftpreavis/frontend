@@ -3,11 +3,11 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import { useLang } from "@/composables/useLang.ts";
 import { useAuth } from '@/store/auth'
-import { useFriends } from "@/store/friends.ts";
+// import { useFriends } from "@/store/friends.ts";
 
 export const useProfileManagement = defineStore('profileManagement', () => {
 	const authStore = useAuth()
-	const friendsStore = useFriends()
+	// const friendsStore = useFriends()
 	const { t } = useLang()
 
 	const profileUser = ref<any | null>(null)
@@ -73,11 +73,6 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 				profileUser.value = null
 				profileImage.value = null
 			}
-			await Promise.all([
-				friendsStore.fetchSentRequests(),
-				friendsStore.fetchReceivedRequests(),
-				friendsStore.fetchFriendsList()
-			])
 		} catch (error) {
 			console.error('Error load profile: ', error)
 			profileUser.value = null
