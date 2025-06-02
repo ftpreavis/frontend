@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BoldIcon } from "@heroicons/vue/24/outline";
-import {computed, ref, watch} from "vue"
+import {computed, ref, watch, onMounted} from "vue"
 import TwoFactor from "@/components/Modal/AuthModal/TwoFactor.vue";
 import { useAuth } from "@/store/auth.ts";
 import { useLang } from "@/composables/useLang.ts"
@@ -8,6 +8,7 @@ import Modal from "@/components/Modal/Modal.vue";
 import FormField from "@/components/Form/FormField.vue";
 
 const { t } = useLang()
+const profileUser = ref<any | null>(null);
 
 const props = defineProps<{
 	visible: boolean
@@ -65,16 +66,28 @@ const save = () => {
     close()
 }
 
+const getUsername = async() => {
+    const data = await authStore.fetchUserById(<number>authStore.userId);
+        if (data) {
+            profileUser.value = data;
+        }
+    }
+    
+    onMounted(async() => {
+        await getUsername()
+})
+
+
 </script>
 
 <template>
 	<Modal v-model="modalVisible" title="Edit Profile">
 		<div class="flex flex-col space-y-6">
-			<FormField type="File" label="Avatar" accept="image/*" @change="handleAvatarChange"></FormField>
+			<FormField type="File" label="Avatar" @change="handleAvatarChange"></FormField>
 			<FormField v-model="username" label="Username" type="text" :placeholder="t('profile.usernamePlaceholder')"></FormField>
 			<FormField v-model="bio" label="Bio" type="text" :placeholder="t('profile.bioPlaceholder')"></FormField>
 			<FormField v-model="password" label="Password" type="text" :placeholder="t('profile.passwordPlaceholder')"></FormField>
-			<button v-if="!authStore.user?.twoFAEnabled" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
+			<button v-if="profileUser.value?.twoFAEnabled == true" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
 		</div>
 		<template #footer>
 			<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

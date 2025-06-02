@@ -46,18 +46,42 @@ function goToChatWithUser(targetUserId: number) {
 	router.push({ name: 'ChatPage', query: { userId: targetUserId } })
 };
 
-const handleSaveProfile = ({ avatar, username, bio, password }: { avatar: File | null, username: string, bio: string, password: string }) => {
-	axios.patch(`/api/users/${authStore.userId}/avatar`, {
-		headers: { Authorization: `Bearer ${authStore.token}` },
-		avatar: "/uploads/avatars/default.png"
-	});
-	axios.patch(`/api/users/${authStore.userId}`, {
-		headers: { Authorization: `Bearer ${authStore.token}` },
-		username: username,
-		biography: bio,
-		password: password
-	});
-	window.location.reload();
+
+const handleSaveProfile = async ({ avatar, username, bio, password }: {
+    avatar: File | null,
+    username: string,
+    bio: string,
+    password: string
+}) => {
+    try {
+        if (avatar) {
+            const formData = new FormData();
+            formData.append("file", avatar);
+
+            await axios.patch(`/api/users/${authStore.userId}/avatar`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${authStore.token}`
+                },
+                withCredentials: true
+            });
+        }
+
+        await axios.patch(`/api/users/${authStore.userId}`, {
+            username: username,
+            biography: bio,
+            password: password
+        }, {
+            headers: {
+                Authorization: `Bearer ${authStore.token}`
+            },
+            withCredentials: true
+        });
+
+        window.location.reload();
+    } catch (err) {
+        console.error("❌ Échec de la mise à jour :", err.response?.data || err.message);
+    }
 };
 
 async function refreshAllData(id: number) {
