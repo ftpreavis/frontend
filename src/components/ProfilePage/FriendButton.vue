@@ -24,7 +24,7 @@ const status = computed<'not-friends' | 'request-sent' | 'request-received' | 'f
 		return 'request-sent'
 	if (friendsStore.pendingRequests.some(r => r.from.id === profileUserId.value))
 		return 'request-received'
-	if (friendsStore.friendsList.some(r => r.id === profileUserId.value))
+	if (friendsStore.friendsList.some(r => r.friendId === profileUserId.value))
 		return 'friends'
 
 	return 'not-friends'
@@ -37,9 +37,9 @@ function handleText() {
 		case 'request-sent':
 			return 'profile.friendButton.buttonStatus.pending'
 		case 'request-received':
-		 	return 'profile.friendButton.buttonStatus.accept'
+			return 'profile.friendButton.buttonStatus.accept'
 		case 'friends':
-		 	return 'profile.friendButton.buttonStatus.unfriend'
+			return 'profile.friendButton.buttonStatus.unfriend'
 	}
 }
 
@@ -59,15 +59,14 @@ async function handleClick() {
 			break
 		case 'friends':
 			showConfirmUnfriend.value = true
-			// const target = friendsStore.friendsList.findIndex(r => r.id === profileUserId.value)
-			// console.log(target)
-			// await friendsStore.unfriend(target)
-
+			break
 	}
 }
 
 function unfriend() {
-	alert('Changer la route back. Front ready')
+	const target = friendsStore.friendsList.find(r => r.friendId === profileUserId.value)
+	if (!target) return
+	friendsStore.unfriend(target.friendshipId)
 }
 
 function unsend() {

@@ -2,6 +2,9 @@ import {defineStore} from "pinia";
 import axios from "axios";
 import {useAuth} from "@/store/auth.ts";
 import {computed, ref} from "vue";
+import {useChat} from "@/store/chat.ts";
+import {toast} from "vue3-toastify";
+import 'vue3-toastify/dist/index.css'
 
 interface FriendRequest {
 	id: number
@@ -20,12 +23,14 @@ interface PendingRequests {
 }
 
 interface MinimalUserInfo {
-	id: number,
+	friendshipId: number,
+	friendId: number,
 	username: string
 }
 
 export const useFriends = defineStore('friends', () => {
 	const authStore = useAuth()
+	const chatStore = useChat()
 
 	const sentRequests = ref<FriendRequest[]>([])
 	const pendingRequests = ref<PendingRequests[]>([])
@@ -82,6 +87,17 @@ export const useFriends = defineStore('friends', () => {
 
 	async function sendFriendRequest(targetId: number) {
 		try {
+			const { allowed, reason } = await chatStore.checkUserBlockStatus(targetId)
+			if (!allowed) {
+				// newMessage.value = ''
+				toast.error(`${reason}`, {
+					position: 'top-right',
+					autoClose: 3000,
+					pauseOnHover: true,
+					theme: 'light'
+				});
+				return
+			}
 			await axios.post(`/api/friends/${targetId}`, {},
 				{
 					headers: { Authorization: `Bearer ${token.value}` }
@@ -95,6 +111,17 @@ export const useFriends = defineStore('friends', () => {
 
 	async function acceptFriendRequest(requestId: number) {
 		try {
+			const { allowed, reason } = await chatStore.checkUserBlockStatus(requestId)
+			if (!allowed) {
+				// newMessage.value = ''
+				toast.error(`${reason}`, {
+					position: 'top-right',
+					autoClose: 3000,
+					pauseOnHover: true,
+					theme: 'light'
+				});
+				return
+			}
 			await axios.patch(
 				`/api/friends/${requestId}/accept`,
 				{userId: userId.value},
@@ -135,22 +162,21 @@ export const useFriends = defineStore('friends', () => {
 
 	async function unfriend(targetId: number)
 	{
-		// try {
-		// 	await axios.delete(
-		// 		`/api/friends/${targetId}`,
-		// 		{userId: userId.value},
-		// 		{
-		// 			headers: {Authorization: `Bearer ${token.value}`}
-		// 		}
-		// 	)
-		// 	await Promise.all([
-		// 		fetchSentRequests(),
-		// 		fetchReceivedRequests(),
-		// 		fetchFriendsList()
-		// 	])
-		// } catch {
-		//
-		// }
+		try {
+			await axios.delete(
+				`/api/friends/${targetId}`, {
+					params: { userId: authStore.userId },
+					headers: { Authorization: `Bearer ${authStore.token}` },
+				})
+
+			await Promise.all([
+				fetchSentRequests(),
+				fetchReceivedRequests(),
+				fetchFriendsList()
+			])
+		} catch (error) {
+			console.error('Error with unfriend: ', error)
+		}
 	}
 
 	return {
