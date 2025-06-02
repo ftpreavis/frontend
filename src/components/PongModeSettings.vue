@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 const props = defineProps<{
 	visible: boolean,
-	mode: 'solo' | 'multi' | null,
+	mode: 'solo' | 'multi' | 'tournament' | null,
 	cheats: {enabled: boolean, ballSpeed: number, paddleSpeed: number},
 	player1Name: string
 }>()
