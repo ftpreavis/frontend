@@ -88,7 +88,7 @@ watch(
 		<button
 			v-if="!profileStore.isOwner"
 			@click="handleClick"
-			class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black hover:bg-emerald-500 hover:text-white"
+			class="ml-2 cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black dark:hover:border-gray-500"
 		>
 			{{ t(buttonLabel) }}
 		</button>
