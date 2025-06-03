@@ -26,7 +26,7 @@ const isVisible = computed({
 
 const { t } = useLang()
 const authStore = useAuth()
-const mode = ref<'signup' | 'login'>('signup')
+const mode = ref<'signup' | 'login'>('login')
 const requires2FA = ref<boolean>(false)
 const username = ref("")
 const email = ref("")
@@ -94,7 +94,7 @@ async function onSignup() {
 function onConfirmClose() {
 	viewConfirm.value = false
 	isVisible.value = false
-	mode.value = 'signup'
+	mode.value = 'login'
 	requires2FA.value = false
 	username.value = ''
 	email.value = ''
@@ -113,12 +113,11 @@ function requestClose(value: boolean) {
 	if (value === false && mode.value === 'login' && requires2FA.value) {
 		viewConfirm.value = true
 		isVisible.value = true
-		console.log('ttt')
 		return
 	}
 	isVisible.value = value
 	if (value === false) {
-		mode.value = 'signup'
+		mode.value = 'login'
 		requires2FA.value = false
 		username.value = ''
 		email.value = ''

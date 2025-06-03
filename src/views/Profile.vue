@@ -138,7 +138,7 @@ watch(
 					<span class="mt-4 text-sm">{{ profileStore.profileBio }}</span>
 					<div class="mt-3 flex flex-row items-center">
 						<div class="flex items-center">
-							<button v-if="!profileStore.isOwner && ifFriends" @click="goToChatWithUser(profileUserId)"
+							<button v-if="!profileStore.isOwner" @click="goToChatWithUser(profileUserId)"
 									class="cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500 hover:border-black dark:hover:border-gray-500 ">
 								<span class="flex items-center gap-2">
 									{{ t('profile.sendMessage') }}
