@@ -21,4 +21,4 @@ COPY --from=build /app/wait-for-vault.sh /wait-for-vault.sh
 RUN chmod +x /wait-for-vault.sh
 
 EXPOSE 80
-CMD ["/bin/sh", "-c", "/wait-for-vault.sh && exec nginx -g daemon off;"]
+CMD ["/bin/sh", "-c", "/wait-for-vault.sh && exec nginx -g 'daemon off;'"]
