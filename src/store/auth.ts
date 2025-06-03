@@ -1,8 +1,8 @@
-import { defineStore, acceptHMRUpdate } from "pinia";
-import { ref } from "vue"
+import {acceptHMRUpdate, defineStore} from "pinia";
+import {ref} from "vue"
 import router from '@/router'
 import axios from 'axios'
-import { useLang } from '@/composables/useLang'
+import {useLang} from '@/composables/useLang'
 
 const getCookie = (name: string): string | null => {
 	const cookies = document.cookie.split('; ')
@@ -25,7 +25,7 @@ export const useAuth = defineStore('auth', () => {
 	const { t } = useLang()
 	const isAuthenticated = ref<boolean>(!!token.value)
 	const userMap = ref<Record<number, { id: number; username: string; avatar?: string }>>({})
-
+	const onlineUsers = ref<Set<Number>>(new Set())
 
 	const setCookies = (name: string, value: string) => {
 		const d = new Date();
@@ -53,37 +53,55 @@ export const useAuth = defineStore('auth', () => {
 	const signup = async (username: string, email: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/signup', {
-				username: username,
-				password: password,
-				email: email,
-			})
-			const userData = await axios.get('/api/users/profile')
-			setCookies('userId', String(userData.data.id))
-			await router.push('/').then(() => {window.location.reload()})
+				username,
+				password,
+				email,
+			});
+
+			// // Le token est dans le cookie, inutile ici
+			// const userData = await axios.get('/api/users/profile');
+			//
+			// user.value = userData.data;
+			// userId.value = userData.data.id;
+			// isAuthenticated.value = true;
+			// setCookies('userId', String(userData.data.id)); // ok si besoin
+			await authenticate(username, password);
+			await router.push('/').then(() => window.location.reload());
 		} catch (error: any) {
-			const msg = error.response.data.error
-			if (msg.includes('User already exists'))
-				signupError.value = t('error.signup.alreadyExists')
+			console.error("[FRONT] Erreur signup:", error);
+			const msg = error.response?.data?.error;
+			if (msg?.includes('User already exists')) {
+				signupError.value = t('error.signup.alreadyExists');
+			}
 		}
 	}
 
-    const authenticate2FA = async (id: string, token2FA: string) => {
-        const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
-        console.log(response2FA)
-        setCookies("access_token", response2FA.data.token)
-        const userData = await axios.get('/api/users/profile')
-        setCookies('userId', String(userData.data.id))
-        await router.push('/').then(() => {window.location.reload()})
+
+
+
+	const authenticate2FA = async (id: string, token2FA: string) => {
+		try {
+			const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
+			console.log(response2FA)
+			setCookies("access_token", response2FA.data.token)
+			const userData = await axios.get('/api/users/profile')
+			setCookies('userId', String(userData.data.id))
+			await router.push('/').then(() => {
+				window.location.reload()
+			})
+		} catch (error) {
+			console.log(error)
+		}
     }
 
 	const fetchUserById = async (id: number) => {
-		if (userMap.value[id]) return userMap.value[id];
+		// if (userMap.value[id]) return userMap.value[id];
 
 		try {
 			const { data } = await axios.get(`/api/users/profile/${id}`, {
 				headers: { Authorization: `Bearer ${token.value}` }
 			});
-			userMap.value[id] = data;
+			// userMap.value[id] = data;
 			return data;
 		} catch {
 			return null;
@@ -91,15 +109,54 @@ export const useAuth = defineStore('auth', () => {
 	}
 
 
+	// const googleConnect = async () => {
+	// 	try {
+    //         axios.get('/api/auth/google/callback')
+	// 		window.location.href = '/api/auth/google'
+	// 		isAuthenticated.value = true
+	// 	} catch {
+	// 		loginError.value = t('error.auth.googleAuthFailed')
+	// 	}
+	// }
+
 	const googleConnect = async () => {
 		try {
-            axios.get('/api//auth/google/callback')
-			window.location.href = '/api/auth/google'
-			isAuthenticated.value = true
-		} catch {
-			loginError.value = t('error.auth.googleAuthFailed')
+			const { data } = await axios.get('/api/auth/google/config');
+			const clientId = data.clientId;
+			const redirectUri = process.env.NODE_ENV === 'production'
+				? process.env.GOOGLE_CALLBACK_URI
+				: "http://localhost:5173/auth/google/callback";
+			const state = crypto.randomUUID();
+
+			window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile&state=${state}`;
+		} catch (error) {
+			console.error("Failed to fetch Google client ID", error);
+			loginError.value = t('error.auth.googleAuthFailed');
+		};
+	};
+
+	const googleCallback = async (code: string) => {
+		try {
+			console.log("POST vers:", '/api/auth/google/callback');
+			const response = await axios.post('/api/auth/google/callback', { code });
+			console.log("Réponse backend:", response.data);
+
+			const jwt = response.data.token;
+			const userData = response.data.user;
+
+			setCookies("access_token", jwt);
+			setCookies("userId", String(userData.id));
+			user.value = userData;
+			token.value = jwt;
+			userId.value = userData.id;
+			isAuthenticated.value = true;
+
+			await router.push('/').then(() => window.location.reload());
+		} catch (error) {
+			loginError.value = t('error.auth.googleAuthFailed');
 		}
-	}
+	};
+
 
 	const logout = async () => {
 		await axios.get('/api/auth/normalLogout')
@@ -117,6 +174,10 @@ export const useAuth = defineStore('auth', () => {
 		await router.push('/').then(() => {window.location.reload()})
 	}
 
+	const isOnline = (userId: Number) => {
+		return onlineUsers.value.has(userId);
+	}
+
 	return {
 		user,
 		userId,
@@ -124,11 +185,14 @@ export const useAuth = defineStore('auth', () => {
 		token,
 		loginError,
 		userMap,
+		onlineUsers,
 		googleConnect,
+		googleCallback,
 		logout,
 		authenticate,
         authenticate2FA,
 		fetchUserById,
+		isOnline,
 		signup,
 		signupError
 	}

@@ -21,6 +21,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
+    <Teleport to="body">
 	<transition name="fade">
 		<div
 			v-if="modelValue"
@@ -30,11 +31,12 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 				class="absolute inset-0 bg-black bg-opacity-50"
 				@click="close()"
 			/>
-			<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%]" @click.stop>
+			<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%] max-h-[90vh] overflow-y-auto" @click.stop>
 				<header class="px-6 pt-6 text-center">
 					<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
 					<button
 						@click="close"
+						type="button"
 						class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl leading-none"
 					>
 						&times;
@@ -49,20 +51,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 					<slot name="footer"></slot>
 				</footer>
 			</div>
-<!--			<div-->
-<!--				class="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full relative"-->
-<!--				@click.stop-->
-<!--			>-->
-<!--				<button-->
-<!--					@click="close"-->
-<!--					class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"-->
-<!--				>-->
-<!--					&times;-->
-<!--				</button>-->
-<!--				<slot />-->
-<!--			</div>-->
 		</div>
 	</transition>
+    </Teleport>
 </template>
 
 <style scoped>

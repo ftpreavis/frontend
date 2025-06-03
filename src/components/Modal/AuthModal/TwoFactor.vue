@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {ref, watch, computed} from "vue"
-import { useAuth } from "../store/auth.ts";
+import { useAuth } from "../../../store/auth.ts";
 import axios from "axios"
 import { useLang } from '@/composables/useLang.ts'
-import Modal from '@/components/Modal.vue'
+import Modal from '@/components/Modal/Modal.vue'
 
 const authStore = useAuth()
 const { t } = useLang()

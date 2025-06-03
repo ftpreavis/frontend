@@ -2,21 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 // import Home from '@/views/Home.vue'
 import LandingPage from "@/views/LandingPage.vue";
 import Pong from '@/views/Pong.vue'
-import ChooseGameMode from '@/views/ChooseGameMode.vue'
-import Login from '@/views/Login.vue'
-import SignUp from '@/views/SignUp.vue'
 import Profile from '@/views/Profile.vue'
 import ChatPage from "@/views/ChatPage.vue";
 import { useAuth } from '@/store/auth.ts'
 
 const routes = [
 	{ path: '/', name: 'LandingPage', component: LandingPage },
-	{ path: '/gamemode', name: 'Gamemode', component: ChooseGameMode },
-	{ path: '/pong', name: 'Pong', component: Pong },
-	{ path: '/login', name: 'Login', component: Login },
-	{ path: '/signup', name: 'SignUp', component: SignUp },
+	{ path: '/pong', name: 'Pong', component: Pong, meta: { requiresAuth: true } },
 	{ path: '/profile/:userId', name: 'Profile', component: Profile, meta: { requiresAuth: true, props: true } },
-	{ path: '/chat', name: 'ChatPage', component: ChatPage, meta: { requiresAuth: true, props: true } }
+	{ path: '/chat', name: 'ChatPage', component: ChatPage, meta: { requiresAuth: true, props: true } },
+	{ path: '/auth/google/callback', name: 'GoogleCallback', component: () => import('@/views/GoogleCallback.vue') }
 ]
 
 const router = createRouter({

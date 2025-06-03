@@ -36,15 +36,15 @@
 		"enable2FA": "Activer 2FA",
 		"noAvatar": "Pas d'avatar",
 		"friends": "Amis",
-		"sendMessage": "Envoyer un message",
+		"sendMessage": "Message",
 		"addFriend": "Ajouter un ami",
 		"edit": "Modifier le profil",
 		"block": "Bloquer l'utilisateur",
 		"unblock": "Débloquer l'utilisateur",
-		"statsTitle": "Statistiques tous jeux",
+		"statsTitle": "Statistiques de tous les jeux",
 		"win": "Victoires",
 		"loose": "Défaites",
-		"ratio": "Ratio",
+		"ratio": "Taux de victoire",
 		"recentGames": "Vos parties récentes",
 		"table": {
 			"game": "Jeu",
@@ -55,7 +55,31 @@
 			"loss": "Défaite"
 		},
 		"notFound": "Utilisateur introuvable",
-		"noBio": "Cet utilisateur n'a pas encore écrit de bio."
+		"noBio": "Cet utilisateur n'a pas encore écrit de bio.",
+		"friendButton": {
+			"buttonStatus": {
+				"add": "Ajouter",
+				"pending": "Attente",
+				"accept": "Accepter",
+				"unfriend": "Supprimer"
+			},
+			"cancelRequestModal": {
+				"title": "Supprimer la demande d'ami ?",
+				"body": "Cette action annule votre demande d’ami. Êtes-vous certain ?",
+				"confirmButton": "Annuler la demande"
+			},
+			"unfriendModal": {
+				"title": "Supprimer l’ami ?",
+				"body": "Êtes-vous sûr de vouloir supprimer cet ami ?",
+				"confirmButton": "Supprimer"
+			}
+		},
+		"pendingRequestsModal": {
+			"title": "Liste de demande d'amis",
+			"accept": "Accepter",
+			"reject": "Refuser",
+			"noPending": "Aucune demande en attente"
+		}
 	},
 	"confirm": {
 		"defaultCancel": "Annuler",
@@ -73,7 +97,8 @@
 		"email": "Email",
 		"password": "Mot de passe",
 		"submit": "S'inscrire",
-		"google": "Google"
+		"google": "Google",
+		"haveAccount": "Déjà un compte ?"
 	},
 	"login": {
 		"title": "Connexion",
@@ -86,11 +111,19 @@
 		"2faTitle": "Authentification à deux facteurs",
 		"2faPrompt": "Entrez le code à 6 chiffres généré par votre application",
 		"2faPlaceholder": "Code à 6 chiffres",
-		"2faSubmit": "Vérifier"
+		"2faSubmit": "Vérifier",
+		"dontHaveAccount": "Pas encore de compte ?",
+		"confirm": {
+			"2faTitle": "Annuler l’authentification à deux facteurs ?",
+			"2faMessage": "Vous n’avez pas complété l’authentification à deux facteurs. Êtes-vous sûr de vouloir quitter ?",
+			"2faConfirm": "Oui, annuler"
+		}
 	},
 	"landing": {
 		"title": "Preavis",
-		"tagline": "Jouez. Affrontez. Triomphez."
+		"tagline": "Jouez. Affrontez. Triomphez.",
+		"connect": "Connection",
+		"play": "Jouer"
 	},
 	"error": {
 		"auth": {
@@ -113,5 +146,33 @@
 			"passwordRequired": "Le mot de passe est requis.",
 			"tokenRequired": "Le code 2FA est requis."
 		}
-	}
+	},
+    "tournament": {
+        "create": "Créer un tournoi",
+        "name": "Nom du joueur",
+        "addPlayer": "Ajouter un joueur",
+        "add": "Ajouter",
+        "player": "Joueur",
+        "delete": "Supprimer",
+        "createTournament": "Créer le tournoi",
+        "required": "Le nombre de joueurs doit être 4, 8, 16 ou 32 pour commencer le tournoi.",
+        "table": "Tableau du tournoi",
+        "future": "À venir",
+        "winner": "Gagnant",
+        "notPlayed": "Pas encore joué",
+        "nextMatch": "Démarrer le prochain match",
+        "restart": "Recommencer un tournoi",
+        "round": {
+            "32": "16e de finale",
+            "16": "8e de finale",
+            "8": "Quart de finale",
+            "4": "Demi-finale",
+            "2": "Finale"
+        }
+    },
+    "pong": {
+        "ballSpeed": "Vitesse de base de la balle",
+        "paddleSpeed": "Vitesse de base du paddle",
+        "settings": "Paramètres"
+    }
 }
