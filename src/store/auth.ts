@@ -119,12 +119,20 @@ export const useAuth = defineStore('auth', () => {
 	// 	}
 	// }
 
-	const googleConnect = () => {
-		const clientId = "264963540624-m0eeu7vps9hiboh5m43h0gdcv60nuifr.apps.googleusercontent.com";
-		const redirectUri = process.env.NODE_ENV === 'production' ? process.env.GOOGLE_CALLBACK_URI : "http://localhost:5173/auth/google/callback";
-		const state = crypto.randomUUID(); // facultatif mais recommandé
+	const googleConnect = async () => {
+		try {
+			const { data } = await axios.get('/api/auth/google/config');
+			const clientId = data.clientId;
+			const redirectUri = process.env.NODE_ENV === 'production'
+				? process.env.GOOGLE_CALLBACK_URI
+				: "http://localhost:5173/auth/google/callback";
+			const state = crypto.randomUUID();
 
-		window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile&state=${state}`;
+			window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20email%20profile&state=${state}`;
+		} catch (error) {
+			console.error("Failed to fetch Google client ID", error);
+			loginError.value = t('error.auth.googleAuthFailed');
+		};
 	};
 
 	const googleCallback = async (code: string) => {
