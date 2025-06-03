@@ -1,14 +1,27 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import Modal from "@/components/Modal/Modal.vue";
+import { onMounted } from 'vue';
+
 const props = defineProps<{
 	visible: boolean,
 	mode: 'solo' | 'multi' | 'tournament' | null,
-	cheats: {enabled: boolean, ballSpeed: number, paddleSpeed: number},
+	cheats: {ballSpeed: number, paddleSpeed: number},
 	player1Name: string
 }>()
 
+const modalValue = computed({
+	get: () => props.visible,
+	set: (v: boolean) => {emit('update:visible', v)
+    }
+})
+
+onMounted(() => {
+    console.log(props.mode)
+})
+
 interface playPayload {
-	cheats: { enabled: boolean; ballSpeed: number; paddleSpeed: number }
+	cheats: { ballSpeed: number; paddleSpeed: number }
 	player1Name: string
 }
 
@@ -17,8 +30,8 @@ const emit = defineEmits<{
 	(event: 'play', payload: playPayload) : void
 }>()
 
-const localCheats = ref({ ...props.cheats })
-const localPlayer1Name = ref(props.player1Name)
+const localCheats = ref({ ballSpeed: 5, paddleSpeed: 15 })
+const localPlayer1Name = ref( props.mode === 'solo' ? 'IA' : 'player1' )
 
 
 const play = () => {
@@ -30,40 +43,63 @@ const close = () => { emit('update:visible', false) }
 </script>
 
 <template>
-	<div v-if="visible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
-		<div class="bg-white rounded-lg shadow-lg p-6 h-[70vh] flex flex-col w-[300px]">
-			<h3 class="text-center text-lg">{{ mode === 'solo' ? 'Solo' : 'Multi'}} settings</h3>
-			<hr class="my-3">
-			<div class="flex-1 overflow-y-auto mb-4 space-y-4">
-				<div>
-					<label class="inline-flex items-center">
-						<input type="checkbox" v-model="localCheats.enabled" class="mr-2">
-						Cheat {{ localCheats.enabled ? 'enabled' : 'disabled'}}
-					</label>
-					<div v-if="localCheats.enabled" class="space-y-">
-						<label class="flex justify-between text-sm">
-							Base ball speed
-							<input type="range" v-model.number="localCheats.ballSpeed" min="1" max="15" step="0.1" class="mx-2 w-20">
-						</label>
-						<label class="flex justify-between text-sm">
-							Base paddle speed
-							<input type="range" v-model.number="localCheats.paddleSpeed" min="1" max="40" step="0.1" class="mx-2 w-20">
-						</label>
-					</div>
-				</div>
-				<div>
-					<label>
-						{{ mode === 'solo' ? 'IA ' : 'Player 1 '}} name :
-						<input type="text" placeholder="BRR BRR" class="w-full border rounded px-2 py-1" v-model="localPlayer1Name">
-					</label>
-				</div>
-			</div>
-
-			<hr class="my-3">
-			<div class="flex justify-between">
-				<button @click="close">Return</button>
-				<button class="text-blue-700" @click="play">Play</button>
-			</div>
-		</div>
-	</div>
+    <Modal v-model="modalValue" :title="mode === 'solo' ? 'Solo Settings' : 'Multiplayer Settings'">
+        <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
+    
+            <!-- Cheats sliders (toujours visibles) -->
+            <div class="w-full space-y-2">
+            <label class="flex justify-between text-sm items-center">
+                Base ball speed
+                <input
+                type="range"
+                v-model.number="localCheats.ballSpeed"
+                min="1"
+                max="15"
+                step="0.1"
+                class="ml-2 w-32"
+                />
+            </label>
+            <label class="flex justify-between text-sm items-center">
+                Base paddle speed
+                <input
+                type="range"
+                v-model.number="localCheats.paddleSpeed"
+                min="1"
+                max="40"
+                step="0.1"
+                class="ml-2 w-32"
+                />
+            </label>
+            </div>
+    
+            <!-- Player name -->
+            <div class="w-full">
+            <label class="block text-sm font-medium text-gray-700">
+                {{ mode === 'solo' ? 'IA Name' : 'Player 1 Name' }}
+            </label>
+            <input
+                type="text"
+                placeholder="player1"
+                class="mt-1 w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                v-model="localPlayer1Name"
+            >
+            </div>
+    
+            <!-- Action buttons -->
+            <div class="flex justify-between w-full pt-4 border-t mt-4">
+            <button
+                @click="close"
+                class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
+                Return
+            </button>
+            <button
+                @click="play"
+                class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
+                Play
+            </button>
+            </div>
+        </div>
+    </Modal>
 </template>
+  
+  
