@@ -26,7 +26,7 @@ const isVisible = computed({
 
 const { t } = useLang()
 const authStore = useAuth()
-const mode = ref<'signup' | 'login'>('signup')
+const mode = ref<'signup' | 'login'>('login')
 const requires2FA = ref<boolean>(false)
 const username = ref("")
 const email = ref("")
@@ -42,7 +42,7 @@ const viewConfirm = ref<boolean>(false)
 
 function toggleMode() {
 	errors.value = {}
-	mode.value = mode.value === 'signup' ? 'login' : 'signup'
+	mode.value = mode.value === 'login' ? 'login' : 'signup'
 }
 
 async function onLogin() {

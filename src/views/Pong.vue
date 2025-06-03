@@ -560,9 +560,8 @@ const gameLoop = () => {
 </script>
 
 <template>
-	<div class="flex flex-col h-screen justify-center items-center">
-<!--		<Header></Header>-->
-		<div v-if="!gameMode" class="w-full h-full bg-[#000] absolute z-[1] opacity-60"></div>
+	<div class="inset-0 flex items-center justify-center">
+		<div class="absolute inset-0 bg-black bg-opacity-50"/>
 		<div v-if="!gameMode" class="absolute z-10 space-y-6 flex flex-col w-2/3 md:flex-row md:justify-around md:items-center md:space-x-10">
 			<h2 class="text-white font-bold text-5xl">| Pong .</h2>
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">

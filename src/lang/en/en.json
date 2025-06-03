@@ -121,7 +121,9 @@
 	},
 	"landing": {
 		"title": "Play. Compete. Triumph.",
-		"tagline": "Relive the timeless arcade classic, challenge friends in real-time, and rise through the global rankings — all in your browser. "
+		"tagline": "Relive the timeless arcade classic, challenge friends in real-time, and rise through the global rankings — all in your browser. ",
+		"connect": "Connect",
+		"play": "Play"
 	},
 	"error": {
 		"auth": {
