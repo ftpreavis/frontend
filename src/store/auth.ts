@@ -45,33 +45,25 @@ export const useAuth = defineStore('auth', () => {
 			setCookies('userId', String(userData.data.id))
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
-			loginError.value = t('error.auth.invalidCredentials')
+			loginError.value = 'error.auth.invalidCredentials'
 			console.log(loginError.value)
 		}
 	}
 
 	const signup = async (username: string, email: string, password: string) => {
 		try {
-			const response = await axios.post('/api/auth/signup', {
+			await axios.post('/api/auth/signup', {
 				username,
 				password,
 				email,
 			});
-
-			// // Le token est dans le cookie, inutile ici
-			// const userData = await axios.get('/api/users/profile');
-			//
-			// user.value = userData.data;
-			// userId.value = userData.data.id;
-			// isAuthenticated.value = true;
-			// setCookies('userId', String(userData.data.id)); // ok si besoin
 			await authenticate(username, password);
 			await router.push('/').then(() => window.location.reload());
 		} catch (error: any) {
 			console.error("[FRONT] Erreur signup:", error);
 			const msg = error.response?.data?.error;
 			if (msg?.includes('User already exists')) {
-				signupError.value = t('error.signup.alreadyExists');
+				signupError.value = 'error.signup.alreadyExists';
 			}
 		}
 	}

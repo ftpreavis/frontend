@@ -41,9 +41,8 @@ const close = () => { emit('update:visible', false) }
 <template>
     <Modal v-model="modalValue" :title="mode === 'solo' ? 'Solo Settings' : 'Multiplayer Settings'">
         <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
-    
-            <!-- Cheats sliders (toujours visibles) -->
-            <div class="w-full space-y-2">
+
+            <div class="w-full space-y-2 dark:text-white">
             <label class="flex justify-between text-sm items-center">
                 Base ball speed
                 <input
@@ -67,10 +66,9 @@ const close = () => { emit('update:visible', false) }
                 />
             </label>
             </div>
-    
-            <!-- Player name -->
+
             <div class="w-full">
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
                 {{ mode === 'solo' ? 'IA Name' : 'Player 1 Name' }}
             </label>
             <input
@@ -80,8 +78,7 @@ const close = () => { emit('update:visible', false) }
                 v-model="localPlayer1Name"
             >
             </div>
-    
-            <!-- Action buttons -->
+
             <div class="flex justify-between w-full pt-4 border-t mt-4">
             <button
                 @click="close"
@@ -97,5 +94,5 @@ const close = () => { emit('update:visible', false) }
         </div>
     </Modal>
 </template>
-  
-  
+
+
