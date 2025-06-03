@@ -124,7 +124,7 @@ export const useAuth = defineStore('auth', () => {
 			const { data } = await axios.get('/api/auth/google/config');
 			const clientId = data.clientId;
 			const redirectUri = process.env.NODE_ENV === 'production'
-				? process.env.GOOGLE_CALLBACK_URI
+				? "https://transcendance.charles-poulain.ovh/auth/google/callback"
 				: "http://localhost:5173/auth/google/callback";
 			const state = crypto.randomUUID();
 
