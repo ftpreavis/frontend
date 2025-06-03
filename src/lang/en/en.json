@@ -73,6 +73,12 @@
 				"body": "Are you sure you want to remove this friend?",
 				"confirmButton": "Remove"
 			}
+		},
+		"pendingRequestsModal": {
+			"title": "Pending requests list",
+			"accept": "Accept",
+			"reject": "Reject",
+			"noPending": "No requests pending"
 		}
 	},
 	"confirm": {

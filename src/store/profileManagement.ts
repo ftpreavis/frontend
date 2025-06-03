@@ -3,23 +3,28 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import { useLang } from "@/composables/useLang.ts";
 import { useAuth } from '@/store/auth'
-// import { useFriends } from "@/store/friends.ts";
+import { useFriends } from "@/store/friends.ts";
+
+interface UserFull {
+	id: number,
+	username: string,
+	avatar: string
+}
 
 export const useProfileManagement = defineStore('profileManagement', () => {
 	const authStore = useAuth()
-	// const friendsStore = useFriends()
+	const friendsStore = useFriends()
 	const { t } = useLang()
 
 	const profileUser = ref<any | null>(null)
 	const profileImage = ref<string | null>(null)
 	const isBlocked = ref<boolean>(false)
+	const friendUsers = ref<UserFull[]>([])
 
 	const isOwner = computed(() => profileUser.value?.id === authStore.userId);
 	const profileBio = computed(() =>
 		profileUser.value?.biography || t('profile.noBio')
 	);
-	// const nbWin = computed(() => profileUser.value?.stats?.wins ?? 0);
-	// const nbLoose = computed(() => profileUser.value?.stats?.losses ?? 0);
 	const winRatio = computed(() => {
 		const total = nbWin.value + nbLoose.value;
 		return total > 0 ? (nbWin.value / total) * 100 : 0;
@@ -49,7 +54,6 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 
 		return allMatches.sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, 5);
 	});
-
     const nbWin = computed(() => {
         const user = profileUser.value;
         if (!user) return 0;
@@ -64,7 +68,6 @@ export const useProfileManagement = defineStore('profileManagement', () => {
     
         return winsAsPlayer1 + winsAsPlayer2;
     });
-
     const nbLoose = computed(() => {
         const user = profileUser.value;
         if (!user) return 0;
@@ -79,7 +82,6 @@ export const useProfileManagement = defineStore('profileManagement', () => {
     
         return lossesAsPlayer1 + lossesAsPlayer2;
     });
-
 	const nbFriends = computed(() => {
 		const user = profileUser.value;
 		if (!user) return 0;
@@ -132,6 +134,15 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		}
 	}
 
+	async function getAvatar(userId: number | undefined) {
+		try {
+			const res = await axios.get(`/api/users/${userId}/avatar`)
+			return res.data
+		} catch (error) {
+			console.error('Error with getAvatar: ', error)
+		}
+	}
+
 	async function fetchBlockedStatus(userId: number) {
 		if (!authStore.userId) {
 			isBlocked.value = false
@@ -149,10 +160,13 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		}
 	}
 
+	// TODO (later) show friends list
+
 	return {
 		profileUser,
 		profileImage,
 		isBlocked,
+		friendUsers,
 
 		isOwner,
 		profileBio,
@@ -164,6 +178,7 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 
 		loadProfile,
 		toggleBlock,
-		fetchBlockedStatus
+		fetchBlockedStatus,
+		getAvatar
 	}
 })

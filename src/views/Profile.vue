@@ -8,12 +8,14 @@ import {useProfileManagement} from "@/store/profileManagement.ts";
 import { useLang } from "@/composables/useLang"
 import { ChatBubbleLeftEllipsisIcon } from '@heroicons/vue/24/outline'
 import { EllipsisHorizontalIcon } from "@heroicons/vue/24/outline";
+import { InboxArrowDownIcon } from "@heroicons/vue/24/outline";
 
 import EditProfile from "@/components/ProfilePage/EditProfile.vue"
 import FriendsList from "@/components/ProfilePage/FriendsList.vue"
 import ConfirmDialogModal from '@/components/Modal/ConfirmDialogModal.vue'
 import FriendButton from "@/components/ProfilePage/FriendButton.vue"
 import DropDown from "@/components/DropDown.vue";
+import PendingRequestModal from "@/components/Modal/ProfileModal/PendingRequestModal.vue";
 
 const { t } = useLang()
 const authStore = useAuth()
@@ -26,6 +28,7 @@ const isBlocked = ref(false)
 const showConfirm = ref(false)
 const showEditProfile = ref(false)
 const showFriendsList = ref(false)
+const showPendingRequest = ref(false)
 const willBlock = ref(true)
 const profileUserId = ref(Number(route.params.userId))
 const openBlockedDropDown = ref(false)
@@ -127,16 +130,16 @@ watch(
 							 class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
 							{{ t('profile.noAvatar') }}
 						</div>
-						<button class="ml-5 flex flex-col cursor-pointer text-left" @click="showFriendsList = true">
+						<div class="ml-5 flex flex-col cursor-pointer text-left">
 							<span class="font-semibold">{{ profileStore.nbFriends }}</span>
 							<span class="text-gray-400 text-sm my-1">{{ t('profile.friends') }}</span>
-						</button>
+						</div>
 					</div>
 					<span class="mt-4 text-sm">{{ profileStore.profileBio }}</span>
 					<div class="mt-3 flex flex-row items-center">
 						<div class="flex items-center">
 							<button v-if="!profileStore.isOwner && ifFriends" @click="goToChatWithUser(profileUserId)"
-									class="cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500 hover:border-black">
+									class="cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500 hover:border-black dark:hover:border-gray-500 ">
 								<span class="flex items-center gap-2">
 									{{ t('profile.sendMessage') }}
 									<ChatBubbleLeftEllipsisIcon class="w-5 h-5" />
@@ -144,8 +147,11 @@ watch(
 							</button>
 							<FriendButton :profileUserId="profileUserId"></FriendButton>
 							<button @click="showEditProfile = true" v-if="profileStore.isOwner"
-									class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black">
+									class="cursor-pointer border py-2 px-6 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black dark:hover:border-gray-500">
 								{{ t('profile.edit') }}
+							</button>
+							<button @click="showPendingRequest = true" v-if="profileStore.isOwner" class="cursor-pointer border py-2 px-3 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black ml-3 dark:hover:border-gray-500">
+								<InboxArrowDownIcon class="w-6 h-6"></InboxArrowDownIcon>
 							</button>
 							<div v-if="!profileStore.isOwner" class="ml-3">
 								<DropDown v-model="openBlockedDropDown" width-class="w-[150px]" class="mt-1">
@@ -222,6 +228,7 @@ watch(
 				{{ t('profile.notFound') }}
 			</div>
 		</div>
+		<PendingRequestModal v-model="showPendingRequest"></PendingRequestModal>
 		<EditProfile v-model:visible="showEditProfile" :initial-avatar="profileStore.profileImage || ''"
 					 :initial-bio="profileStore.profileUser?.biography || ''" :initial-username="profileStore.profileUser?.username || 'No user found'"
 					 @save-profile="handleSaveProfile" />
