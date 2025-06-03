@@ -16,32 +16,43 @@ export function setupChatSocket() {
 			await chatStore.loadConversations(authStore.userId)
 			await chatStore.loadUnread(authStore.userId)
 		}
-	})
+	});
 
 	socket.on('disconnect', (reason) => {
-	})
+	});
 
 	socket.on('connect_error', (err) => {
-		console.error('❌ Chat socket error:', err.message)
-	})
+		console.error('❌ Chat socket error:', err.message);
+	});
 
 	socket.on('receive_message', async (message) => {
-		const fromId = message.senderId
-		const authStore = useAuth()
+		const fromId = message.senderId;
+		const authStore = useAuth();
 
 		if (authStore.userId !== fromId && !authStore.userMap[fromId]) {
-			const data = await authStore.fetchUserById(fromId)
-			if (!data) return
+			const data = await authStore.fetchUserById(fromId);
+			if (!data) return;
 		}
-		chatStore.receiveMessage(message)
-	})
+		chatStore.receiveMessage(message);
+	});
 
 	socket.on('notify_unread_count', ({ fromUserId, count }) => {
-		chatStore.updateUnread(fromUserId, count)
-	})
+		chatStore.updateUnread(fromUserId, count);
+	});
 
 	socket.on('notify_popup', ({ fromUserId, content }) => {
-		const user = authStore.userMap?.[fromUserId]
-		const sender = user?.username ?? `User ${fromUserId}`
-	})
+		const user = authStore.userMap?.[fromUserId];
+		const sender = user?.username ?? `User ${fromUserId}`;
+	});
+
+	socket.on('online_users', (ids: number[]) => {
+		authStore.onlineUsers = new Set(ids);
+	});
+
+	socket.on('user_status_change', ({ userId, status }) => {
+		if (status === 'online')
+			authStore.onlineUsers.add(userId);
+		else
+			authStore.onlineUsers.delete(userId);
+	});
 }

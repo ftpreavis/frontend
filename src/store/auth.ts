@@ -25,7 +25,7 @@ export const useAuth = defineStore('auth', () => {
 	const { t } = useLang()
 	const isAuthenticated = ref<boolean>(!!token.value)
 	const userMap = ref<Record<number, { id: number; username: string; avatar?: string }>>({})
-
+	const onlineUsers = ref<Set<Number>>(new Set())
 
 	const setCookies = (name: string, value: string) => {
 		const d = new Date();
@@ -154,6 +154,10 @@ export const useAuth = defineStore('auth', () => {
 		await router.push('/').then(() => {window.location.reload()})
 	}
 
+	const isOnline = (userId: Number) => {
+		return onlineUsers.value.has(userId);
+	}
+
 	return {
 		user,
 		userId,
@@ -161,12 +165,14 @@ export const useAuth = defineStore('auth', () => {
 		token,
 		loginError,
 		userMap,
+		onlineUsers,
 		googleConnect,
 		googleCallback,
 		logout,
 		authenticate,
         authenticate2FA,
 		fetchUserById,
+		isOnline,
 		signup,
 		signupError
 	}

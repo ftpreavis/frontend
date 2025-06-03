@@ -12,6 +12,7 @@ import { InboxArrowDownIcon } from "@heroicons/vue/24/outline";
 
 import EditProfile from "@/components/ProfilePage/EditProfile.vue"
 import FriendsList from "@/components/ProfilePage/FriendsList.vue"
+import OnlineStatusDot from "@/components/OnlineStatusDot.vue";
 import ConfirmDialogModal from '@/components/Modal/ConfirmDialogModal.vue'
 import FriendButton from "@/components/ProfilePage/FriendButton.vue"
 import DropDown from "@/components/DropDown.vue";
@@ -84,7 +85,7 @@ const handleSaveProfile = async ({ avatar, username, bio, password }: {
         });
 
         window.location.reload();
-    } catch (err) {
+    } catch (err: any) {
         console.error("❌ Échec de la mise à jour :", err.response?.data || err.message);
     }
 };
@@ -124,8 +125,10 @@ watch(
 				<div class="flex flex-col bg-white mt-3 px-8 py-4 dark:bg-gray-700">
 					<span class="text-lg font-semibold mb-3">{{ profileStore.profileUser.username }}</span>
 					<div class="flex flex-row items-center ">
-						<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat" v-if="profileStore.profileImage"
-							 :style="{ backgroundImage: `url(${profileStore.profileImage})` }" />
+						<OnlineStatusDot :userId="profileUserId" v-if="profileStore.profileImage">
+							<div class="w-[90px] h-[90px] rounded-full bg-cover bg-center bg-no-repeat"
+								:style="{ backgroundImage: `url(${profileStore.profileImage})` }" />
+						</OnlineStatusDot>
 						<div v-else
 							 class="w-[90px] h-[90px] rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-500">
 							{{ t('profile.noAvatar') }}
