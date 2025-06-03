@@ -25,6 +25,7 @@ const player1Score = ref(0)
 const player2Score = ref(0)
 
 const ballRadius = 15
+const scoreToWin = 3
 let ballPosX = 0
 let ballPosY = 0
 let ballSpeed = 3
@@ -162,15 +163,15 @@ let leftKey2 = false
 let rightKey2 = false
 
 const handleKeyDown = (event: KeyboardEvent) => {
-	if (event.key === 'a') leftKey1 = true
-	if (event.key === 'w') rightKey1 = true
+	if (event.key === 'q' || event.key === 'Q') leftKey1 = true
+	if (event.key === 'w' || event.key === 'W') rightKey1 = true
 	if (event.key === 'ArrowLeft') leftKey2 = true
 	if (event.key === 'ArrowRight') rightKey2 = true
 }
 
 const handleKeyUp = (event: KeyboardEvent) => {
-	if (event.key === 'a') leftKey1 = false
-	if (event.key === 'w') rightKey1 = false
+	if (event.key === 'q' || event.key === 'Q') leftKey1 = false
+	if (event.key === 'w' || event.key === 'W') rightKey1 = false
 	if (event.key === 'ArrowLeft') leftKey2 = false
 	if (event.key === 'ArrowRight') rightKey2 = false
 }
@@ -439,7 +440,7 @@ const render = () => {
 	drawDivider()
 	drawBall()
 	drawScores()
-	if (isWaiting && message.value) drawMessage('yellow')
+	if (isWaiting && message.value && (player1Score.value != scoreToWin && player2Score.value != scoreToWin)) drawMessage('yellow')
 }
 
 let targetX = 0;
@@ -549,10 +550,10 @@ const gameLoop = () => {
         if (gameMode.value === 'solo') pong_bot()
         updatePaddlesPosition()
         updateBallPosition()
-        if (player1Score.value == 3) { winGame(player1Name.value)}
-        if (player2Score.value == 3) { winGame(player2Name.value)}
-        if (gameMode.value != 'tournament' && (player1Score.value == 3 || player2Score.value == 3)) {return}
         render()
+        if (player1Score.value == scoreToWin) { winGame(player1Name.value)}
+        if (player2Score.value == scoreToWin) { winGame(player2Name.value)}
+        if (gameMode.value != 'tournament' && (player1Score.value == 3 || player2Score.value == 3)) {return}
         // drawPlayerName()
     }
     animationId = requestAnimationFrame(gameLoop)
@@ -560,8 +561,8 @@ const gameLoop = () => {
 </script>
 
 <template>
-	<div class="inset-0 flex items-center justify-center">
-		<div class="absolute inset-0 bg-black bg-opacity-50"/>
+	<div class="flex flex-col w-full h-full justify-center items-center relative overflow-hidden">
+		<div v-if="!gameMode" class="w-full h-full bg-[#000] absolute z-[1] opacity-60"></div>
 		<div v-if="!gameMode" class="absolute z-10 space-y-6 flex flex-col w-2/3 md:flex-row md:justify-around md:items-center md:space-x-10">
 			<h2 class="text-white font-bold text-5xl">| Pong .</h2>
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
@@ -575,19 +576,10 @@ const gameLoop = () => {
             <Tournament v-if="showTournament" v-model:settings="settings" v-model:visible="showTournament" v-model:nextMatch="showNextMatch" v-model:gameMode="gameMode" @playTournament="playTournamentGame"></Tournament>
             <TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:gameMode="gameMode" v-model:restart="showTournament"></TournamentNext>
         </div>
-		<div class=" bg-gray-800 w-[95%] h-[100vh]">
+		<div class=" bg-gray-800 w-[95%] h-full">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
 		<Settings v-model:visible="showSettings" v-model:settings="settings"></Settings>
 		<ModeSettings v-model:visible="showModeSettings" :cheats="cheats" :mode="modeSettingsMode" :player1-name="player1Name" @play="playGame"></ModeSettings>
 	</div>
-<!--	<div class="flex flex-col min-h-screen items-center justify-center">-->
-<!--		<Header></Header>-->
-
-<!--		<div class="w-[95%] h-[100vh] relative flex  bg-gray-800 mx-auto rounded-xl py-3">-->
-<!--			<canvas ref="pongCanvas" class="w-full h-full">-->
-
-<!--			</canvas>-->
-<!--		</div>-->
-<!--	</div>-->
 </template>
