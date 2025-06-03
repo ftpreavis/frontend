@@ -53,21 +53,33 @@ export const useAuth = defineStore('auth', () => {
 	const signup = async (username: string, email: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/signup', {
-				username: username,
-				password: password,
-				email: email,
-			})
-			const userData = await axios.get('/api/users/profile')
-			setCookies('userId', String(userData.data.id))
-			await router.push('/').then(() => {window.location.reload()})
+				username,
+				password,
+				email,
+			});
+
+			// // Le token est dans le cookie, inutile ici
+			// const userData = await axios.get('/api/users/profile');
+			//
+			// user.value = userData.data;
+			// userId.value = userData.data.id;
+			// isAuthenticated.value = true;
+			// setCookies('userId', String(userData.data.id)); // ok si besoin
+			await authenticate(username, password);
+			await router.push('/').then(() => window.location.reload());
 		} catch (error: any) {
-			const msg = error.response.data.error
-			if (msg.includes('User already exists'))
-				signupError.value = t('error.signup.alreadyExists')
+			console.error("[FRONT] Erreur signup:", error);
+			const msg = error.response?.data?.error;
+			if (msg?.includes('User already exists')) {
+				signupError.value = t('error.signup.alreadyExists');
+			}
 		}
 	}
 
-    const authenticate2FA = async (id: string, token2FA: string) => {
+
+
+
+	const authenticate2FA = async (id: string, token2FA: string) => {
 		try {
 			const response2FA = await axios.post('/api/auth/2fa/login', {id: id, token: token2FA})
 			console.log(response2FA)
