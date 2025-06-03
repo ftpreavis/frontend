@@ -42,7 +42,7 @@ const viewConfirm = ref<boolean>(false)
 
 function toggleMode() {
 	errors.value = {}
-	mode.value = mode.value === 'login' ? 'login' : 'signup'
+	mode.value = mode.value === 'signup' ? 'login' : 'signup'
 }
 
 async function onLogin() {
@@ -94,7 +94,7 @@ async function onSignup() {
 function onConfirmClose() {
 	viewConfirm.value = false
 	isVisible.value = false
-	mode.value = 'signup'
+	mode.value = 'login'
 	requires2FA.value = false
 	username.value = ''
 	email.value = ''
@@ -113,12 +113,11 @@ function requestClose(value: boolean) {
 	if (value === false && mode.value === 'login' && requires2FA.value) {
 		viewConfirm.value = true
 		isVisible.value = true
-		console.log('ttt')
 		return
 	}
 	isVisible.value = value
 	if (value === false) {
-		mode.value = 'signup'
+		mode.value = 'login'
 		requires2FA.value = false
 		username.value = ''
 		email.value = ''
