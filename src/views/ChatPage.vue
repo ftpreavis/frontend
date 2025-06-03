@@ -12,6 +12,7 @@ import { useSocket } from '@/sockets/socket'
 import { useChatUI } from '@/store/chat_ui'
 import { formatDateLabel } from '@/utils/date'
 import type { ComponentPublicInstance } from 'vue'
+import OnlineStatusDot from '@/components/OnlineStatusDot.vue'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 
@@ -179,12 +180,17 @@ watch(() => chatStore.selectedUserId, async () => {
 			<div v-if="convs.length === 0">{{ $t('chat.noConversations') }}</div>
 			<ul class="space-y-2">
 				<li v-for="conv in convs" :key="conv.id" @click="selectConversation(conv.id)" :class="[
-					'flex items-start p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
+					'flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
 					selectedId === conv.id ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-50 dark:bg-gray-800',
 				]">
-					<img :src="conv.avatar" alt="avatar" class="object-contain object-center w-10 h-10 rounded-full mr-3 flex-shrink-0" />
+					<div class="relative">
+						<OnlineStatusDot :userId="conv.id" class="mr-2">
+							<div class="w-12 h-12 rounded-full overflow-hidden bg-contain bg-center bg-no-repeat"
+								:style="{ backgroundImage: `url(${conv.avatar})` }" />
+						</OnlineStatusDot>
+					</div>
 					<div class="flex-1 min-w-0">
-						<div class="flex justify-between items-end">
+						<div class="flex justify-between items-center">
 							<span class="font-medium text-gray-900 dark:text-white">{{ conv.name }}</span>
 							<span v-if="conv.unreadCount > 0"
 								class="bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
@@ -198,13 +204,19 @@ watch(() => chatStore.selectedUserId, async () => {
 		</aside>
 
 		<section v-if="selectedId !== null" class="flex flex-col flex-1">
-			<button class="md:hidden p-2 text-sm cursor-pointer dark:text-gray-300" @click="selectedId = null">{{ $t('chat.back') }}</button>
+			<button class="md:hidden p-2 text-sm cursor-pointer dark:text-gray-300" @click="selectedId = null">{{
+				$t('chat.back') }}</button>
 
-			<div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-500 p-4 flex flex-col items-center">
-				<button @click="goToProfile(selectedId)"><img
-						:src="convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`"
-						alt="avatar" class="object-contain object-center w-12 h-12 rounded-full flex-shrink-0" /></button>
-				<h3 class="text-md font-semibold mt-1 dark:text-white">{{convs.find(c => c.id === selectedId)?.name}}</h3>
+			<div
+				class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-500 p-4 flex flex-col items-center">
+				<button @click="goToProfile(selectedId)">
+					<OnlineStatusDot :userId="selectedId" class="mr-2">
+						<div class="w-12 h-12 rounded-full overflow-hidden bg-contain bg-center bg-no-repeat"
+							:style="{ backgroundImage: `url(${convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`})` }" />
+					</OnlineStatusDot>
+				</button>
+				<h3 class="text-md font-semibold mt-1 dark:text-white">{{convs.find(c => c.id === selectedId)?.name}}
+				</h3>
 			</div>
 
 			<div :ref="bindScrollContainer" class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 space-y-6"
@@ -242,7 +254,8 @@ watch(() => chatStore.selectedUserId, async () => {
 			</button>
 
 			<div class="p-4 bg-white dark:bg-gray-800 dark:border-gray-500 border-t border-gray-200 flex items-center">
-				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage" :placeholder="$t('chat.inputPlaceholder')"
+				<input v-model="newMessage" type="text" @keyup.enter="onSendMessage"
+					:placeholder="$t('chat.inputPlaceholder')"
 					class="w-full px-4 py-2 border rounded focus:outline-none focus:ring dark:bg-gray-700 dark:text-gray-100 dark:border-gray-500" />
 				<button @click="onSendMessage" class="ml-4 px-4 py-2 bg-blue-500 text-white rounded">
 					{{ $t('chat.send') }}
