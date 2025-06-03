@@ -79,7 +79,8 @@
 			"accept": "Accepter",
 			"reject": "Refuser",
 			"noPending": "Aucune demande en attente"
-		}
+		},
+		"deleteProfile": "Delete profile"
 	},
 	"confirm": {
 		"defaultCancel": "Annuler",

@@ -65,12 +65,12 @@
 			},
 			"cancelRequestModal": {
 				"title": "Delete friend request?",
-				"body": "This action will cancel your friend request. Are you sure?",
+				"body": "This action will cancel your friend request. Are you sure ?",
 				"confirmButton": "Cancel Request"
 			},
 			"unfriendModal": {
 				"title": "Remove Friend?",
-				"body": "Are you sure you want to remove this friend?",
+				"body": "Are you sure you want to remove this friend ?",
 				"confirmButton": "Remove"
 			}
 		},
@@ -79,6 +79,24 @@
 			"accept": "Accept",
 			"reject": "Reject",
 			"noPending": "No requests pending"
+		},
+		"deleteProfile": {
+			"trigger": "Delete profile",
+			"firstModal": {
+				"title": "Delete your profile ?",
+				"body": "Are you sure you want to remove your account ?",
+				"confirmButton": "Delete your account"
+			},
+			"lastModal": {
+				"title": "Final confirmation",
+				"body": "This is your last chance to cancel. Once you delete your account, all data will be permanently removed and cannot be recovered. Please enter your username to confirm.",
+				"cancelButton": "Cancel",
+				"confirmButton": "Delete your account",
+				"error": {
+					"enterUsername": "Please enter your username.",
+					"notMatch": "Username does not match."
+				}
+			}
 		}
 	},
 	"confirm": {
