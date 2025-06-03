@@ -70,7 +70,7 @@ const go = (path: string) => {
 					<button
 						@click="modelValue = true"
 						class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">
-						{{$t('signup.title')}} / {{$t('login.title')}}
+						{{$t('login.title')}}
 					</button>
 				</div>
 			</div>

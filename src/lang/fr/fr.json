@@ -121,7 +121,9 @@
 	},
 	"landing": {
 		"title": "Preavis",
-		"tagline": "Jouez. Affrontez. Triomphez."
+		"tagline": "Jouez. Affrontez. Triomphez.",
+		"connect": "Connection",
+		"play": "Jouer"
 	},
 	"error": {
 		"auth": {
