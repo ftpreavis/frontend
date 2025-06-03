@@ -36,6 +36,7 @@ const password = ref<string>('')
 const avatarPreview = ref<string>(props.initialAvatar);
 const showTwoFactor = ref(false)
 const authStore = useAuth()
+const twoFAEnabled = ref(false)
 
 watch(
     () => props.visible,
@@ -73,8 +74,9 @@ const getUsername = async() => {
         }
     }
     
-    onMounted(async() => {
-        await getUsername()
+onMounted(async() => {
+    await getUsername()
+    twoFAEnabled.value = profileUser.value?.twoFAEnabled
 })
 
 
@@ -87,7 +89,7 @@ const getUsername = async() => {
 			<FormField v-model="username" label="Username" type="text" :placeholder="t('profile.usernamePlaceholder')"></FormField>
 			<FormField v-model="bio" label="Bio" type="text" :placeholder="t('profile.bioPlaceholder')"></FormField>
 			<FormField v-model="password" label="Password" type="text" :placeholder="t('profile.passwordPlaceholder')"></FormField>
-			<button v-if="profileUser.value?.twoFAEnabled == true" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
+			<button v-if="twoFAEnabled == false" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
 		</div>
 		<template #footer>
 			<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
