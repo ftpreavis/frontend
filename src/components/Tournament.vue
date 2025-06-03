@@ -2,7 +2,6 @@
 import { ref, onMounted, watch, computed } from 'vue'
 import { useTournament } from '@/store/tournament'
 import { useAuth } from '@/store/auth';
-import Settings from '@/components/PongSettings.vue'
 import { useLang } from '@/composables/useLang';
 import Modal from "@/components/Modal/Modal.vue";
 
@@ -12,20 +11,12 @@ const tournament = useTournament()
 const authStore = useAuth()
 const localCheats = ref({ballSpeed: 7.5, paddleSpeed: 20})
 const profileUser = ref<any | null>(null);
-const showSettings = ref(false)
 const t = useLang()
 
 const props = defineProps<{
 	visible: boolean,
     nextMatch: boolean,
     gameMode: string | null,
-    settings: {
-		background: string,
-		paddle: 	string,
-		ball: 		string,
-		divider:	string,
-		score:		string
-	}
 }>()
 
 const modalValue = computed({
@@ -33,13 +24,6 @@ const modalValue = computed({
 	set: (v: boolean) => {emit('update:visible', v)
         emit('update:gameMode', null)
     }
-})
-
-const local = ref({ ...props.settings })
-watch(() => props.visible, (isOpen) => {
-	if (isOpen) {
-		local.value = { ...props.settings }
-	}
 })
 
 const getUsername = async() => {
@@ -54,7 +38,6 @@ const getUsername = async() => {
     (event: 'update:nextMatch', value: boolean): void
     (event: 'update:gameMode', value: string | null): void
     (event: 'playTournament', cheats: {ballSpeed: number, paddleSpeed: number}): void
-    (event: 'update:settings', value: { background: string, paddle: string, ball: string , divider: string, score: string}): void
 }>()
 
 const close = () => {
@@ -76,7 +59,6 @@ function removePlayer(index: number) {
 function startTournament() {
     tournament.startTournament(players.value)
     emit('playTournament', {ballSpeed:localCheats.value.ballSpeed, paddleSpeed:localCheats.value.paddleSpeed})
-    emit('update:settings', { ...local.value })
     emit('update:nextMatch', true)
     close()
 }
@@ -153,8 +135,6 @@ onMounted(async() => {
         </label>
         </div>
     </div>
-    <button @click="showSettings = true" class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700">{{$t('pong.settings')}}</button>
     </div>
-    <Settings v-model:visible="showSettings" v-model:settings="local"></Settings>
     </Modal>
 </template>
