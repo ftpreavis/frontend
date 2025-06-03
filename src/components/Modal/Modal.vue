@@ -21,6 +21,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
+    <Teleport to="body">
 	<transition name="fade">
 		<div
 			v-if="modelValue"
@@ -30,7 +31,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 				class="absolute inset-0 bg-black bg-opacity-50"
 				@click="close()"
 			/>
-			<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%]" @click.stop>
+			<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%] max-h-[90vh] overflow-y-auto" @click.stop>
 				<header class="px-6 pt-6 text-center">
 					<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
 					<button
@@ -52,6 +53,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 			</div>
 		</div>
 	</transition>
+    </Teleport>
 </template>
 
 <style scoped>

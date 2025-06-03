@@ -2,18 +2,28 @@
 import { onMounted, computed } from 'vue'
 import { useTournament } from '@/store/tournament'
 import { useLang } from '@/composables/useLang';
+import Modal from "@/components/Modal/Modal.vue";
 
 const tournament = useTournament()
 const t = useLang()
 const props = defineProps<{
 	visible: boolean,
+    gameMode: string | null,
     restart: boolean,
 }>()
 
 const emit = defineEmits<{
 	(event: 'update:visible', value: boolean): void
+    (event: 'update:gameMode', value: string | null): void
 	(event: 'update:restart', value: boolean): void
 }>()
+
+const modalValue = computed({
+	get: () => props.visible,
+	set: (v: boolean) => {emit('update:visible', v)
+        emit('update:gameMode', null)
+    }
+})
 
 const close = () => emit('update:visible', false)
 
@@ -41,7 +51,8 @@ function getRoundLabel(round: number, total: number): string {
 </script>
 
 <template>
-    <div v-if="visible" class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
+	<Modal v-model="modalValue" title="Tournament"> 
+    <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
         <div v-if="!tournament.tournamentFinished">
             <div class="max-h-[60vh] overflow-y-auto p-4 bg-white rounded-lg shadow-md w-full max-w-2xl mx-auto">
                 <h2 class="text-2xl font-bold mb-4 text-center">{{$t('tournament.table')}}</h2>
@@ -89,4 +100,5 @@ function getRoundLabel(round: number, total: number): string {
             </button>
         </div>
     </div>
+    </Modal>
 </template>
