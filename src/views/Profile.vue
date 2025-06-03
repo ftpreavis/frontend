@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 ;import { useRoute, useRouter } from "vue-router"
 import axios from "axios";
 import { useAuth } from "@/store/auth";
@@ -17,6 +17,7 @@ import ConfirmDialogModal from '@/components/Modal/ConfirmDialogModal.vue'
 import FriendButton from "@/components/ProfilePage/FriendButton.vue"
 import DropDown from "@/components/DropDown.vue";
 import PendingRequestModal from "@/components/Modal/ProfileModal/PendingRequestModal.vue";
+import LastConfirmDeleteProfileModal from "@/components/Modal/ProfileModal/LastConfirmDeleteProfileModal.vue";
 
 const { t } = useLang()
 const authStore = useAuth()
@@ -25,18 +26,15 @@ const profileStore = useProfileManagement()
 const route = useRoute()
 const router = useRouter()
 
-const isBlocked = ref(false)
 const showConfirm = ref(false)
 const showEditProfile = ref(false)
 const showFriendsList = ref(false)
 const showPendingRequest = ref(false)
+const showDeleteAccount = ref(false)
+const showLastConfirmDeleteAccount = ref(false)
 const willBlock = ref(true)
 const profileUserId = ref(Number(route.params.userId))
 const openBlockedDropDown = ref(false)
-
-const ifFriends = computed(() => {
-	return friendsStore.friendsList.some(r => r.friendId === profileUserId.value)
-})
 
 function toggleBlockUser() {
 	willBlock.value = !profileStore.isBlocked
@@ -156,19 +154,21 @@ watch(
 							<button @click="showPendingRequest = true" v-if="profileStore.isOwner" class="cursor-pointer border py-2 px-3 rounded-lg hover:rounded-none transition-all ease-in-out duration-500 hover:border-black ml-3 dark:hover:border-gray-500">
 								<InboxArrowDownIcon class="w-6 h-6"></InboxArrowDownIcon>
 							</button>
-							<div v-if="!profileStore.isOwner" class="ml-3">
+							<div class="ml-3">
 								<DropDown v-model="openBlockedDropDown" width-class="w-[150px]" class="mt-1">
 									<template #trigger>
 										<EllipsisHorizontalIcon class="w-5 h-5"></EllipsisHorizontalIcon>
 									</template>
 									<template #menu>
 										<ul class="text-gray-900 dark:text-white">
-											<li @click="toggleBlockUser" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
+											<li @click="toggleBlockUser" v-if="!profileStore.isOwner" class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer">
 												<button class="text-red-500">{{ profileStore.isBlocked ? t('profile.unblock') : t('profile.block') }}</button>
 											</li>
-<!--										<button @click="toggleBlockUser" class="ml-2 cursor-pointer border py-2 px-6 rounded-lg transition-all ease-in-out duration-500">-->
-<!--											{{ profileStore.isBlocked ? t('profile.unblock') : t('profile.block') }}-->
-<!--										</button>-->
+											<li v-else class="hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-4 cursor-pointer" @click="showDeleteAccount = true">
+												<button class="text-red-500">
+													{{ t('profile.deleteProfile.trigger') }}
+												</button>
+											</li>
 										</ul>
 									</template>
 								</DropDown>
@@ -241,5 +241,7 @@ watch(
 							:ok-button="willBlock ? t('confirm.blockOk') : t('confirm.unblockOk')"
 							:cancel-button="t('confirm.defaultCancel')" @update:visible="(val) => showConfirm = val"
 							@confirm="handleConfirm" />
+		<ConfirmDialogModal :title="t('profile.deleteProfile.firstModal.title')" :visible="showDeleteAccount" :message="t('profile.deleteProfile.firstModal.body')" :ok-button="t('profile.deleteProfile.firstModal.confirmButton')" @update:visible="(val) => showDeleteAccount = val" @confirm="(val) => showLastConfirmDeleteAccount = val"></ConfirmDialogModal>
+		<LastConfirmDeleteProfileModal v-model="showLastConfirmDeleteAccount"></LastConfirmDeleteProfileModal>
 	</div>
 </template>

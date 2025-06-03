@@ -18,8 +18,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built files into nginx’s webroot
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY --from=build /app/wait-for-vault.sh /wait-for-vault.sh
-
 RUN chmod +x /wait-for-vault.sh
 
+USER app
+
 EXPOSE 80
-CMD ["/bin/sh", "-C", "/wait-for-vault.sh && exec nginx -g daemon off;"]
+CMD ["/bin/sh", "-c", "/wait-for-vault.sh && exec nginx -g daemon off;"]
