@@ -99,7 +99,7 @@ export const useAuth = defineStore('auth', () => {
 
 	const googleConnect = async () => {
 		try {
-            axios.get('/api//auth/google/callback')
+            axios.get('/api/auth/google/callback')
 			window.location.href = '/api/auth/google'
 			isAuthenticated.value = true
 		} catch {

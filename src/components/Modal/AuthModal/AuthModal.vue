@@ -149,7 +149,7 @@ function requestClose(value: boolean) {
 				<p v-if="authStore.signupError" class="text-red-600 text-sm mt-1">{{ authStore.signupError }}</p>
 				<SubmitButton :label="t('signup.submit')"></SubmitButton>
 				<hr>
-				<OAuthButton @click="" :label="t('signup.google')"></OAuthButton>
+				<OAuthButton @click="authStore.googleConnect" :label="t('signup.google')"></OAuthButton>
 			</FullForm>
 		</div>
 		<div v-else>
@@ -169,7 +169,7 @@ function requestClose(value: boolean) {
 				<p v-if="authStore.loginError" class="text-red-600 text-sm mt-1">{{ authStore.loginError }}</p>
 				<SubmitButton :label="t('login.submit')"></SubmitButton>
 				<hr>
-				<OAuthButton @click="" :label="t('signup.google')"></OAuthButton>
+				<OAuthButton @click="authStore.googleConnect" :label="t('signup.google')"></OAuthButton>
 			</FullForm>
 			<div v-else>
 				<p class="text-sm text-gray-600 mb-2">{{ t('login.2faPrompt') }}</p>
@@ -179,7 +179,7 @@ function requestClose(value: boolean) {
 					<SubmitButton :label="t('login.2faSubmit')"></SubmitButton>
 				</FullForm>
 				<hr>
-				<OAuthButton @click="" :label="t('login.google')"></OAuthButton>
+				<OAuthButton @click="authStore.googleConnect" :label="t('login.google')"></OAuthButton>
 				<ConfirmDialogModal
 					v-model:visible="viewConfirm"
 					:title="t('login.confirm.2faTitle')"

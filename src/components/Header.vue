@@ -8,8 +8,11 @@ import { computed } from 'vue'
 import LanguageSelector from '@/components/LanguageSelector.vue'
 import { useDarkMode } from "@/composables/useDarkMode.ts";
 import DropDown from '@/components/DropDown.vue';
+import AuthModal from '@/components/Modal/AuthModal/AuthModal.vue';
 
 const {theme, toggle} = useDarkMode()
+
+const modelValue = ref(false)
 
 const chatStore = useChat()
 const openDropDownProfileMenu = ref(false)
@@ -63,8 +66,16 @@ const go = (path: string) => {
 						</template>
 					</DropDown>
 				</div>
+                <div v-else>
+					<button
+						@click="modelValue = true"
+						class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-semibold">
+						{{$t('signup.title')}} / {{$t('login.title')}}
+					</button>
+				</div>
 			</div>
 
 		</div>
+        <AuthModal v-model="modelValue" />
 	</header>
 </template>
