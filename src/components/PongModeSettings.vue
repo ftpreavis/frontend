@@ -16,10 +16,6 @@ const modalValue = computed({
     }
 })
 
-onMounted(() => {
-    console.log(props.mode)
-})
-
 interface playPayload {
 	cheats: { ballSpeed: number; paddleSpeed: number }
 	player1Name: string
