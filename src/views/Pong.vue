@@ -25,6 +25,7 @@ const player1Score = ref(0)
 const player2Score = ref(0)
 
 const ballRadius = 15
+const scoreToWin = 3
 let ballPosX = 0
 let ballPosY = 0
 let ballSpeed = 3
@@ -439,7 +440,7 @@ const render = () => {
 	drawDivider()
 	drawBall()
 	drawScores()
-	if (isWaiting && message.value) drawMessage('yellow')
+	if (isWaiting && message.value && (player1Score.value != scoreToWin && player2Score.value != scoreToWin)) drawMessage('yellow')
 }
 
 let targetX = 0;
@@ -549,10 +550,10 @@ const gameLoop = () => {
         if (gameMode.value === 'solo') pong_bot()
         updatePaddlesPosition()
         updateBallPosition()
-        if (player1Score.value == 3) { winGame(player1Name.value)}
-        if (player2Score.value == 3) { winGame(player2Name.value)}
-        if (gameMode.value != 'tournament' && (player1Score.value == 3 || player2Score.value == 3)) {return}
         render()
+        if (player1Score.value == scoreToWin) { winGame(player1Name.value)}
+        if (player2Score.value == scoreToWin) { winGame(player2Name.value)}
+        if (gameMode.value != 'tournament' && (player1Score.value == 3 || player2Score.value == 3)) {return}
         // drawPlayerName()
     }
     animationId = requestAnimationFrame(gameLoop)
