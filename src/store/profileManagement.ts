@@ -57,29 +57,29 @@ export const useProfileManagement = defineStore('profileManagement', () => {
     const nbWin = computed(() => {
         const user = profileUser.value;
         if (!user) return 0;
-    
+
         const winsAsPlayer1 = (user.MatchesAsPlayer1 ?? []).filter(
             (m: any) => m.player1Score > m.player2Score
         ).length;
-    
+
         const winsAsPlayer2 = (user.MatchesAsPlayer2 ?? []).filter(
             (m: any) => m.player2Score > m.player1Score
         ).length;
-    
+
         return winsAsPlayer1 + winsAsPlayer2;
     });
     const nbLoose = computed(() => {
         const user = profileUser.value;
         if (!user) return 0;
-    
+
         const lossesAsPlayer1 = (user.MatchesAsPlayer1 ?? []).filter(
             (m: any) => m.player1Score < m.player2Score
         ).length;
-    
+
         const lossesAsPlayer2 = (user.MatchesAsPlayer2 ?? []).filter(
             (m: any) => m.player2Score < m.player1Score
         ).length;
-    
+
         return lossesAsPlayer1 + lossesAsPlayer2;
     });
 	const nbFriends = computed(() => {
@@ -160,6 +160,15 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		}
 	}
 
+	async function deleteAccount() {
+		try {
+			await axios.post(`/api/users/anonymize`)
+			await authStore.logout()
+		} catch (error) {
+			console.error('Error delete account:', error)
+		}
+	}
+
 	// TODO (later) show friends list
 
 	return {
@@ -179,6 +188,7 @@ export const useProfileManagement = defineStore('profileManagement', () => {
 		loadProfile,
 		toggleBlock,
 		fetchBlockedStatus,
-		getAvatar
+		getAvatar,
+		deleteAccount
 	}
 })
