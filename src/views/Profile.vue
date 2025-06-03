@@ -120,7 +120,7 @@ watch(
 
 <template>
 	<div v-bind="$attrs">
-		<div class="bg-[#F8F6F0] h-full dark:bg-gray-800">
+		<div class="bg-[#F8F6F0] h-screen dark:bg-gray-800">
 			<div class="flex flex-col dark:text-gray-100 md:w-1/2 m-auto" v-if="profileStore.profileUser">
 				<div class="flex flex-col bg-white mt-3 px-8 py-4 dark:bg-gray-700">
 					<span class="text-lg font-semibold mb-3">{{ profileStore.profileUser.username }}</span>

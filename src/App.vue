@@ -36,10 +36,12 @@ watch(
 </script>
 
 <template>
-	<div class="flex flex-col h-screen">
-	  <Header />
-	  <router-view class="flex-1 overflow-hidden" />
-	</div>
+    <div class="flex flex-col h-screen overflow-hidden">
+      <Header />
+      <main class="flex-1 overflow-hidden">
+        <RouterView />
+      </main>
+    </div>
   </template>
 
 <style scoped></style>
