@@ -36,9 +36,9 @@ watch(
 </script>
 
 <template>
-    <div class="flex flex-col h-screen overflow-hidden">
+    <div class="flex flex-col h-screen">
       <Header />
-      <main class="flex-1 overflow-hidden">
+		<main class="flex-1 overflow-auto bg-gradient-to-b from-blue-50 via-blue-200 to-blue-200 dark:bg-gray-900 dark:bg-none">
         <RouterView />
       </main>
     </div>

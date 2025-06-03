@@ -4,6 +4,7 @@ import { useTournament } from '@/store/tournament'
 import { useAuth } from '@/store/auth';
 import { useLang } from '@/composables/useLang';
 import Modal from "@/components/Modal/Modal.vue";
+import ErrorMessage from "@/components/Utils/ErrorMessage.vue";
 
 const newPlayer = ref('')
 const players = ref<string[]>([])
@@ -76,17 +77,17 @@ onMounted(async() => {
 </script>
 
 <template>
-	<Modal v-model="modalValue" title="Tournament"> 
+	<Modal v-model="modalValue" title="Tournament">
 
-    <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
+    <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto dark:text-white">
     <h1 class="text-2xl font-bold">{{ $t('tournament.create') }}</h1>
 
     <div class="w-full">
-        <label class="block text-sm font-medium text-gray-700">{{ $t('tournament.name') }}</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ $t('tournament.name') }}</label>
         <input
         v-model="newPlayer"
         type="text"
-        class="mt-1 w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="mt-1 w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-900"
         :placeholder="$t('tournament.addPlayer')"
         />
     </div>
@@ -101,7 +102,7 @@ onMounted(async() => {
         {{ players.length }} {{$t('tournament.player')}}{{ players.length > 1 ? 's' : '' }}
     </p>
 
-    <ul class="w-full divide-y divide-gray-200 bg-white rounded-lg shadow max-h-64 overflow-y-auto">
+    <ul class="w-full divide-y divide-gray-200 bg-white rounded-lg shadow max-h-64 overflow-y-auto dark:text-black">
         <li
         v-for="(player, index) in players"
         :key="index"
@@ -117,11 +118,10 @@ onMounted(async() => {
         class="mt-4 px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400">
         {{$t('tournament.createTournament')}}
     </button>
-    <p v-if="players.length !== 0 && ![4, 8, 16, 32].includes(players.length)"
-        class="text-sm text-red-500 mt-1">
-        {{$t('tournament.required')}}
-    </p>
 
+		<div v-if="players.length !== 0 && ![4, 8, 16, 32].includes(players.length)">
+			<ErrorMessage error="tournament.required"></ErrorMessage>
+		</div>
 
     <div>
         <div class="space-y-2">

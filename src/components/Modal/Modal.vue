@@ -39,12 +39,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 					@click="close()"
 				/>
 				<div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl md:w-[500px] w-[90%] max-h-[90vh] overflow-y-auto" @click.stop>
+					<div class="absolute top-0 left-0 h-2 w-full bg-gradient-to-r from-teal-400 to-blue-500"></div>
 					<header class="px-6 pt-6 text-center">
 						<h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">{{ title }}</h2>
 						<button
 							@click="close"
 							type="button"
-							class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl leading-none"
+							class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-700 text-2xl leading-none"
 						>
 							&times;
 						</button>
@@ -54,8 +55,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 						<slot />
 					</section>
 
-					<footer v-if="$slots.footer" class="">
-						<slot name="footer"></slot>
+					<footer v-if="$slots.footer" class="bg-gray-200 dark:bg-gray-700 px-4 py-3 flex flex-col space-y-3">
+						<slot name="footer" ></slot>
 					</footer>
 				</div>
 			</div>

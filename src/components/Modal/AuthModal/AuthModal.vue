@@ -6,10 +6,11 @@ import {useAuth} from "@/store/auth.ts";
 
 import Modal from "@/components/Modal/Modal.vue";
 import FormField from "@/components/Form/FormField.vue";
-import SubmitButton from "@/components/Form/SubmitButton.vue";
 import FullForm from "@/components/Form/FullForm.vue";
 import OAuthButton from "@/components/Form/OAuthButton.vue";
 import ConfirmDialogModal from "@/components/Modal/ConfirmDialogModal.vue";
+import AppButton from "@/components/Utils/AppButton.vue";
+import ErrorMessage from "@/components/Utils/ErrorMessage.vue";
 
 const props = defineProps<{
 	modelValue: boolean
@@ -51,10 +52,10 @@ async function onLogin() {
 	errors.value = {}
 
 	if (!username.value) {
-		errors.value.username = t('error.login.usernameRequired')
+		errors.value.username = 'error.login.usernameRequired'
 	}
 	if (!password.value) {
-		errors.value.password = t('error.login.passwordRequired')
+		errors.value.password = 'error.login.passwordRequired'
 	}
 	if (username.value && password.value) {
 		if (await authStore.authenticate(username.value, password.value)) {
@@ -65,7 +66,7 @@ async function onLogin() {
 
 async function log2FA() {
 	if (!token2FA.value) {
-		errors.value.token2FA = t('error.login.tokenRequired')
+		errors.value.token2FA = 'error.login.tokenRequired'
 	}
 	else
 		await authStore.authenticate2FA(username.value, token2FA.value)
@@ -75,15 +76,15 @@ async function onSignup() {
 	errors.value = {}
 
 	if (!username.value){
-		errors.value.username = t('error.signup.usernameRequired')
+		errors.value.username = 'error.signup.usernameRequired'
 	}
 
 	if (!password.value){
-		errors.value.password = t('error.signup.passwordRequired')
+		errors.value.password = 'error.signup.passwordRequired'
 	}
 
 	if (!email.value){
-		errors.value.email = t('error.signup.emailRequired')
+		errors.value.email = 'error.signup.emailRequired'
 	}
 
 	if (email.value && password.value && username.value){
@@ -126,6 +127,14 @@ function requestClose(value: boolean) {
 		errors.value = {}
 	}
 }
+
+watch(
+	isVisible,
+	() => {
+		authStore.signupError = ''
+		authStore.loginError = ''
+	}
+)
 </script>
 
 <template>
@@ -145,8 +154,8 @@ function requestClose(value: boolean) {
 				<FormField :label="t('signup.username')" v-model="username" :error="errors.username"></FormField>
 				<FormField :label="t('signup.email')" v-model="email" type="email" :error="errors.email"></FormField>
 				<FormField :label="t('signup.password')" v-model="password" type="password" :error="errors.password"></FormField>
-				<p v-if="authStore.signupError" class="text-red-600 text-sm mt-1">{{ authStore.signupError }}</p>
-				<SubmitButton :label="t('signup.submit')"></SubmitButton>
+				<ErrorMessage :error="authStore.signupError"></ErrorMessage>
+				<AppButton :label="t('signup.submit')" type="submit"></AppButton>
 				<hr>
 				<OAuthButton @click="authStore.googleConnect" :label="t('signup.google')"></OAuthButton>
 			</FullForm>
@@ -165,14 +174,15 @@ function requestClose(value: boolean) {
 				</div>
 				<FormField :label="t('login.username')" v-model="username" :error="errors.username"></FormField>
 				<FormField :label="t('login.password')" v-model="password" type="password"  :error="errors.password"></FormField>
-				<p v-if="authStore.loginError" class="text-red-600 text-sm mt-1">{{ authStore.loginError }}</p>
-				<SubmitButton :label="t('login.submit')"></SubmitButton>
+				<ErrorMessage :error="authStore.loginError"></ErrorMessage>
+				<AppButton :label="t('login.submit')" type="submit"></AppButton>
 				<hr>
 				<OAuthButton @click="authStore.googleConnect" :label="t('signup.google')"></OAuthButton>
 			</FullForm>
 			<div v-else>
 				<p class="text-sm text-gray-600 mb-2">{{ t('login.2faPrompt') }}</p>
 				<p v-if="authStore.loginError" class="text-red-600 text-sm mt-1">{{ authStore.loginError }}</p>
+				<ErrorMessage :error="authStore.loginError"></ErrorMessage>
 				<FullForm @submit="log2FA">
 					<FormField v-model="token2FA" label="" :error="errors.token2FA" :placeholder="t('login.2faPlaceholder')"/>
 					<SubmitButton :label="t('login.2faSubmit')"></SubmitButton>

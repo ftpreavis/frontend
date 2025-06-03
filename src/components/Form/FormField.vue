@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {computed} from "vue";
 
+import ErrorMessage from "@/components/Utils/ErrorMessage.vue";
+
 const props = defineProps<{
 	modelValue?: string
 	label: string
@@ -30,7 +32,7 @@ function onChange (e:Event) {
 		{{ label }}
 		<input v-if="type !== 'File'" v-model="inputValue" :type="type"  class="w-full mt-2 px-3 py-2 bg-transparent outline-none border focus:border-blue-500 dark:border-gray-500 shadow-sm rounded-lg focus:dark:border-gray-100" :placeholder="placeholder">
 		<input v-else type="file" accept="image/*" @change="onChange" class="w-full mt-2 px-3 py-2  bg-transparent outline-none border focus:border-blue-500 shadow-sm rounded-lg dark:border-gray-500 focus:dark:border-gray-100">
-		<span v-if="error" class="text-red-600 text-sm mt-1">{{ error }}</span>
+		<ErrorMessage :error="error"></ErrorMessage>
 	</label>
 </template>
 

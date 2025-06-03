@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useChatUI } from './chat_ui'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
-import ChatToast from '@/components/ChatToast.vue'
+import ChatToast from '@/components/Utils/ChatToast.vue'
 import { useLang } from '@/composables/useLang'
 import { useRouter } from 'vue-router'
 
