@@ -69,8 +69,8 @@ const go = (path: string) => {
 					</button>
 					<DropDown v-model="openDropDownProfileMenu" width-class="w-32">
 						<template #trigger>
-							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer stranslate-y-[2px]"
-									:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
+							<button class="w-[40px] h-[40px] rounded-full bg-cover cursor-pointer"
+								:style="{ backgroundImage: `url(/api/users/${authStore.userId}/avatar)`, backgroundSize: `cover`, backgroundPosition: `center` }">
 							</button>
 						</template>
 						<template #menu>
@@ -92,7 +92,7 @@ const go = (path: string) => {
 						</template>
 					</DropDown>
 				</div>
-                <div v-else class="flex flex-row space-x-2">
+        <div v-else class="flex flex-row space-x-2">
 					<button
 						@click="toggle"
 						class="text-[#1A1F36] dark:text-gray-100 px-5 py-2 inline-block rounded-lg text-xs uppercase shadow-sm cursor-pointer border font-bold">
