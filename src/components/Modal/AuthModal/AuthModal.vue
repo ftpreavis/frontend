@@ -185,7 +185,7 @@ watch(
 				<ErrorMessage :error="authStore.loginError"></ErrorMessage>
 				<FullForm @submit="log2FA">
 					<FormField v-model="token2FA" label="" :error="errors.token2FA" :placeholder="t('login.2faPlaceholder')"/>
-					<SubmitButton :label="t('login.2faSubmit')"></SubmitButton>
+					<AppButton :label="t('login.2faSubmit')" type="submit"></AppButton>
 				</FullForm>
 				<hr>
 				<OAuthButton @click="authStore.googleConnect" :label="t('login.google')"></OAuthButton>
