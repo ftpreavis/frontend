@@ -80,7 +80,7 @@ onMounted(async() => {
 </script>
 
 <template>
-	<Modal v-model="modalValue" title="Tournament">
+	<Modal v-model="modalValue" :title="$t('tournament.tournament')">
 
 		<div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto dark:text-white">
 			<h1 class="text-2xl font-bold">{{ $t('tournament.create') }}</h1>

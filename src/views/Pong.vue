@@ -9,6 +9,7 @@ import { useTournament } from '@/store/tournament'
 import { useAuth } from '@/store/auth'
 import axios from 'axios'
 import { forEachTrailingCommentRange } from 'typescript'
+import { useLang } from '@/composables/useLang'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
@@ -59,6 +60,7 @@ const showTournament = ref(false)
 const showNextMatch = ref(false)
 const tournament = useTournament()
 const authStore = useAuth()
+const { t } = useLang()
 const profileUser = ref<any | null>(null);
 
 const showModeSettings = ref(false)
@@ -604,11 +606,11 @@ const gameLoop = () => {
 		<div v-if="!gameMode" class="absolute z-10 space-y-6 flex flex-col w-2/3 md:flex-row md:justify-around md:items-center md:space-x-10">
 			<h2 class="text-white font-bold text-5xl">| Pong .</h2>
 			<div class="flex flex-col space-y-4 border p-4 rounded-xl md:flex-1">
-				<button @click="modeSettingsMode = 'solo'; showModeSettings = true" class="text-black py-9 bg-[#fff] rounded-md text-lg">Solo (IA)</button>
-				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Multi (Local)</button>
-				<button @click="showTournament = true; modeSettingsMode = 'tournament'; gameMode = 'tournament'" class="text-black py-9 bg-[#fff] rounded-md text-lg">Tournament (Local)</button>
+				<button @click="modeSettingsMode = 'solo'; showModeSettings = true" class="text-black py-9 bg-[#fff] rounded-md text-lg">1 {{t('tournament.player')}}</button>
+				<button @click="showModeSettings = true; modeSettingsMode = 'multi'" class="text-black py-9 bg-[#fff] rounded-md text-lg">2 {{t('tournament.player')}}s</button>
+				<button @click="showTournament = true; modeSettingsMode = 'tournament'; gameMode = 'tournament'" class="text-black py-9 bg-[#fff] rounded-md text-lg">{{t('tournament.tournament')}}</button>
 			</div>
-			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
+			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">{{ t('pong.settings.name') }}</button>
 		</div>
 		<Tournament v-if="showTournament" v-model:visible="showTournament" v-model:nextMatch="showNextMatch" v-model:gameMode="gameMode" @playTournament="playTournamentGame"></Tournament>
 		<TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:gameMode="gameMode" v-model:restart="showTournament"></TournamentNext>
