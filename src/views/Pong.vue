@@ -8,6 +8,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useTournament } from '@/store/tournament'
 import { useAuth } from '@/store/auth'
 import axios from 'axios'
+import { forEachTrailingCommentRange } from 'typescript'
 import { useLang } from '@/composables/useLang'
 
 const pongCanvas = ref<HTMLCanvasElement | null>(null)
@@ -66,8 +67,9 @@ const showModeSettings = ref(false)
 const modeSettingsMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
 const cheats =ref({ ballSpeed: ballSpeed, paddleSpeed: basePlayerSpeed })
 
-watch(settings, () => {
-	nextTick(render)
+watch(() => settings, async () => {
+	await nextTick()
+	render()
 }, { deep: true })
 
 const updateCanvasDimensions = () => {
@@ -88,19 +90,38 @@ const updateCanvasDimensions = () => {
 	}
 }
 
-const getSettings = async() => {
+async function getSettings() {
+  try {
     const response = await axios.get(`/api/users/${authStore.userId}/settings`)
     const data = response.data
-    if (data.background != 'default')
-        settings.value.background = data.background
-    if (data.paddle != 'default')
-        settings.value.paddle = data.paddle
-    if (data.score != 'default')
-        settings.value.score = data.score
-    if (data.divider != 'default')
-        settings.value.divider = data.divider
-    if (data.ball != 'default')
-        settings.value.ball = data.ball
+
+    let hasChanged = false
+    if (data.background !== 'default') {
+      settings.value.background = data.background
+      hasChanged = true
+    }
+    if (data.paddle !== 'default') {
+      settings.value.paddle = data.paddle
+      hasChanged = true
+    }
+    if (data.score !== 'default') {
+      settings.value.score = data.score
+      hasChanged = true
+    }
+    if (data.divider !== 'default') {
+      settings.value.divider = data.divider
+      hasChanged = true
+    }
+    if (data.ball !== 'default') {
+      settings.value.ball = data.ball
+      hasChanged = true
+    }
+    if (!hasChanged) {
+      settings.value = { ...settings.value }
+    }
+  } catch (error) {
+    console.error("Error with get Settings :", error)
+  }
 }
 
 onMounted(() => {
