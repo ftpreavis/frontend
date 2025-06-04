@@ -589,10 +589,8 @@ const gameLoop = () => {
 			</div>
 			<button @click="showSettings = true" class="text-black py-3 md:px-4 bg-[#fff] rounded-md text-lg">Settings</button>
 		</div>
-        <div v-if="showTournament || showNextMatch" class="absolute z-10 bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-xl h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Tournament v-if="showTournament" v-model:visible="showTournament" v-model:nextMatch="showNextMatch" v-model:gameMode="gameMode" @playTournament="playTournamentGame"></Tournament>
-            <TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:gameMode="gameMode" v-model:restart="showTournament"></TournamentNext>
-        </div>
+		<Tournament v-if="showTournament" v-model:visible="showTournament" v-model:nextMatch="showNextMatch" v-model:gameMode="gameMode" @playTournament="playTournamentGame"></Tournament>
+		<TournamentNext v-if="showNextMatch" v-model:visible="showNextMatch" v-model:gameMode="gameMode" v-model:restart="showTournament"></TournamentNext>
 		<div class=" bg-gray-800 w-[95%] h-full">
 			<canvas ref="pongCanvas" class="w-full h-full"></canvas>
 		</div>
