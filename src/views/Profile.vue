@@ -286,7 +286,7 @@ watch(
 						<div>
 							<div class="text-gray-500 dark:text-gray-400 text-sm">{{ t('profile.ratio') }}</div>
 							<div class="mt-1 text-2xl font-bold text-gray-800 dark:text-gray-200">
-								{{ (profileStore.winRatio * 100).toFixed(2) }}%
+								{{ (profileStore.winRatio).toFixed(2) }}%
 							</div>
 						</div>
 					</div>
