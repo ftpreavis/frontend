@@ -126,8 +126,8 @@ onMounted(() => {
 	drawPreview()
 })
 
-const apply = () => {
-    setSettings()
+const apply = async () => {
+    await setSettings()
     emit('set')
 	emit('update:visible', false)
 }
