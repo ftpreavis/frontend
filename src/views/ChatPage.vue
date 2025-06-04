@@ -177,7 +177,7 @@ watch(() => chatStore.selectedUserId, async () => {
 		<aside class="w-full md:w-1/3 border-r border-gray-200 dark:border-gray-600 dark:bg-gray-800 bg-white p-4 "
 			:class="selectedId !== null ? 'hidden md:block' : ''">
 			<h2 class="text-lg font-semibold mb-4 dark:text-gray-100">{{ $t('chat.conversations') }}</h2>
-			<div v-if="convs.length === 0">{{ $t('chat.noConversations') }}</div>
+			<div v-if="convs.length === 0" class="dark:text-gray-400">{{ $t('chat.noConversations') }}</div>
 			<ul class="space-y-2">
 				<li v-for="conv in convs" :key="conv.id" @click="selectConversation(conv.id)" :class="[
 					'flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
