@@ -244,7 +244,7 @@ watch(() => chatStore.selectedUserId, async () => {
 				<button @click="goToProfile(selectedId)">
 					<OnlineStatusDot :userId="selectedId" class="mr-2">
 						<div class="w-12 h-12 rounded-full overflow-hidden bg-contain bg-center bg-no-repeat"
-							:style="{ backgroundImage: `url(${authStore.userMap[selectedId]?.avatar ?? `/api/users/${selectedId}/avatar`})` }" />
+							:style="{ backgroundImage: `url(${`/api/users/${selectedId}/avatar`})` }" />
 					</OnlineStatusDot>
 				</button>
 				<h3 class="text-md font-semibold mt-1 dark:text-white">{{ authStore.userMap[selectedId]?.username ?? 'Unknown' }}
