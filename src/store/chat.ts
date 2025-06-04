@@ -36,7 +36,7 @@ export const useChat = defineStore('chat', () => {
 	const authStore = useAuth()
 	const chatUIStore = useChatUI()
 
-	function receiveMessage(message: {
+	async function receiveMessage(message: {
 		id: number
 		senderId: number
 		receiverId: number
@@ -61,7 +61,7 @@ export const useChat = defineStore('chat', () => {
 		if (!messages.value[fromId]) messages.value[fromId] = []
 		messages.value[fromId].push(msg)
 
-		updateConversationPreview(fromId, message.content, message.createdAt)
+		await updateConversationPreview(fromId, message.content, message.createdAt)
 		updateUnread(fromId, 1)
 		if (isCurrentChatOpen)
 			chatUIStore.updateScrollIndicators()
@@ -90,11 +90,20 @@ export const useChat = defineStore('chat', () => {
 		}
 	}
 
-	function updateConversationPreview(userId: number, content: string, createdAt: string) {
+	async function updateConversationPreview(userId: number, content: string, createdAt: string) {
 		let convo = conversations.value.find(c => c.userId === userId)
 		let user = authStore.userMap[userId]
 
-		if (!user) return
+		if (!user) {
+			const data = await authStore.fetchUserById(userId);
+			if (!data) return;
+			authStore.userMap[userId] = {
+				id: data.id,
+				username: data.username,
+				avatar: data.avatar
+			};
+			user = authStore.userMap[userId];
+		}
 
 		if (!convo) {
 			convo = {
