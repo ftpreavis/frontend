@@ -31,6 +31,7 @@
 		"usernamePlaceholder": "Profile Name",
 		"bioPlaceholder": "Biography",
 		"passwordPlaceholder": "New password",
+        "password": "Password",
 		"save": "Save",
 		"close": "Close",
 		"enable2FA": "Enable 2FA",
@@ -169,6 +170,7 @@
 		}
 	},
 	"tournament": {
+        "tournament": "Tournament",
 		"create": "Create a tournament",
 		"name": " Player Name",
 		"addPlayer": "Add a player",
@@ -192,8 +194,24 @@
 		}
 	},
 	"pong": {
+        "opponent": "Opponent's name",
+        "IAName": "name of the AI",
 		"ballSpeed": "Base ball speed",
 		"paddleSpeed": "Base paddle speed",
-		"settings": "Settings"
+        "play": "Play",
+        "return": "Return",
+        "settings": {
+            "name": "Settings",
+            "preview": "Preview",
+            "reset": "Reset to default settings",
+            "background": "Background color",
+            "paddle": "Paddle color",
+            "divider": "Divider color",
+            "score": "Score color",
+            "ball": "Ball color",
+            "apply": "Apply",
+            "cancel": "Cancel",
+            "customize": "Customize the colors"
+        }
 	}
 }

@@ -88,9 +88,9 @@ onMounted(async() => {
 	<Modal v-model="modalVisible" title="Edit Profile">
 		<div class="flex flex-col space-y-6">
 			<FormField type="File" label="Avatar" @change="handleAvatarChange"></FormField>
-			<FormField v-model="username" label="Username" type="text" :placeholder="t('profile.usernamePlaceholder')"></FormField>
+			<FormField v-model="username" :label="t('profile.usernamePlaceholder')" type="text" :placeholder="t('profile.usernamePlaceholder')"></FormField>
 			<FormField v-model="bio" label="Bio" type="text" :placeholder="t('profile.bioPlaceholder')"></FormField>
-			<FormField v-model="password" label="Password" type="text" :placeholder="t('profile.passwordPlaceholder')"></FormField>
+			<FormField v-model="password" :label="t('profile.password')" type="text" :placeholder="t('profile.passwordPlaceholder')"></FormField>
 			<button v-if="twoFAEnabled == false" class="cursor-pointer mt-4 dark:text-white" @click="showTwoFactor = true"> {{ t('profile.enable2FA') }} </button>
 		</div>
 		<template #footer>

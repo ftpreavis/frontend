@@ -4,8 +4,10 @@ import axios from 'axios';
 import { nextTick, onMounted, ref, watch, computed } from 'vue'
 import { useAuth } from '@/store/auth';
 import Modal from "@/components/Modal/Modal.vue";
+import { useLang } from '@/composables/useLang';
 
 const authStore = useAuth()
+const { t } = useLang()
 
 const defaultSettings = {
 	background: '#1F2937',
@@ -44,11 +46,11 @@ const previewCanvas = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
 
 const colorFields = {
-	background: { label: 'Background color' },
-	paddle:		{ label: 'Paddle color'},
-	ball:		{ label: 'Ball color' },
-	divider:	{ label: 'Divider color' },
-	score:		{ label: 'Score color' },
+	background: { get label() { return t('pong.settings.background') } },
+	paddle:    { get label() { return t('pong.settings.paddle') } },
+	ball:      { get label() { return t('pong.settings.ball') } },
+	divider:   { get label() { return t('pong.settings.divider') } },
+	score:     { get label() { return t('pong.settings.score') } },
 }
 
 function drawPreview() {
@@ -126,8 +128,8 @@ onMounted(() => {
 	drawPreview()
 })
 
-const apply = () => {
-    setSettings()
+const apply = async() => {
+    await setSettings()
     emit('set')
 	emit('update:visible', false)
 }
@@ -137,18 +139,18 @@ const close = () => emit('update:visible', false)
 </script>
 
 <template>
-    <Modal v-model="modalValue" title="Settings">
+    <Modal v-model="modalValue" :title="$t('pong.settings.name')">
       <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto dark:text-white">
-        <h1 class="text-2xl font-bold">Customize Colors</h1>
+        <h1 class="text-2xl font-bold">{{$t('pong.settings.customize')}}</h1>
 
-        <p class="text-sm text-gray-500">Preview</p>
+        <p class="text-sm text-gray-500">{{$t('pong.settings.preview')}}</p>
         <canvas ref="previewCanvas" class="w-full border rounded h-[100px] shadow-sm"></canvas>
 
         <div class="w-full">
           <button
-            @click="local = defaultSettings"
+            @click="local = { ...defaultSettings }"
             class="w-full py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-sm dark:text-black">
-            reset default
+            {{$t('pong.settings.reset')}}
           </button>
         </div>
 
@@ -169,12 +171,12 @@ const close = () => emit('update:visible', false)
           <button
             @click="close"
             class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 dark:text-black">
-            cancel
+            {{$t('pong.settings.cancel')}}
           </button>
           <button
             @click="apply"
             class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-            apply
+            {{$t('pong.settings.apply')}}
           </button>
         </div>
       </div>

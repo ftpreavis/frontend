@@ -17,7 +17,8 @@ export function useDarkMode() {
 
 	const toggle = async() => {
 		theme.value = theme.value === 'light' ? 'dark' : 'light'
-        await axios.patch(`/api/users/${authStore.userId}/settings`, {darkMode: theme.value})
+        const darkMode = theme.value === 'light' ? true : false
+        await axios.patch(`/api/users/${authStore.userId}/settings`, {darkMode: darkMode})
 	}
 
 	watch(theme, apply)

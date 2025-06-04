@@ -2,6 +2,9 @@
 import { ref, computed } from 'vue'
 import Modal from "@/components/Modal/Modal.vue";
 import { onMounted } from 'vue';
+import { useLang } from '@/composables/useLang';
+
+const { t } = useLang()
 
 const props = defineProps<{
 	visible: boolean,
@@ -39,12 +42,12 @@ const close = () => { emit('update:visible', false) }
 </script>
 
 <template>
-    <Modal v-model="modalValue" :title="mode === 'solo' ? 'Solo Settings' : 'Multiplayer Settings'">
+    <Modal v-model="modalValue" title="Pong">
         <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
 
             <div class="w-full space-y-2 dark:text-white">
             <label class="flex justify-between text-sm items-center">
-                Base ball speed
+                {{ t('pong.ballSpeed') }}
                 <input
                 type="range"
                 v-model.number="localCheats.ballSpeed"
@@ -55,7 +58,7 @@ const close = () => { emit('update:visible', false) }
                 />
             </label>
             <label class="flex justify-between text-sm items-center">
-                Base paddle speed
+                {{ t('pong.paddleSpeed') }}
                 <input
                 type="range"
                 v-model.number="localCheats.paddleSpeed"
@@ -69,11 +72,11 @@ const close = () => { emit('update:visible', false) }
 
             <div class="w-full">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-400">
-                {{ mode === 'solo' ? 'IA Name' : 'Player 1 Name' }}
+                {{ mode === 'solo' ? $t('pong.IAName') : $t('pong.opponent') }}
             </label>
             <input
                 type="text"
-                placeholder="player1"
+                :placeholder="mode === 'solo' ? 'bot' : 'player1'"
                 class="mt-1 w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 v-model="localPlayer1Name"
             >
@@ -83,12 +86,12 @@ const close = () => { emit('update:visible', false) }
             <button
                 @click="close"
                 class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
-                Return
+                {{$t('pong.return')}}
             </button>
             <button
                 @click="play"
                 class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700">
-                Play
+                {{$t('pong.play')}}
             </button>
             </div>
         </div>
