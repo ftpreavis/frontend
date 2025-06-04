@@ -151,13 +151,13 @@ export const useAuth = defineStore('auth', () => {
 
 			setCookies("access_token", jwt);
 			setCookies("userId", String(userData.id));
-            await getUserSettings(userData.data.id)
+            await getUserSettings(userData.id)
 			user.value = userData;
 			token.value = jwt;
 			userId.value = userData.id;
 			isAuthenticated.value = true;
 
-			await router.push('/').then(() => window.location.reload());
+			return true
 		} catch (error) {
 			loginError.value = t('error.auth.googleAuthFailed');
 		}
