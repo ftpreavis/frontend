@@ -4,12 +4,12 @@ import { useLang } from "@/composables/useLang"
 import {useAuth} from "@/store/auth.ts";
 import { useRouter } from "vue-router";
 
-import CTAButton from "@/components/CallToActionButton.vue";
 import AuthModal from "@/components/Modal/AuthModal/AuthModal.vue";
 
 const authStore = useAuth()
 const router = useRouter()
 const { t } = useLang()
+
 const showAuthModal = ref<boolean>(false)
 
 function onClickCTA() {
