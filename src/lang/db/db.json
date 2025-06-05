@@ -1,217 +1,219 @@
 {
-	"chat": {
-        "conversations": "Lok pruzaan",
-        "noConversations": "Ni pruzaan voth hi...",
-        "back": "← Bo",
-        "newMessages": "Nus meyz",
-        "inputPlaceholder": "Kogaan fah rahgol...",
-        "send": "Bahlok",
-        "block": {
-            "blockedByUser": "Hi los tinvaak-nid.",
-            "userBlocked": "Zu'u drey hi ni tinvaak."
-	  }
-	},
-	"header": {
-        "logo": "Dovahdein",
-        "signIn": "Rahgol",
-        "signUp": "Meyz",
-        "viewProfile": "Profile",
-        "logout": "Logout",
-        "lightMode": "Light mode",
-        "darkMode": "Dark mode"
-	},
-	"twoFactor": {
-        "title": "Dov Pruzaan",
-        "scanPrompt": "Nivahriin zii, yahzii faal kodaav:",
-        "inputPlaceholder": "Sahlok 6 los kod",
-        "submit": "Nahlot",
-        "close": "Qahnaar"
-	},
-	"profile": {
-        "usernamePlaceholder": "Fahliil Nahlaan",
-        "bioPlaceholder": "Zinrah",
-        "passwordPlaceholder": "Nuvos fah rahgol",
-        "password": "Password",
-        "save": "Hahdrim",
-        "close": "Pruzah",
-        "enable2FA": "Ven Dov Pruzaan",
-        "noAvatar": "Ni faal sil",
-        "friends": "Fahdon",
-        "sendMessage": "Bahlok Tinvaak",
-        "addFriend": "Ven fahdon",
-        "edit": "Golt zinrah",
-        "block": "Tinvaak-Nid",
-        "unblock": "Ven Tinvaak",
-        "statsTitle": "Zinmid los kril",
+    "chat": {
+      "conversations": "Lok pruzaan",
+      "noConversations": "Ni pruzaan voth hi...",
+      "back": "← Bo",
+      "newMessages": "Nus meyz",
+      "inputPlaceholder": "Kogaan fah rahgol...",
+      "send": "Bahlok",
+      "block": {
+        "blockedByUser": "Hi los tinvaak-nid.",
+        "userBlocked": "Zu'u drey hi ni tinvaak."
+      }
+    },
+    "header": {
+      "logo": "Dovahdein",
+      "signIn": "Rahgol",
+      "signUp": "Meyz",
+      "viewProfile": "Profile",
+      "logout": "Rahgol-Nid",
+      "lightMode": "Golz-Motaad",
+      "darkMode": "Vul-Motaad"
+    },
+    "twoFactor": {
+      "title": "Dov Pruzaan",
+      "scanPrompt": "Nivahriin zii, yahzii faal kodaav:",
+      "inputPlaceholder": "Sahlok 6 los kod",
+      "submit": "Nahlot",
+      "close": "Qahnaar"
+    },
+    "profile": {
+      "usernamePlaceholder": "Fahliil Nahlaan",
+      "bioPlaceholder": "Zinrah",
+      "passwordPlaceholder": "Nuvos fah rahgol",
+      "password": "Rahgol Kodaav",
+      "save": "Hahdrim",
+      "close": "Pruzah",
+      "enable2FA": "Ven Dov Pruzaan",
+      "noAvatar": "Ni faal sil",
+      "friends": "Fahdon",
+      "sendMessage": "Bahlok Tinvaak",
+      "addFriend": "Ven fahdon",
+      "edit": "Golt zinrah",
+      "block": "Tinvaak-Nid",
+      "unblock": "Ven Tinvaak",
+      "statsTitle": "Zinmid los kril",
+      "win": "Krin",
+      "loose": "Mulaag",
+      "ratio": "Nahlokmaar",
+      "recentGames": "Nust lahney gein",
+      "noRecentGames": "Ni lahney gein",
+      "table": {
+        "game": "Gein",
+        "name": "Naam",
+        "score": "Lot Rah",
+        "result": "Qethsegol",
         "win": "Krin",
-        "loose": "Mulaag",
-        "ratio": "Nahlokmaar",
-        "recentGames": "Nust lahney gein",
-		"noRecentGames": "No recent games",
-        "table": {
-            "game": "Gein",
-            "name": "Naam",
-            "score": "Lot Rah",
-            "result": "Qethsegol",
-            "win": "Krin",
-            "loss": "Mulaag"
+        "loss": "Mulaag"
+      },
+      "notFound": "Fahliil nid meyz",
+      "noBio": "Fahliil nu voth zinrah.",
+      "friendButton": {
+        "buttonStatus": {
+          "add": "Ven",
+          "pending": "Nok",
+          "accept": "Rah",
+          "unfriend": "Ven-Nid"
         },
-        "notFound": "Fahliil nid meyz",
-        "noBio": "Fahliil nu voth zinrah.",
-        "friendButton": {
-			"buttonStatus": {
-				"add": "Add",
-				"pending": "Pending",
-				"accept": "Accept",
-				"unfriend": "Unfriend"
-			},
-			"cancelRequestModal": {
-				"title": "Delete friend request?",
-				"body": "This action will cancel your friend request. Are you sure ?",
-				"confirmButton": "Cancel Request"
-			},
-			"unfriendModal": {
-				"title": "Remove Friend?",
-				"body": "Are you sure you want to remove this friend ?",
-				"confirmButton": "Remove"
-			}
-		},
-		"pendingRequestsModal": {
-			"title": "Pending requests list",
-			"accept": "Accept",
-			"reject": "Reject",
-			"noPending": "No requests pending",
-			"cancel": "Cancel",
-			"notFound": "User not found"
-		},
-		"deleteProfile": {
-			"trigger": "Delete profile",
-			"firstModal": {
-				"title": "Delete your profile ?",
-				"body": "Are you sure you want to remove your account ?",
-				"confirmButton": "Delete your account"
-			},
-			"lastModal": {
-				"title": "Final confirmation",
-				"body": "This is your last chance to cancel. Once you delete your account, all data will be permanently removed and cannot be recovered. Please enter your username to confirm.",
-				"cancelButton": "Cancel",
-				"confirmButton": "Delete your account",
-				"error": {
-					"enterUsername": "Please enter your username.",
-					"notMatch": "Username does not match."
-				}
-			}
-		}
-	},
-	"confirm": {
-        "defaultCancel": "Golt",
-        "defaultConfirm": "Pah",
-        "blockTitle": "Tinvaak-nid fahliil?",
-        "blockMessage": "Drey hi tinvaak-nid fahliil? Hi los ni meyz voth tinvaak.",
-        "blockOk": "Tinvaak-nid",
-        "unblockTitle": "Ven tinvaak fahliil?",
-        "unblockMessage": "Drey hi ven tinvaak fahliil ahrk ven sahrot?",
-        "unblockOk": "Ven Tinvaak"
-	},
-	"signup": {
-        "title": "Meyz Nahlaan",
-        "username": "Naam",
-        "email": "Kogaan-Mail",
-        "password": "Rahgol Kodaav",
-        "submit": "Meyz",
-        "google": "Gogol",
-		"haveAccount": "Already have an account?"
-	},
-	"login": {
-        "title": "Rahgol",
-        "username": "Naam",
-        "password": "Rahgol Kodaav",
-        "submit": "Rahgol",
-        "google": "Gogol",
-        "logout": "Rahgol-Nid",
-        "logoutGoogle": "Rahgol Gogol-Nid",
-        "2faTitle": "Dov Pruzaan",
-        "2faPrompt": "Yahzii 6-kodaav gein faal niid",
-        "2faPlaceholder": "Kodaav 6",
-        "2faSubmit": "Pah",
-        "dontHaveAccount": "Don't have an account?",
-		"confirm": {
-			"2faTitle": "Cancel Two-Factor Authentication?",
-			"2faMessage": "You haven’t completed two-factor authentication. Are you sure you want to exit?",
-			"2faConfirm": "Yes, cancel"
-		}
-	},
-	"landing": {
-		"title": "Play. Compete. Triumph.",
-		"tagline": "Relive the timeless arcade classic, challenge friends in real-time, and rise through the global rankings — all in your browser. ",
-		"connect": "Connect",
-		"play": "Play"
-	},
-	"error": {
-        "auth": {
-            "invalidCredentials": "Naam los nid vokun.",
-            "googleAuthFailed": "Gogol rahgol lost hiik."
+        "cancelRequestModal": {
+          "title": "Ven-nid fahdon?",
+          "body": "Dii kriist los golt ven pruzaan. Drey hi sure?",
+          "confirmButton": "Ven-nid"
         },
-        "chat": {
-            "block": {
-            "errorPerms": "Nid krif faal vokun tinvaak."
-            }
-        },
-        "signup": {
-            "usernameRequired": "Naam drey hi.",
-            "emailRequired": "Kogaan-Mail drey hi.",
-            "passwordRequired": "Kodaav drey hi.",
-			"alreadyExists": "User already exists."
-        },
-        "login": {
-            "usernameRequired": "Naam drey hi.",
-            "passwordRequired": "Kodaav drey hi.",
-            "tokenRequired": "Kodaav Dov drey hi."
+        "unfriendModal": {
+          "title": "Ven fahdon?",
+          "body": "Drey hi ven fahdon los voth pah?",
+          "confirmButton": "Ven"
         }
-	},
+      },
+      "pendingRequestsModal": {
+        "title": "Nok pruzaan",
+        "accept": "Rah",
+        "reject": "Mulaag",
+        "noPending": "Ni pruzaan nok",
+        "cancel": "Golt",
+        "notFound": "Fahliil nid meyz"
+      },
+      "deleteProfile": {
+        "trigger": "Qahnaar Profile",
+        "firstModal": {
+          "title": "Qahnaar dii profile?",
+          "body": "Drey hi qahnaar dii account?",
+          "confirmButton": "Qahnaar dii account"
+        },
+        "lastModal": {
+          "title": "Alduin tinvaak",
+          "body": "Faal hind los golt. Qahnaar = Nid rein. Nahlaan naam voth krif.",
+          "cancelButton": "Golt",
+          "confirmButton": "Qahnaar dii account",
+          "error": {
+            "enterUsername": "Naam drey hi.",
+            "notMatch": "Naam nid vokun."
+          }
+        }
+      }
+    },
+    "confirm": {
+      "defaultCancel": "Golt",
+      "defaultConfirm": "Pah",
+      "blockTitle": "Tinvaak-nid fahliil?",
+      "blockMessage": "Drey hi tinvaak-nid fahliil? Hi los ni meyz voth tinvaak.",
+      "blockOk": "Tinvaak-nid",
+      "unblockTitle": "Ven tinvaak fahliil?",
+      "unblockMessage": "Drey hi ven tinvaak fahliil ahrk ven sahrot?",
+      "unblockOk": "Ven Tinvaak"
+    },
+    "signup": {
+      "title": "Meyz Nahlaan",
+      "username": "Naam",
+      "email": "Kogaan-Mail",
+      "password": "Rahgol Kodaav",
+      "submit": "Meyz",
+      "google": "Gogol",
+      "haveAccount": "Hi los account?"
+    },
+    "login": {
+      "title": "Rahgol",
+      "username": "Naam",
+      "password": "Rahgol Kodaav",
+      "submit": "Rahgol",
+      "google": "Gogol",
+      "logout": "Rahgol-Nid",
+      "logoutGoogle": "Rahgol Gogol-Nid",
+      "2faTitle": "Dov Pruzaan",
+      "2faPrompt": "Yahzii 6-kodaav gein faal niid",
+      "2faPlaceholder": "Kodaav 6",
+      "2faSubmit": "Pah",
+      "dontHaveAccount": "Ni los account?",
+      "confirm": {
+        "2faTitle": "Ven Dov Pruzaan?",
+        "2faMessage": "Hi los ni lost Dov Pruzaan. Drey hi ven?",
+        "2faConfirm": "Pah, ven"
+      }
+    },
+    "landing": {
+      "title": "Gein. Kril. Krin.",
+      "tagline": "Revak faal bronjun gein, kril fahdon voth tik, ahrk fen sahrot voth tol do lok — voth hiid.",
+      "connect": "Yahzii",
+      "play": "Gein"
+    },
+    "error": {
+      "auth": {
+        "invalidCredentials": "Naam los nid vokun.",
+        "googleAuthFailed": "Gogol rahgol lost hiik."
+      },
+      "chat": {
+        "block": {
+          "errorPerms": "Nid krif faal vokun tinvaak."
+        }
+      },
+      "signup": {
+        "usernameRequired": "Naam drey hi.",
+        "emailRequired": "Kogaan-Mail drey hi.",
+        "passwordRequired": "Kodaav drey hi.",
+        "alreadyExists": "Fahliil los meyz."
+      },
+      "login": {
+        "usernameRequired": "Naam drey hi.",
+        "passwordRequired": "Kodaav drey hi.",
+        "tokenRequired": "Kodaav Dov drey hi."
+      }
+    },
     "tournament": {
-        "tournament": "Tournament",
-		"create": "Create a tournament",
-		"name": " Player Name",
-		"addPlayer": "Add a player",
-		"add": "Add",
-		"player": "Player",
-		"delete": "Delete",
-		"createTournament": "Create the tournament",
-		"required": "The number of players must be 4, 8, 16 or 32 to start the tournament.",
-		"table": "Tournament table",
-		"future": "Future",
-		"winner": "Winner",
-		"notPlayed": "Not played yet",
-		"nextMatch": "Start the next match",
-		"restart": "Restart a tournament",
-		"round": {
-			"32": "Round of 16",
-			"16": "Round of 8",
-			"8": "Quarter final",
-			"4": "Semi-final",
-			"2": "Final"
-		}
-	},
-	"pong": {
-        "opponent": "Opponent's name",
-        "IAName": "name of the AI",
-		"ballSpeed": "Base ball speed",
-		"paddleSpeed": "Base paddle speed",
-        "play": "Play",
-        "return": "Return",
-        "settings": {
-            "name": "Settings",
-            "preview": "Preview",
-            "reset": "Reset to default settings",
-            "background": "Background color",
-            "paddle": "Paddle color",
-            "divider": "Divider color",
-            "score": "Score color",
-            "ball": "Ball color",
-            "apply": "Apply",
-            "cancel": "Cancel",
-            "customize": "Customize the colors"
-        }
-	}
-}
+      "tournament": "Geinmid",
+      "create": "Meyz Geinmid",
+      "name": "Naam do Fahliil",
+      "addPlayer": "Ven Fahliil",
+      "add": "Ven",
+      "player": "Fahliil",
+      "delete": "Qahnaar",
+      "createTournament": "Meyz faal Geinmid",
+      "required": "Fahliil drey 4, 8, 16, los 32 fah meyz geinmid.",
+      "table": "Geinmid Vothrah",
+      "future": "Koraav",
+      "winner": "Krin",
+      "notPlayed": "Ni gein lost",
+      "nextMatch": "Gein niil gein",
+      "restart": "Ven Meyz Geinmid",
+      "round": {
+        "32": "16-Los Gein",
+        "16": "8-Los Gein",
+        "8": "Faal Dwiin",
+        "4": "Sahrot Gein",
+        "2": "Krin Gein"
+      }
+    },
+    "pong": {
+      "opponent": "Naam do Krilot",
+      "IAName": "Naam do ni Fahliil",
+      "ballSpeed": "Rah do Lot Krein",
+      "paddleSpeed": "Rah do Lot Haal",
+      "play": "Gein",
+      "return": "Bo",
+      "scored": "lotrahgol",
+      "settings": {
+        "name": "Golz",
+        "preview": "Koraav",
+        "reset": "Ven Vokun Golz",
+        "background": "Kulaan Motaad",
+        "paddle": "Haal Kulaan",
+        "divider": "Dey Kulaan",
+        "score": "Lot Rah Kulaan",
+        "ball": "Krein Kulaan",
+        "apply": "Bex",
+        "cancel": "Golt",
+        "customize": "Golz kulaan"
+      }
+    }
+  }
+  

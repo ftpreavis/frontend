@@ -200,6 +200,7 @@
 		"paddleSpeed": "Base paddle speed",
         "play": "Play",
         "return": "Return",
+        "scored": "scored",
         "settings": {
             "name": "Settings",
             "preview": "Preview",
