@@ -32,8 +32,13 @@ export function setupChatSocket() {
 		if (authStore.userId !== fromId && !authStore.userMap[fromId]) {
 			const data = await authStore.fetchUserById(fromId);
 			if (!data) return;
+			authStore.userMap[fromId] = {
+				id: data.id,
+				username: data.username,
+				avatar: data.avatar
+			}
 		}
-		chatStore.receiveMessage(message);
+		await chatStore.receiveMessage(message);
 	});
 
 	socket.on('notify_unread_count', ({ fromUserId, count }) => {

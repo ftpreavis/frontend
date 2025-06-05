@@ -31,6 +31,7 @@
 		"usernamePlaceholder": "Profile Name",
 		"bioPlaceholder": "Biography",
 		"passwordPlaceholder": "New password",
+        "password": "Password",
 		"save": "Save",
 		"close": "Close",
 		"enable2FA": "Enable 2FA",
@@ -38,7 +39,7 @@
 		"friends": "Friends",
 		"sendMessage": "Message",
 		"addFriend": "Add to friend",
-		"edit": "Edit profile",
+		"edit": "Edit",
 		"block": "Block User",
 		"unblock": "Unblock User",
 		"statsTitle": "Stats for all game",
@@ -46,6 +47,7 @@
 		"loose": "Loose",
 		"ratio": "Win rate",
 		"recentGames": "Your recent game",
+		"noRecentGames": "No recent games",
 		"table": {
 			"game": "Game",
 			"name": "Name",
@@ -78,7 +80,9 @@
 			"title": "Pending requests list",
 			"accept": "Accept",
 			"reject": "Reject",
-			"noPending": "No requests pending"
+			"noPending": "No requests pending",
+			"cancel": "Cancel",
+			"notFound": "User not found"
 		},
 		"deleteProfile": {
 			"trigger": "Delete profile",
@@ -165,32 +169,50 @@
 			"tokenRequired": "2FA code is required."
 		}
 	},
-    "tournament": {
-        "create": "Create a tournament",
-        "name": " Player Name",
-        "addPlayer": "Add a player",
-        "add": "Add",
-        "player": "Player",
-        "delete": "Delete",
-        "createTournament": "Create the tournament",
-        "required": "The number of players must be 4, 8, 16 or 32 to start the tournament.",
-        "table": "Tournament table",
-        "future": "Future",
-        "winner": "Winner",
-        "notPlayed": "Not played yet",
-        "nextMatch": "Start the next match",
-        "restart": "Restart a tournament",
-        "round": {
-            "32": "Round of 16",
-            "16": "Round of 8",
-            "8": "Quarter final",
-            "4": "Semi-final",
-            "2": "Final"
+	"tournament": {
+        "tournament": "Tournament",
+		"create": "Create a tournament",
+		"name": " Player Name",
+		"addPlayer": "Add a player",
+		"add": "Add",
+		"player": "Player",
+		"delete": "Delete",
+		"createTournament": "Create the tournament",
+		"required": "The number of players must be 4, 8, 16 or 32 to start the tournament.",
+		"table": "Tournament table",
+		"future": "Future",
+		"winner": "Winner",
+		"notPlayed": "Not played yet",
+		"nextMatch": "Start the next match",
+		"restart": "Restart a tournament",
+		"round": {
+			"32": "Round of 16",
+			"16": "Round of 8",
+			"8": "Quarter final",
+			"4": "Semi-final",
+			"2": "Final"
+		}
+	},
+	"pong": {
+        "opponent": "Opponent's name",
+        "IAName": "name of the AI",
+		"ballSpeed": "Base ball speed",
+		"paddleSpeed": "Base paddle speed",
+        "play": "Play",
+        "return": "Return",
+        "scored": "scored",
+        "settings": {
+            "name": "Settings",
+            "preview": "Preview",
+            "reset": "Reset to default settings",
+            "background": "Background color",
+            "paddle": "Paddle color",
+            "divider": "Divider color",
+            "score": "Score color",
+            "ball": "Ball color",
+            "apply": "Apply",
+            "cancel": "Cancel",
+            "customize": "Customize the colors"
         }
-    },
-    "pong": {
-        "ballSpeed": "Base ball speed",
-        "paddleSpeed": "Base paddle speed",
-        "settings": "Settings"
-    }
+	}
 }

@@ -49,7 +49,7 @@ function cancel() {
 <template>
 	<Modal v-model="modalValue" :title="title">
 		<div class="space-y-4">
-			<p class="text-gray-600">{{ message }}</p>
+			<p class="text-gray-600 dark:text-white">{{ message }}</p>
 			<div class="flex flex-col sm:flex-row justify-between gap-3 pt-4">
 				<button
 					class="w-full sm:w-auto px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition"

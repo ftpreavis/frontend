@@ -28,9 +28,10 @@
 		"close": "Fermer"
 	},
 	"profile": {
-		"usernamePlaceholder": "Nom du profil",
+		"usernamePlaceholder": "Nom d'utilisateur",
 		"bioPlaceholder": "Biographie",
 		"passwordPlaceholder": "Nouveau mot de passe",
+        "password":"Mot de passe",
 		"save": "Enregistrer",
 		"close": "Fermer",
 		"enable2FA": "Activer 2FA",
@@ -46,6 +47,7 @@
 		"loose": "Défaites",
 		"ratio": "Taux de victoire",
 		"recentGames": "Vos parties récentes",
+        "noRecentGames": "Pas de partie récente",
 		"table": {
 			"game": "Jeu",
 			"name": "Nom",
@@ -75,12 +77,31 @@
 			}
 		},
 		"pendingRequestsModal": {
-			"title": "Liste de demande d'amis",
-			"accept": "Accepter",
-			"reject": "Refuser",
-			"noPending": "Aucune demande en attente"
-		},
-		"deleteProfile": "Delete profile"
+            "title": "Liste des demandes en attente",
+            "accept": "Accepter",
+            "reject": "Refuser",
+            "noPending": "Aucune demande en attente",
+            "cancel": "Annuler",
+            "notFound": "Utilisateur non trouvé"
+        },
+		"deleteProfile": {
+            "trigger": "Supprimer le profil",
+            "firstModal": {
+              "title": "Supprimer votre profil ?",
+              "body": "Êtes-vous sûr de vouloir supprimer votre compte ?",
+              "confirmButton": "Supprimer votre compte"
+            },
+            "lastModal": {
+              "title": "Confirmation finale",
+              "body": "C'est votre dernière chance d'annuler. Une fois votre compte supprimé, toutes les données seront définitivement effacées et ne pourront pas être récupérées. Veuillez entrer votre nom d'utilisateur pour confirmer.",
+              "cancelButton": "Annuler",
+              "confirmButton": "Supprimer votre compte",
+              "error": {
+                "enterUsername": "Veuillez entrer votre nom d'utilisateur.",
+                "notMatch": "Le nom d'utilisateur ne correspond pas."
+              }
+            }
+          }
 	},
 	"confirm": {
 		"defaultCancel": "Annuler",
@@ -149,6 +170,7 @@
 		}
 	},
     "tournament": {
+        "tournament": "Tournoi",
         "create": "Créer un tournoi",
         "name": "Nom du joueur",
         "addPlayer": "Ajouter un joueur",
@@ -172,8 +194,25 @@
         }
     },
     "pong": {
+        "opponent": "Nom de l'adversaire",
+        "IAName": "Nom de l'IA",
         "ballSpeed": "Vitesse de base de la balle",
         "paddleSpeed": "Vitesse de base du paddle",
-        "settings": "Paramètres"
+        "play" : "Jouer",
+        "return": "Retour",
+        "scored": "a marqué",
+        "settings": {
+            "name": "Paramètres",
+            "preview": "Aperçu",
+            "reset": "Réinitialiser les paramètres par défaut",
+            "background": "Couleur de fond",
+            "paddle": "Couleur de la raquette",
+            "divider": "Couleur du séparateur",
+            "score": "Couleur du score",
+            "ball": "Couleur de la balle",
+            "apply": "Appliquer",
+            "cancel": "Annuler",
+            "customize": "Personnaliser les couleurs"
+        }
     }
 }
