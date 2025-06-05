@@ -85,6 +85,7 @@ function goToProfile(targetUserId: number) {
 };
 
 const selectConversation = async (id: number) => {
+	if (id == authStore.userId) return window.location.reload() ;
 	chatUIStore.detachScroll()
 	selectedId.value = id
 	chatStore.setSelectedUser(id)

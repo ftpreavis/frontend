@@ -41,10 +41,10 @@ const go = (path: string) => {
 			<a @click="go('/')"
 				class="text-3xl font-extrabold text-[#000]  dark:text-white leading-none transform -translate-y-[2px] cursor-pointer">Preavis.</a>
 
-			<UserSearchBar class="hidden sm:block w-full max-w-xs mx-4" placeholder="Search users..."
+			<UserSearchBar v-if="authStore.isAuthenticated" class="hidden sm:block w-full max-w-xs mx-4" placeholder="Search users..."
 				@select="user => go('/profile/' + user.id)" />
 
-			<button @click="showSearchModal = true" class="sm:hidden mr-3 text-gray-600 dark:text-white p-2"
+			<button v-if="authStore.isAuthenticated" @click="showSearchModal = true" class="sm:hidden mr-3 text-gray-600 dark:text-white p-2"
 				aria-label="Open search">
 				<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
 					stroke-linecap="round" stroke-linejoin="round">
