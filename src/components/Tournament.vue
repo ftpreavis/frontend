@@ -69,10 +69,6 @@ function startTournament() {
 
 onMounted(async() => {
     await getUsername()
-    players.value = tournament.matches
-    .filter(match => match.round === 1)
-    .flatMap(match => [match.player1, match.player2])
-    .filter((player): player is string => player !== null);
     if (players.value.length == 0)
         players.value.push(profileUser.value.username)
 })

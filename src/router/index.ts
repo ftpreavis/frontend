@@ -11,7 +11,9 @@ const routes = [
 	{ path: '/pong', name: 'Pong', component: Pong, meta: { requiresAuth: true } },
 	{ path: '/profile/:userId', name: 'Profile', component: Profile, meta: { requiresAuth: true, props: true } },
 	{ path: '/chat', name: 'ChatPage', component: ChatPage, meta: { requiresAuth: true, props: true } },
-	{ path: '/auth/google/callback', name: 'GoogleCallback', component: () => import('@/views/GoogleCallback.vue') }
+	{ path: '/auth/google/callback', name: 'GoogleCallback', component: () => import('@/views/GoogleCallback.vue') },
+
+    { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({

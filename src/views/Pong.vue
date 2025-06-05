@@ -42,27 +42,27 @@ const message = ref<string>('')
 const gameMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
 let botInterval: ReturnType<typeof setInterval>
 
-const player1Name = ref<string>('BRR BRR')
-const player2Name = ref<string>('Azaleee')
-
-let animationId: number | null = null
-
-const showSettings = ref(false)
-const settings = ref({
-	background: '#1F2937',
-	paddle: 	'#FF0000',
-	ball: 		'#FFFFFF',
-	divider:	'#FFFFFF',
-	score:		'#FFFFFF'
-})
-
-const showTournament = ref(false)
-const showNextMatch = ref(false)
-const tournament = useTournament()
-const authStore = useAuth()
-const { t } = useLang()
-const profileUser = ref<any | null>(null);
-
+    const player1Name = ref<string>('BRR BRR')
+    const player2Name = ref<string>('Azaleee')
+    
+    let animationId: number | null = null
+    
+    const showSettings = ref(false)
+    const settings = ref({
+        background: '#1F2937',
+        paddle: 	'#FF0000',
+        ball: 		'#FFFFFF',
+        divider:	'#FFFFFF',
+        score:		'#FFFFFF'
+    })
+    
+    const showTournament = ref(false)
+    const showNextMatch = ref(false)
+    const tournament = useTournament()
+    const authStore = useAuth()
+    const { t } = useLang()
+    const profileUser = ref<any | null>(null);
+    
 const showModeSettings = ref(false)
 const modeSettingsMode = ref<'solo' | 'multi' | 'tournament' | null>(null)
 const cheats =ref({ ballSpeed: ballSpeed, paddleSpeed: basePlayerSpeed })
@@ -90,8 +90,10 @@ const updateCanvasDimensions = () => {
 	}
 }
 
+let targetX = 0;
+
 async function getSettings() {
-  try {
+    try {
     const response = await axios.get(`/api/users/${authStore.userId}/settings`)
     const data = response.data
 
@@ -140,11 +142,12 @@ onMounted(() => {
 			render()
 		}
 	}
+    targetX = player1Pos
 
 	window.addEventListener('resize', updateCanvasDimensions)
 	window.addEventListener('keydown', handleKeyDown)
 	window.addEventListener('keyup', handleKeyUp)
-
+    
 	if (pongCanvas.value) {
 		pongCanvas.value.addEventListener('touchstart', handleTouchStart, { passive: false })
 		pongCanvas.value.addEventListener('touchmove', handleTouchMove, { passive: false })
@@ -482,7 +485,6 @@ const render = () => {
 	if (isWaiting && message.value && (player1Score.value != scoreToWin && player2Score.value != scoreToWin)) drawMessage('yellow')
 }
 
-let targetX = 0;
 
 const playGame = (payload: { cheats: { ballSpeed: number; paddleSpeed: number }, player1Name: string }) => {
     getSettings()
