@@ -260,12 +260,12 @@ const updateBallPosition = () => {
 	ballPosY += ballAngleY
 	if (ballPosY - ballRadius <= 0) {
 		player2Score.value++
-		message.value = player2Name.value + ' scored !'
+		message.value = player2Name.value + ' ' + t('pong.scored')
 		resetBall(1)
 		return
 	} else if (ballPosY + ballRadius >= canvasHeight.value) {
 		player1Score.value++
-		message.value = player1Name.value + ' scored !'
+		message.value = player1Name.value + ' ' + t('pong.scored')
 		resetBall(2)
 		return
 	}
@@ -569,7 +569,7 @@ const resetGame = () => {
 }
 
 const winGame = async(player: string) => {
-	message.value = player + ' win !'
+	message.value = t('tournament.winner') + ' : ' + player
 	drawMessage('red')
     if (gameMode.value == 'tournament') {
         showNextMatch.value = true
