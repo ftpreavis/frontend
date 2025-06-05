@@ -3,6 +3,7 @@ import {ref} from "vue"
 import router from '@/router'
 import axios from 'axios'
 import {useLang} from '@/composables/useLang'
+import { useDarkMode } from "@/composables/useDarkMode";
 
 const getCookie = (name: string): string | null => {
 	const cookies = document.cookie.split('; ')
@@ -22,10 +23,11 @@ export const useAuth = defineStore('auth', () => {
 	const token = ref<string | null>(getCookie('access_token'))
 	const loginError = ref<string>('')
 	const signupError = ref<string>('')
-	const { t } = useLang()
+	const { t, setLang } = useLang()
 	const isAuthenticated = ref<boolean>(!!token.value)
 	const userMap = ref<Record<number, { id: number; username: string; avatar?: string }>>({})
 	const onlineUsers = ref<Set<Number>>(new Set())
+    const { theme, toggle } = useDarkMode()
 
 	const setCookies = (name: string, value: string) => {
 		const d = new Date();
@@ -33,6 +35,18 @@ export const useAuth = defineStore('auth', () => {
 		document.cookie = name + "=" + value + "; expires=" + d + "; path=/" + "; samesite=Lax"
 	}
 
+    const getUserSettings = async(id: number) => {
+        const response = await axios.get(`/api/users/${id}/settings`)
+        if (response.data.lang == 'ENGLISH')
+            setLang('en')
+        else
+            setLang(response.data.lang)
+        if (response.data.darkMode == false)
+            theme.value = 'light'
+        else
+            theme.value = 'dark'
+    }
+    
 	const authenticate = async (username: string, password: string) => {
 		try {
 			const response = await axios.post('/api/auth/login', { identifier: username, password });
@@ -43,41 +57,31 @@ export const useAuth = defineStore('auth', () => {
 			setCookies("access_token", response.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
+            await getUserSettings(userData.data.id)
 			await router.push('/').then(() => {window.location.reload()})
 		} catch (error){
-			loginError.value = t('error.auth.invalidCredentials')
+			loginError.value = 'error.auth.invalidCredentials'
 			console.log(loginError.value)
 		}
 	}
 
 	const signup = async (username: string, email: string, password: string) => {
 		try {
-			const response = await axios.post('/api/auth/signup', {
+			await axios.post('/api/auth/signup', {
 				username,
 				password,
 				email,
 			});
-
-			// // Le token est dans le cookie, inutile ici
-			// const userData = await axios.get('/api/users/profile');
-			//
-			// user.value = userData.data;
-			// userId.value = userData.data.id;
-			// isAuthenticated.value = true;
-			// setCookies('userId', String(userData.data.id)); // ok si besoin
 			await authenticate(username, password);
 			await router.push('/').then(() => window.location.reload());
 		} catch (error: any) {
 			console.error("[FRONT] Erreur signup:", error);
 			const msg = error.response?.data?.error;
 			if (msg?.includes('User already exists')) {
-				signupError.value = t('error.signup.alreadyExists');
+				signupError.value = 'error.signup.alreadyExists';
 			}
 		}
 	}
-
-
-
 
 	const authenticate2FA = async (id: string, token2FA: string) => {
 		try {
@@ -86,6 +90,7 @@ export const useAuth = defineStore('auth', () => {
 			setCookies("access_token", response2FA.data.token)
 			const userData = await axios.get('/api/users/profile')
 			setCookies('userId', String(userData.data.id))
+            await getUserSettings(userData.data.id)
 			await router.push('/').then(() => {
 				window.location.reload()
 			})
@@ -124,7 +129,7 @@ export const useAuth = defineStore('auth', () => {
 			const { data } = await axios.get('/api/auth/google/config');
 			const clientId = data.clientId;
 			const redirectUri = process.env.NODE_ENV === 'production'
-				? process.env.GOOGLE_CALLBACK_URI
+				? "https://transcendance.charles-poulain.ovh/auth/google/callback"
 				: "http://localhost:5173/auth/google/callback";
 			const state = crypto.randomUUID();
 
@@ -146,12 +151,13 @@ export const useAuth = defineStore('auth', () => {
 
 			setCookies("access_token", jwt);
 			setCookies("userId", String(userData.id));
+            await getUserSettings(userData.id)
 			user.value = userData;
 			token.value = jwt;
 			userId.value = userData.id;
 			isAuthenticated.value = true;
 
-			await router.push('/').then(() => window.location.reload());
+			return true
 		} catch (error) {
 			loginError.value = t('error.auth.googleAuthFailed');
 		}

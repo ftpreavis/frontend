@@ -3,7 +3,11 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useTournament } from '@/store/tournament'
 import { useAuth } from '@/store/auth';
 import { useLang } from '@/composables/useLang';
+
 import Modal from "@/components/Modal/Modal.vue";
+import ErrorMessage from "@/components/Utils/ErrorMessage.vue";
+import FormField from './Form/FormField.vue';
+import FormFieldWithButton from './Form/FormFieldWithButton.vue';
 
 const newPlayer = ref('')
 const players = ref<string[]>([])
@@ -76,65 +80,50 @@ onMounted(async() => {
 </script>
 
 <template>
-	<Modal v-model="modalValue" title="Tournament"> 
+	<Modal v-model="modalValue" :title="$t('tournament.tournament')">
 
-    <div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto">
-    <h1 class="text-2xl font-bold">{{ $t('tournament.create') }}</h1>
+		<div class="flex flex-col items-center p-4 gap-4 max-w-md mx-auto dark:text-white">
+			<h1 class="text-2xl font-bold">{{ $t('tournament.create') }}</h1>
 
-    <div class="w-full">
-        <label class="block text-sm font-medium text-gray-700">{{ $t('tournament.name') }}</label>
-        <input
-        v-model="newPlayer"
-        type="text"
-        class="mt-1 w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        :placeholder="$t('tournament.addPlayer')"
-        />
-    </div>
+			<FormFieldWithButton type="text" v-model="newPlayer" :label="$t('tournament.name')" :placeholder="$t('tournament.addPlayer')" :button-text="$t('tournament.add')" :disabled="players.length >= 32" @click="addPlayer"></FormFieldWithButton>
 
-    <button :disabled="players.length >= 32"
-        @click="addPlayer"
-        class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400">
-        {{ $t('tournament.add') }}
-    </button>
+			<p class="text-sm text-gray-600">
+				{{ players.length }} {{$t('tournament.player')}}{{ players.length > 1 ? 's' : '' }}
+			</p>
 
-    <p class="text-sm text-gray-600">
-        {{ players.length }} {{$t('tournament.player')}}{{ players.length > 1 ? 's' : '' }}
-    </p>
+			<ul class="w-full divide-y divide-gray-200 bg-white rounded-lg shadow max-h-64 overflow-y-auto dark:text-black">
+				<li
+					v-for="(player, index) in players"
+					:key="index"
+					class="flex justify-between px-4 py-2">
+					<span class="truncate">{{ player }}</span>
+					<button v-if="index != 0" @click="removePlayer(index)" class="text-red-500 hover:underline">{{$t('tournament.delete')}}</button>
+				</li>
+			</ul>
 
-    <ul class="w-full divide-y divide-gray-200 bg-white rounded-lg shadow max-h-64 overflow-y-auto">
-        <li
-        v-for="(player, index) in players"
-        :key="index"
-        class="flex justify-between px-4 py-2">
-        <span>{{ player }}</span>
-        <button v-if="index != 0" @click="removePlayer(index)" class="text-red-500 hover:underline">{{$t('tournament.delete')}}</button>
-        </li>
-    </ul>
+			<button
+				:disabled="![4, 8, 16, 32].includes(players.length)"
+				@click="startTournament"
+				class="mt-4 px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400">
+				{{$t('tournament.createTournament')}}
+			</button>
 
-    <button
-        :disabled="![4, 8, 16, 32].includes(players.length)"
-        @click="startTournament"
-        class="mt-4 px-6 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400">
-        {{$t('tournament.createTournament')}}
-    </button>
-    <p v-if="players.length !== 0 && ![4, 8, 16, 32].includes(players.length)"
-        class="text-sm text-red-500 mt-1">
-        {{$t('tournament.required')}}
-    </p>
+				<div v-if="players.length !== 0 && ![4, 8, 16, 32].includes(players.length)">
+					<ErrorMessage error="tournament.required"></ErrorMessage>
+				</div>
 
-
-    <div>
-        <div class="space-y-2">
-        <label class="flex justify-between text-sm">
-            {{$t('pong.ballSpeed')}}
-            <input type="range" v-model.number="localCheats.ballSpeed" min="1" max="15" step="0.1" class="mx-2 w-20">
-        </label>
-        <label class="flex justify-between text-sm">
-            {{$t('pong.paddleSpeed')}}
-            <input type="range" v-model.number="localCheats.paddleSpeed" min="1" max="40" step="0.1" class="mx-2 w-20">
-        </label>
-        </div>
-    </div>
-    </div>
+			<div>
+				<div class="space-y-2">
+				<label class="flex justify-between text-sm">
+					{{$t('pong.ballSpeed')}}
+					<input type="range" v-model.number="localCheats.ballSpeed" min="1" max="15" step="0.1" class="mx-2 w-20">
+				</label>
+				<label class="flex justify-between text-sm">
+					{{$t('pong.paddleSpeed')}}
+					<input type="range" v-model.number="localCheats.paddleSpeed" min="1" max="40" step="0.1" class="mx-2 w-20">
+				</label>
+				</div>
+			</div>
+		</div>
     </Modal>
 </template>

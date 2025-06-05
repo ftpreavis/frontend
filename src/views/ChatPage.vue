@@ -4,17 +4,18 @@
 /*                                   Imports                                  */
 /* -------------------------------------------------------------------------- */
 
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useAuth } from '@/store/auth'
-import { useChat } from '@/store/chat'
-import { useSocket } from '@/sockets/socket'
-import { useChatUI } from '@/store/chat_ui'
-import { formatDateLabel } from '@/utils/date'
-import type { ComponentPublicInstance } from 'vue'
-import OnlineStatusDot from '@/components/OnlineStatusDot.vue'
-import { toast } from 'vue3-toastify'
-import 'vue3-toastify/dist/index.css'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuth } from '@/store/auth';
+import { useChat } from '@/store/chat';
+import { useSocket } from '@/sockets/socket';
+import { useChatUI } from '@/store/chat_ui';
+import { formatDateLabel } from '@/utils/date';
+import type { ComponentPublicInstance } from 'vue';
+import OnlineStatusDot from '@/components/OnlineStatusDot.vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import UserSearchBar from '@/components/UserSearchBar.vue';
 
 /* -------------------------------------------------------------------------- */
 /*                                  Constants                                 */
@@ -29,6 +30,7 @@ const chatUIStore = useChatUI()
 
 const selectedId = ref<number | null>(null)
 const newMessage = ref('')
+const chatSearchRef = ref<InstanceType<typeof UserSearchBar> | null>(null)
 
 /* -------------------------------------------------------------------------- */
 /*                                   Binding                                  */
@@ -87,6 +89,17 @@ const selectConversation = async (id: number) => {
 	selectedId.value = id
 	chatStore.setSelectedUser(id)
 
+	if (!authStore.userMap[id]) {
+		const data = await authStore.fetchUserById(id)
+		if (data) {
+			authStore.userMap[id] = {
+				id: data.id,
+				username: data.username,
+				avatar: data.avatar
+			}
+		}
+	}
+
 	await chatStore.fetchMessagesWith(id)
 	await nextTick()
 
@@ -142,6 +155,24 @@ const onSendMessage = async () => {
 	nextTick(chatUIStore.scrollToBottom)
 }
 
+const handleUserSearchSelect = async (user: { id: number; username: string; avatar: string }) => {
+	// If the conversation is already known, use it
+	if (chatStore.conversations.some(conv => conv.userId === user.id)) {
+		await selectConversation(user.id)
+	} else {
+		// Start a new one
+		await chatStore.fetchMessagesWith(user.id)
+		selectedId.value = user.id
+		chatStore.setSelectedUser(user.id)
+		nextTick(() => {
+			chatUIStore.scrollToBottom()
+			chatUIStore.updateScrollIndicators()
+			chatUIStore.attachScroll()
+		})
+	}
+	chatSearchRef.value?.clear();
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   Events                                   */
 /* -------------------------------------------------------------------------- */
@@ -177,7 +208,8 @@ watch(() => chatStore.selectedUserId, async () => {
 		<aside class="w-full md:w-1/3 border-r border-gray-200 dark:border-gray-600 dark:bg-gray-800 bg-white p-4 "
 			:class="selectedId !== null ? 'hidden md:block' : ''">
 			<h2 class="text-lg font-semibold mb-4 dark:text-gray-100">{{ $t('chat.conversations') }}</h2>
-			<div v-if="convs.length === 0">{{ $t('chat.noConversations') }}</div>
+			<UserSearchBar ref="chatSearchRef" class="mt-2 mb-4" placeholder="Search users..." @select="handleUserSearchSelect" />
+			<div v-if="convs.length === 0" class="dark:text-gray-400">{{ $t('chat.noConversations') }}</div>
 			<ul class="space-y-2">
 				<li v-for="conv in convs" :key="conv.id" @click="selectConversation(conv.id)" :class="[
 					'flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
@@ -212,10 +244,10 @@ watch(() => chatStore.selectedUserId, async () => {
 				<button @click="goToProfile(selectedId)">
 					<OnlineStatusDot :userId="selectedId" class="mr-2">
 						<div class="w-12 h-12 rounded-full overflow-hidden bg-contain bg-center bg-no-repeat"
-							:style="{ backgroundImage: `url(${convs.find(c => c.id === selectedId)?.avatar ?? `/api/users/${selectedId}/avatar`})` }" />
+							:style="{ backgroundImage: `url(${`/api/users/${selectedId}/avatar`})` }" />
 					</OnlineStatusDot>
 				</button>
-				<h3 class="text-md font-semibold mt-1 dark:text-white">{{convs.find(c => c.id === selectedId)?.name}}
+				<h3 class="text-md font-semibold mt-1 dark:text-white">{{ authStore.userMap[selectedId]?.username ?? 'Unknown' }}
 				</h3>
 			</div>
 

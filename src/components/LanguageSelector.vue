@@ -2,16 +2,22 @@
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DropDown from './DropDown.vue'
+import { useAuth } from '@/store/auth'
 
 // Icons
 import FlagEN from '@/assets/flags/flagEN.svg'
 import FlagFR from '@/assets/flags/flagFR.svg'
 import FlagDB from '@/assets/flags/flagDB.svg'
+import axios from 'axios'
 
 const { locale } = useI18n()
 const selected = ref(locale.value)
+const authStore = useAuth()
 
-watch(selected, (newLang) => {
+watch(selected, async(newLang) => {
+    if (authStore.isAuthenticated) {
+        await axios.patch(`/api/users/${authStore.userId}/settings`, {lang: newLang})
+    }
 	locale.value = newLang
 	localStorage.setItem('lang', newLang)
 })

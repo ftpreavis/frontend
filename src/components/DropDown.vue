@@ -54,19 +54,18 @@ onUnmounted(() => {
 		<div @click.stop="toggle">
 			<slot name="trigger"></slot>
 		</div>
-		<transition name="fade">
-			<div v-if="isOpen" class="absolute right-0 mt-2 bg-white dark:bg-gray-700 border shadow-lg z-50 py-1 rounded-md" :class="[menuWidth]">
+		<transition
+			enter-active-class="transition ease-out duration-200"
+			enter-from-class="opacity-0 scale-95"
+			enter-to-class="opacity-100 scale-100"
+			leave-active-class="transition ease-in duration-150"
+			leave-from-class="opacity-100 scale-100"
+			leave-to-class="opacity-0 scale-95"
+		>
+			<div v-if="isOpen" class="absolute right-0 mt-2 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 border shadow-xl z-50 py-1 rounded-lg" :class="[menuWidth]">
 				<slot name="menu"></slot>
 			</div>
 		</transition>
 	</div>
 </template>
 
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .15s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-</style>
